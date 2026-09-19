@@ -223,16 +223,23 @@ trace/
     ├── app/
     │   ├── __init__.py
     │   ├── main.py                # FastAPI application initialization & routes
-    │   ├── core/                  # Configuration and application settings
+    │   ├── core/                  # Configuration, settings, and standardized error models
+    │   │   ├── config.py
+    │   │   └── errors.py
     │   ├── api/                   # API endpoint routers
+    │   │   └── routes/
+    │   │       └── requests.py    # Request execution routes (POST /api/requests)
     │   ├── models/                # SQLAlchemy database models
-    │   ├── schemas/               # Pydantic validation schemas
-    │   ├── services/              # HTTP execution and external integration
+    │   ├── schemas/               # Pydantic request & response validation schemas
+    │   │   └── request.py
+    │   ├── services/              # Business logic & request execution services
+    │   │   └── request_service.py
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
-        └── test_health.py         # Initial API health verification test
+        ├── test_health.py         # API health verification tests
+        └── test_requests.py       # API contract and validation tests
 ```
 
 ### Documentation Scope
@@ -260,7 +267,7 @@ trace/
 - [x] pytest foundation created
 
 ### Core Backend
-- [ ] Backend API architecture and contracts
+- [x] Backend API architecture and contracts
 - [ ] HTTP request execution
 - [ ] Response normalization
 - [ ] Request validation and limits
@@ -311,9 +318,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: Environment Setup Complete**
+> **Current Phase: Backend API Foundation & Contracts Complete (Step 3)**
 >
-> Both the frontend (`client/`) and backend (`server/`) development environments are fully configured, container-free, verified, and operational. All required dependencies are installed, builds are passing without warnings, and foundational testing confirms system health. The project is ready to begin implementing the core backend API foundation.
+> The backend API contract has been established with strictly typed Pydantic request and response schemas, standardized error structures, service layer dispatching, and automated endpoint validation (`POST /api/requests`). In accordance with Step 3 scope, outbound HTTP network execution is intentionally deferred to Step 4. All unit tests and frontend builds pass cleanly.
 
 ---
 

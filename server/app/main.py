@@ -1,8 +1,8 @@
 """TRACE Backend — Application Entrypoint."""
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.routes import api_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -13,14 +13,8 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Development CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Register API routes under /api
+app.include_router(api_router, prefix=settings.api_prefix)
 
 
 @app.get("/health", tags=["Health"])
