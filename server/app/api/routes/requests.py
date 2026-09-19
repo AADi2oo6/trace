@@ -23,6 +23,7 @@ router = APIRouter(prefix="/requests", tags=["Requests"])
     description="Alias for POST /api/requests aligned with TRACE MVP build plan specification.",
     include_in_schema=False,
 )
-def execute_request(request_data: RequestCreate) -> RequestResponse:
+async def execute_request(request_data: RequestCreate) -> RequestResponse:
     """Validate request and delegate execution to service layer."""
-    return request_service.execute_request(request_data)
+    return await request_service.execute_request(request_data)
+

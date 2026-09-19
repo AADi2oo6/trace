@@ -225,7 +225,8 @@ trace/
     │   ├── main.py                # FastAPI application initialization & routes
     │   ├── core/                  # Configuration, settings, and standardized error models
     │   │   ├── config.py
-    │   │   └── errors.py
+    │   │   ├── errors.py
+    │   │   └── security.py        # SSRF validation & target address protection
     │   ├── api/                   # API endpoint routers
     │   │   └── routes/
     │   │       └── requests.py    # Request execution routes (POST /api/requests)
@@ -233,13 +234,15 @@ trace/
     │   ├── schemas/               # Pydantic request & response validation schemas
     │   │   └── request.py
     │   ├── services/              # Business logic & request execution services
-    │   │   └── request_service.py
+    │   │   └── request_service.py # Bounded HTTP request execution engine
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
+        ├── test_execution.py      # HTTP execution engine & response tests
         ├── test_health.py         # API health verification tests
-        └── test_requests.py       # API contract and validation tests
+        ├── test_security.py       # SSRF and network protection tests
+        └── test_validation.py     # API contract and schema validation tests
 ```
 
 ### Documentation Scope
@@ -268,10 +271,10 @@ trace/
 
 ### Core Backend
 - [x] Backend API architecture and contracts
-- [ ] HTTP request execution
-- [ ] Response normalization
-- [ ] Request validation and limits
-- [ ] Error handling
+- [x] HTTP request execution
+- [x] Response normalization
+- [x] Request validation and limits
+- [x] Error handling
 
 ### Network Analysis
 - [ ] Header Analyzer
@@ -318,9 +321,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: Backend API Foundation & Contracts Complete (Step 3)**
+> **Current Phase: HTTP Request Execution Engine Complete (Step 4)**
 >
-> The backend API contract has been established with strictly typed Pydantic request and response schemas, standardized error structures, service layer dispatching, and automated endpoint validation (`POST /api/requests`). In accordance with Step 3 scope, outbound HTTP network execution is intentionally deferred to Step 4. All unit tests and frontend builds pass cleanly.
+> The backend now executes real, bounded outbound HTTP requests via `httpx.AsyncClient` supporting `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, and `OPTIONS`. Built-in security protections enforce finite timeouts (10s), bounded redirects (max 5), response body caps (2MB), and comprehensive SSRF validation blocking private, loopback, link-local, and cloud metadata addresses. Results are normalized into structured responses with duration timing and sanitized logging. All 64 backend tests and frontend builds pass cleanly.
 
 ---
 
