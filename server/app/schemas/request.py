@@ -132,6 +132,64 @@ class RequestCreate(BaseModel):
         return cleaned
 
 
+class OptionsCorsInfo(BaseModel):
+    """CORS-related response headers observed during an OPTIONS exchange."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    allow_origin: str | None = Field(
+        default=None,
+        description="Value of Access-Control-Allow-Origin response header",
+    )
+    allow_methods: list[str] | None = Field(
+        default=None,
+        description="List of HTTP methods parsed from Access-Control-Allow-Methods",
+    )
+    allow_headers: list[str] | None = Field(
+        default=None,
+        description="List of allowed request headers parsed from Access-Control-Allow-Headers",
+    )
+    allow_credentials: bool | None = Field(
+        default=None,
+        description="Parsed boolean from Access-Control-Allow-Credentials",
+    )
+    max_age: int | None = Field(
+        default=None,
+        description="Parsed integer seconds from Access-Control-Max-Age",
+    )
+    expose_headers: list[str] | None = Field(
+        default=None,
+        description="List of exposed headers parsed from Access-Control-Expose-Headers",
+    )
+
+
+class OptionsAnalysis(BaseModel):
+    """Interpretation of server capabilities and advertised policies from an OPTIONS response."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    is_options_request: bool = Field(
+        default=True,
+        description="Indicates this analysis is specifically for an OPTIONS exchange",
+    )
+    has_allow_header: bool = Field(
+        default=False,
+        description="True if the response contained an Allow header",
+    )
+    allowed_methods: list[str] = Field(
+        default_factory=list,
+        description="Normalized HTTP methods advertised by the resource via the Allow header",
+    )
+    cors: OptionsCorsInfo | None = Field(
+        default=None,
+        description="CORS-related headers present on the OPTIONS response, or None if absent",
+    )
+    observations: list[str] = Field(
+        default_factory=list,
+        description="Neutral, non-speculative factual observations regarding the OPTIONS exchange",
+    )
+
+
 class RequestResponse(BaseModel):
     """Standardized response schema representing request results and Response Inspector diagnostics."""
 
@@ -196,6 +254,10 @@ class RequestResponse(BaseModel):
     header_analysis: list[HeaderAnalysisItem] | None = Field(
         default=None,
         description="Detailed categorical analysis and descriptions of request and response headers",
+    )
+    options_analysis: OptionsAnalysis | None = Field(
+        default=None,
+        description="Detailed analysis of OPTIONS response (allowed methods, advertised CORS headers) when method is OPTIONS",
     )
     error: ErrorDetail | None = Field(
         default=None,

@@ -93,7 +93,7 @@ Key differentiators include:
 | **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Planned |
 | **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
 | **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
-| **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Planned |
+| **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
 | **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Planned |
 | **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Planned |
 | **Request Journey** | Visual representation of client-to-server network stages | Planned |
@@ -236,7 +236,8 @@ trace/
     │   ├── services/              # Business logic & request execution services
     │   │   ├── request_service.py # Bounded HTTP request execution engine
     │   │   ├── response_inspector.py # Response normalization, status & body inspector
-    │   │   └── header_analyzer.py # Technical header categorization & neutral observations
+    │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
+    │   │   └── options_inspector.py # Server capability & advertised policy interpreter
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
@@ -245,6 +246,7 @@ trace/
         ├── test_execution.py      # HTTP execution engine & response tests
         ├── test_header_analyzer.py # Technical header categorization & masking tests
         ├── test_health.py         # API health verification tests
+        ├── test_options_inspector.py # OPTIONS capabilities and CORS header extraction tests
         ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
         ├── test_security.py       # SSRF and network protection tests
         └── test_validation.py     # API contract and schema validation tests
@@ -284,7 +286,7 @@ trace/
 
 ### Network Analysis
 - [x] Header Analyzer
-- [ ] OPTIONS Inspector
+- [x] OPTIONS Inspector
 - [ ] CORS Analyzer
 - [ ] DNS Inspector
 - [ ] Request Timing
@@ -327,9 +329,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: Header Analyzer Complete (Step 6)**
+> **Current Phase: OPTIONS Inspector Complete (Step 7)**
 >
-> The backend now includes a dedicated Header Analyzer (`app.services.header_analyzer`) that categorizes and explains HTTP request and response headers (`Content`, `Caching`, `Security`, `CORS`, `Authentication`, `Cookies`, `Connection`, `Redirection`, `Server`, `General`, and `Other`). It maintains strict source separation (`request` vs `response`), provides neutral technical explanations and actionable observations, handles case-insensitivity, unknown headers, and multiple header values, and provides credential masking utilities. All 87 backend tests and frontend builds pass cleanly.
+> The backend now includes a dedicated OPTIONS Inspector (`app.services.options_inspector`) that interprets server capabilities and advertised policies from HTTP `OPTIONS` responses. It parses and normalizes the `Allow` header into uppercase methods while handling missing headers neutrally, strictly distinguishes resource-level `Allow` methods from CORS-level `Access-Control-Allow-Methods`, extracts CORS response headers (`Origin`, `Methods`, `Headers`, `Credentials`, `Max-Age`, `Expose-Headers`) without premature browser policy emulation, and compiles neutral, non-speculative technical observations. All 101 backend tests and frontend builds pass cleanly.
 
 ---
 

@@ -14,6 +14,7 @@ from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
 from app.schemas.request import RequestCreate, RequestResponse
 from app.services.header_analyzer import header_analyzer
+from app.services.options_inspector import options_inspector
 from app.services.response_inspector import response_inspector
 
 logger = logging.getLogger("trace.request_service")
@@ -178,6 +179,12 @@ class RequestService:
                 response_headers=inspected.headers,
             )
 
+            # 9. Inspect OPTIONS capabilities and advertised policies if applicable
+            options_result = options_inspector.inspect(
+                method=method,
+                response_headers=inspected.headers,
+            )
+
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, str(response.url), duration_ms, True, str(response.status_code))
 
@@ -197,6 +204,7 @@ class RequestService:
                 body_size=inspected.body_size,
                 duration_ms=duration_ms,
                 header_analysis=analyzed_headers,
+                options_analysis=options_result,
                 error=None,
             )
 

@@ -24,7 +24,8 @@ server/
 │   ├── services/
 │   │   ├── request_service.py # Bounded HTTP request execution engine (httpx)
 │   │   ├── response_inspector.py # Response normalization, status & body inspector
-│   │   └── header_analyzer.py # Technical header categorization & neutral observations
+│   │   ├── header_analyzer.py # Technical header categorization & neutral observations
+│   │   └── options_inspector.py # Server capability & advertised policy interpreter
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
@@ -33,6 +34,7 @@ server/
 │   ├── test_execution.py      # Real HTTP request execution & response handling
 │   ├── test_header_analyzer.py # Technical header categorization & masking tests
 │   ├── test_health.py         # Health check tests
+│   ├── test_options_inspector.py # OPTIONS capabilities and CORS header extraction tests
 │   ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
 │   ├── test_security.py       # SSRF protection and network boundary tests
 │   └── test_validation.py     # Schema constraints & method validation tests
@@ -113,6 +115,26 @@ server/
       "observations": null
     }
   ],
+  "options_analysis": {
+    "is_options_request": true,
+    "has_allow_header": true,
+    "allowed_methods": ["GET", "POST", "OPTIONS"],
+    "cors": {
+      "allow_origin": "*",
+      "allow_methods": ["GET", "POST"],
+      "allow_headers": ["Content-Type"],
+      "allow_credentials": null,
+      "max_age": 300,
+      "expose_headers": null
+    },
+    "observations": [
+      "The response advertises allowed methods through the Allow header: GET, POST, OPTIONS.",
+      "CORS response headers are present.",
+      "Access-Control-Allow-Origin is set to '*'.",
+      "Access-Control-Allow-Methods advertises: GET, POST.",
+      "Access-Control-Max-Age permits preflight caching for 300 seconds."
+    ]
+  },
   "error": null
 }
 ```
@@ -123,6 +145,7 @@ server/
 * `body_size`: Exact byte count of the received response body.
 * `body`: Safe string representation (formatted JSON or text; `null` for binary or empty payloads).
 * `header_analysis`: List of categorized headers with source attribution and technical observations.
+* `options_analysis`: Structured interpretation of server capabilities and CORS policies (populated only for `OPTIONS` requests).
 
 ---
 
@@ -157,6 +180,25 @@ The Header Analyzer categorizes HTTP headers and attaches neutral, informative o
    * `Other` (custom headers such as `x-custom-*` or unrecognized names)
 3. **Neutral Observations**: Generates technical observations (e.g. HSTS `includeSubDomains`, `no-store` caching directive, `SameSite` / `Secure` cookie attributes) without speculative security scoring.
 4. **Credential Protection**: Includes masking utilities (`mask_sensitive_value`) for Authorization bearer/basic tokens and Cookie session values. Headers are never logged to console or file logs.
+
+---
+
+## OPTIONS Inspector Engine (`app.services.options_inspector`)
+
+The OPTIONS Inspector interprets server capabilities and advertised policies specifically for `OPTIONS` requests:
+1. **Targeted Execution**: Only runs when the executed HTTP method is `OPTIONS`. For all other methods, `options_analysis` evaluates to `null`.
+2. **`Allow` Header Analysis**:
+   * Parses and normalizes method names to uppercase (e.g., `GET`, `POST`, `PUT`, `DELETE`).
+   * Deduplicates duplicate entries while preserving server-declared ordering.
+   * Handles missing `Allow` headers gracefully with neutral observations without assuming failure or an empty capability set.
+3. **CORS Headers Extraction**:
+   * Extracts advertised CORS headers (`Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, `Access-Control-Allow-Credentials`, `Access-Control-Max-Age`, `Access-Control-Expose-Headers`).
+   * Normalizes CORS methods to uppercase, trims allowed headers, and parses boolean credentials and integer max-age.
+   * Handles non-CORS OPTIONS requests cleanly (`cors: null` with neutral observation).
+4. **Strict Architectural Separation**:
+   * Resource-level allowed methods (`Allow`) and preflight CORS methods (`Access-Control-Allow-Methods`) are captured in dedicated fields and never conflated.
+5. **Neutral Observations**:
+   * Emits factual observations explaining what the server advertises, without speculative browser simulation or blocking decisions (deferred to Step 8: CORS Analyzer).
 
 ---
 
