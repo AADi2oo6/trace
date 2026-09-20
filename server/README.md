@@ -25,12 +25,14 @@ server/
 │   │   ├── request_service.py # Bounded HTTP request execution engine (httpx)
 │   │   ├── response_inspector.py # Response normalization, status & body inspector
 │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
-│   │   └── options_inspector.py # Server capability & advertised policy interpreter
+│   │   ├── options_inspector.py # Server capability & advertised policy interpreter
+│   │   └── cors_analyzer.py   # Cross-origin policy & header matching analyzer
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
 ├── tests/
 │   ├── conftest.py            # Shared test fixtures & deterministic mock DNS
+│   ├── test_cors_analyzer.py  # CORS rules, origin, method & header matching tests
 │   ├── test_execution.py      # Real HTTP request execution & response handling
 │   ├── test_header_analyzer.py # Technical header categorization & masking tests
 │   ├── test_health.py         # Health check tests
@@ -135,6 +137,27 @@ server/
       "Access-Control-Max-Age permits preflight caching for 300 seconds."
     ]
   },
+  "cors_analysis": {
+    "is_cors_request": true,
+    "request_origin": "https://myapp.dev",
+    "allowed_origin": "https://myapp.dev",
+    "origin_allowed": true,
+    "wildcard_origin": false,
+    "requested_method": "GET",
+    "allowed_methods": ["GET", "POST"],
+    "method_allowed": true,
+    "requested_headers": null,
+    "allowed_headers": null,
+    "headers_allowed": null,
+    "allow_credentials": true,
+    "max_age": null,
+    "expose_headers": null,
+    "observations": [
+      "Origin was supplied by the request.",
+      "The server explicitly allows the requested origin.",
+      "Credentials are enabled (Access-Control-Allow-Credentials: true)."
+    ]
+  },
   "error": null
 }
 ```
@@ -146,6 +169,7 @@ server/
 * `body`: Safe string representation (formatted JSON or text; `null` for binary or empty payloads).
 * `header_analysis`: List of categorized headers with source attribution and technical observations.
 * `options_analysis`: Structured interpretation of server capabilities and CORS policies (populated only for `OPTIONS` requests).
+* `cors_analysis`: Technical evaluation of CORS configurations and origin/method/header matches (populated when CORS headers exist).
 
 ---
 
@@ -198,7 +222,29 @@ The OPTIONS Inspector interprets server capabilities and advertised policies spe
 4. **Strict Architectural Separation**:
    * Resource-level allowed methods (`Allow`) and preflight CORS methods (`Access-Control-Allow-Methods`) are captured in dedicated fields and never conflated.
 5. **Neutral Observations**:
-   * Emits factual observations explaining what the server advertises, without speculative browser simulation or blocking decisions (deferred to Step 8: CORS Analyzer).
+   * Emits factual observations explaining what the server advertises, without speculative browser simulation or blocking decisions.
+
+---
+
+## CORS Analyzer Engine (`app.services.cors_analyzer`)
+
+The CORS Analyzer evaluates cross-origin resource sharing configurations across request and response exchanges:
+1. **Scope & Principles**:
+   * Analyzes the HTTP exchange neutrally. It does NOT assert that the backend client itself is blocked, recognizing that CORS enforcement is primarily a browser responsibility.
+   * Keeps resource-level `Allow` headers completely separated from CORS-level `Access-Control-Allow-Methods`.
+2. **Origin Analysis**:
+   * Performs exact normalized matching between the requested `Origin` and `Access-Control-Allow-Origin`.
+   * Handles wildcard origins (`*`) without treating them as errors.
+   * Highlights restricted browser combinations when `Access-Control-Allow-Origin: *` is combined with `Access-Control-Allow-Credentials: true`.
+3. **Method & Header Validation**:
+   * Evaluates requested methods (`Access-Control-Request-Method` or request method) against `Access-Control-Allow-Methods` case-insensitively and whitespace-tolerantly.
+   * Evaluates requested headers (`Access-Control-Request-Headers`) against `Access-Control-Allow-Headers` case-insensitively, explicitly identifying unlisted headers.
+4. **Credentials & Preflight Caching**:
+   * Safely parses `Access-Control-Allow-Credentials` into boolean states.
+   * Parses non-negative integer seconds from `Access-Control-Max-Age` without failing on malformed values.
+   * Normalizes script-exposed headers from `Access-Control-Expose-Headers`.
+5. **Technical Observations**:
+   * Emits factual, non-speculative explanations of the configuration without exaggerated vulnerability warnings.
 
 ---
 

@@ -94,7 +94,7 @@ Key differentiators include:
 | **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
 | **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
-| **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Planned |
+| **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Backend Ready |
 | **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Planned |
 | **Request Journey** | Visual representation of client-to-server network stages | Planned |
 | **Request History** | Local persistent history of executed requests for replay | Planned |
@@ -237,12 +237,14 @@ trace/
     │   │   ├── request_service.py # Bounded HTTP request execution engine
     │   │   ├── response_inspector.py # Response normalization, status & body inspector
     │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
-    │   │   └── options_inspector.py # Server capability & advertised policy interpreter
+    │   │   ├── options_inspector.py # Server capability & advertised policy interpreter
+    │   │   └── cors_analyzer.py   # Cross-origin policy & header matching analyzer
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
         ├── conftest.py            # Shared test fixtures & deterministic mock DNS
+        ├── test_cors_analyzer.py  # CORS rules, origin, method & header matching tests
         ├── test_execution.py      # HTTP execution engine & response tests
         ├── test_header_analyzer.py # Technical header categorization & masking tests
         ├── test_health.py         # API health verification tests
@@ -287,7 +289,7 @@ trace/
 ### Network Analysis
 - [x] Header Analyzer
 - [x] OPTIONS Inspector
-- [ ] CORS Analyzer
+- [x] CORS Analyzer
 - [ ] DNS Inspector
 - [ ] Request Timing
 - [ ] Request Journey
@@ -329,9 +331,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: OPTIONS Inspector Complete (Step 7)**
+> **Current Phase: CORS Analyzer Complete (Step 8)**
 >
-> The backend now includes a dedicated OPTIONS Inspector (`app.services.options_inspector`) that interprets server capabilities and advertised policies from HTTP `OPTIONS` responses. It parses and normalizes the `Allow` header into uppercase methods while handling missing headers neutrally, strictly distinguishes resource-level `Allow` methods from CORS-level `Access-Control-Allow-Methods`, extracts CORS response headers (`Origin`, `Methods`, `Headers`, `Credentials`, `Max-Age`, `Expose-Headers`) without premature browser policy emulation, and compiles neutral, non-speculative technical observations. All 101 backend tests and frontend builds pass cleanly.
+> The backend now includes a dedicated CORS Analyzer (`app.services.cors_analyzer`) that interprets cross-origin configurations across request and response headers. It evaluates origin permissions (exact matching, missing headers, wildcard `*`), methods permissions (`Access-Control-Allow-Methods` independent of `Allow`), requested headers (`Access-Control-Request-Headers` vs `Access-Control-Allow-Headers`), credential allowances, preflight caching `Max-Age`, and exposed headers. It compiles factual technical observations (including wildcard credentials specifications) without attempting browser-side execution blocking. All 125 backend tests and frontend builds pass cleanly.
 
 ---
 

@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
 from app.schemas.request import RequestCreate, RequestResponse
+from app.services.cors_analyzer import cors_analyzer
 from app.services.header_analyzer import header_analyzer
 from app.services.options_inspector import options_inspector
 from app.services.response_inspector import response_inspector
@@ -185,6 +186,15 @@ class RequestService:
                 response_headers=inspected.headers,
             )
 
+            # 10. Analyze CORS configuration across request and response
+            cors_result = cors_analyzer.analyze(
+                request_method=method,
+                request_headers=headers,
+                response_headers=inspected.headers,
+            )
+            has_cors_resp_headers = any(k.lower().startswith("access-control-") for k in inspected.headers)
+            cors_analysis_data = cors_result if (cors_result.is_cors_request or has_cors_resp_headers) else None
+
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, str(response.url), duration_ms, True, str(response.status_code))
 
@@ -205,6 +215,7 @@ class RequestService:
                 duration_ms=duration_ms,
                 header_analysis=analyzed_headers,
                 options_analysis=options_result,
+                cors_analysis=cors_analysis_data,
                 error=None,
             )
 

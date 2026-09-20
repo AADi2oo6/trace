@@ -190,6 +190,73 @@ class OptionsAnalysis(BaseModel):
     )
 
 
+class CorsAnalysis(BaseModel):
+    """Structured technical evaluation of CORS configuration across request and response."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    is_cors_request: bool = Field(
+        default=False,
+        description="True if CORS-related request headers (Origin, Access-Control-Request-*) were present",
+    )
+    request_origin: str | None = Field(
+        default=None,
+        description="Origin header supplied by the client request",
+    )
+    allowed_origin: str | None = Field(
+        default=None,
+        description="Value of Access-Control-Allow-Origin response header",
+    )
+    origin_allowed: bool | None = Field(
+        default=None,
+        description="True if request_origin is permitted by allowed_origin or wildcard; False if mismatched/absent; None if no request origin supplied",
+    )
+    wildcard_origin: bool = Field(
+        default=False,
+        description="True if Access-Control-Allow-Origin is wildcard '*'",
+    )
+    requested_method: str | None = Field(
+        default=None,
+        description="Requested HTTP method from Access-Control-Request-Method or request method",
+    )
+    allowed_methods: list[str] | None = Field(
+        default=None,
+        description="CORS methods permitted by Access-Control-Allow-Methods",
+    )
+    method_allowed: bool | None = Field(
+        default=None,
+        description="True if requested method is permitted by Access-Control-Allow-Methods; False if not; None if not applicable",
+    )
+    requested_headers: list[str] | None = Field(
+        default=None,
+        description="Headers requested via Access-Control-Request-Headers",
+    )
+    allowed_headers: list[str] | None = Field(
+        default=None,
+        description="Headers permitted via Access-Control-Allow-Headers",
+    )
+    headers_allowed: bool | None = Field(
+        default=None,
+        description="True if all requested headers are permitted by Access-Control-Allow-Headers; False if any missing; None if not applicable",
+    )
+    allow_credentials: bool | None = Field(
+        default=None,
+        description="Parsed boolean from Access-Control-Allow-Credentials",
+    )
+    max_age: int | None = Field(
+        default=None,
+        description="Parsed non-negative integer seconds from Access-Control-Max-Age",
+    )
+    expose_headers: list[str] | None = Field(
+        default=None,
+        description="List of response headers exposed to scripts via Access-Control-Expose-Headers",
+    )
+    observations: list[str] = Field(
+        default_factory=list,
+        description="Neutral, non-speculative technical observations regarding the CORS exchange",
+    )
+
+
 class RequestResponse(BaseModel):
     """Standardized response schema representing request results and Response Inspector diagnostics."""
 
@@ -258,6 +325,10 @@ class RequestResponse(BaseModel):
     options_analysis: OptionsAnalysis | None = Field(
         default=None,
         description="Detailed analysis of OPTIONS response (allowed methods, advertised CORS headers) when method is OPTIONS",
+    )
+    cors_analysis: CorsAnalysis | None = Field(
+        default=None,
+        description="Structured analysis of CORS configuration and origin/method/header matching",
     )
     error: ErrorDetail | None = Field(
         default=None,
