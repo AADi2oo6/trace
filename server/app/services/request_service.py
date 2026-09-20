@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
 from app.schemas.request import RequestCreate, RequestResponse
+from app.services.header_analyzer import header_analyzer
 from app.services.response_inspector import response_inspector
 
 logger = logging.getLogger("trace.request_service")
@@ -171,6 +172,12 @@ class RequestService:
                 raw_bytes=raw_bytes,
             )
 
+            # 8. Analyze headers via HeaderAnalyzer (request and response)
+            analyzed_headers = header_analyzer.analyze_all(
+                request_headers=headers,
+                response_headers=inspected.headers,
+            )
+
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, str(response.url), duration_ms, True, str(response.status_code))
 
@@ -189,6 +196,7 @@ class RequestService:
                 body_type=inspected.body_type,
                 body_size=inspected.body_size,
                 duration_ms=duration_ms,
+                header_analysis=analyzed_headers,
                 error=None,
             )
 

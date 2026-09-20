@@ -92,7 +92,7 @@ Key differentiators include:
 | :--- | :--- | :--- |
 | **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Planned |
 | **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
-| **Header Analyzer** | Categorize and explain headers with masking for credentials | Planned |
+| **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Planned |
 | **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Planned |
 | **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Planned |
@@ -235,13 +235,15 @@ trace/
     │   │   └── request.py
     │   ├── services/              # Business logic & request execution services
     │   │   ├── request_service.py # Bounded HTTP request execution engine
-    │   │   └── response_inspector.py # Response normalization, status & body inspector
+    │   │   ├── response_inspector.py # Response normalization, status & body inspector
+    │   │   └── header_analyzer.py # Technical header categorization & neutral observations
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
         ├── conftest.py            # Shared test fixtures & deterministic mock DNS
         ├── test_execution.py      # HTTP execution engine & response tests
+        ├── test_header_analyzer.py # Technical header categorization & masking tests
         ├── test_health.py         # API health verification tests
         ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
         ├── test_security.py       # SSRF and network protection tests
@@ -281,7 +283,7 @@ trace/
 - [x] Error handling
 
 ### Network Analysis
-- [ ] Header Analyzer
+- [x] Header Analyzer
 - [ ] OPTIONS Inspector
 - [ ] CORS Analyzer
 - [ ] DNS Inspector
@@ -311,7 +313,7 @@ trace/
 - [ ] Request timeout limits
 - [ ] Response size limits
 - [ ] Redirect limits
-- [ ] Sensitive header masking
+- [x] Sensitive header masking
 - [ ] End-to-end testing
 
 ### Finalization
@@ -325,9 +327,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: Response Inspector Complete (Step 5)**
+> **Current Phase: Header Analyzer Complete (Step 6)**
 >
-> The backend now includes a dedicated Response Inspector (`app.services.response_inspector`) that normalizes HTTP responses into structured metadata for the future frontend. It classifies HTTP status ranges into RFC categories (`informational`, `success`, `redirection`, `client_error`, `server_error`), captures standard reason phrases, inspects headers, computes exact body size in bytes, measures wall-clock duration, and detects body payload formats (`json` with pretty-printing, `html`, `text`, `empty`, and `binary` without raw byte leakage). All 76 backend tests and frontend builds pass cleanly.
+> The backend now includes a dedicated Header Analyzer (`app.services.header_analyzer`) that categorizes and explains HTTP request and response headers (`Content`, `Caching`, `Security`, `CORS`, `Authentication`, `Cookies`, `Connection`, `Redirection`, `Server`, `General`, and `Other`). It maintains strict source separation (`request` vs `response`), provides neutral technical explanations and actionable observations, handles case-insensitivity, unknown headers, and multiple header values, and provides credential masking utilities. All 87 backend tests and frontend builds pass cleanly.
 
 ---
 

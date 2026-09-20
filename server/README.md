@@ -23,13 +23,15 @@ server/
 │   │   └── request.py         # RequestCreate & RequestResponse Pydantic models
 │   ├── services/
 │   │   ├── request_service.py # Bounded HTTP request execution engine (httpx)
-│   │   └── response_inspector.py # Response normalization, status & body inspector
+│   │   ├── response_inspector.py # Response normalization, status & body inspector
+│   │   └── header_analyzer.py # Technical header categorization & neutral observations
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
 ├── tests/
 │   ├── conftest.py            # Shared test fixtures & deterministic mock DNS
 │   ├── test_execution.py      # Real HTTP request execution & response handling
+│   ├── test_header_analyzer.py # Technical header categorization & masking tests
 │   ├── test_health.py         # Health check tests
 │   ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
 │   ├── test_security.py       # SSRF protection and network boundary tests
@@ -91,6 +93,26 @@ server/
   "body_type": "json",
   "body_size": 18,
   "duration_ms": 142.5,
+  "header_analysis": [
+    {
+      "name": "Authorization",
+      "value": "Bearer token",
+      "category": "Authentication",
+      "description": "Contains authentication credentials used to authenticate the client to the server.",
+      "source": "request",
+      "observations": [
+        "Client authentication credentials transmitted."
+      ]
+    },
+    {
+      "name": "content-type",
+      "value": "application/json; charset=utf-8",
+      "category": "Content",
+      "description": "Indicates the original media type of the resource before any encoding.",
+      "source": "response",
+      "observations": null
+    }
+  ],
   "error": null
 }
 ```
@@ -100,6 +122,7 @@ server/
 * `body_type`: Normalized body format classification (`json`, `text`, `html`, `empty`, `binary`).
 * `body_size`: Exact byte count of the received response body.
 * `body`: Safe string representation (formatted JSON or text; `null` for binary or empty payloads).
+* `header_analysis`: List of categorized headers with source attribution and technical observations.
 
 ---
 
@@ -113,6 +136,27 @@ The Response Inspector normalizes response data for frontend display:
    * **Text**: Handles plain text formats cleanly.
    * **Empty**: Gracefully identifies 0-byte or 204 No Content payloads (`body = null`, `body_size = 0`).
    * **Binary**: Detects null bytes and media streams (`image/*`, `video/*`, `audio/*`, `application/octet-stream`, `application/pdf`, etc.), returning `body = null` with exact byte counts to prevent raw byte corruption.
+
+---
+
+## Header Analyzer Engine (`app.services.header_analyzer`)
+
+The Header Analyzer categorizes HTTP headers and attaches neutral, informative observations:
+1. **Source Separation**: Strictly delineates request headers (`source: "request"`) from response headers (`source: "response"`).
+2. **Canonical Categorization**: Categorizes headers into 11 controlled RFC categories:
+   * `General` (`date`, `connection`, `trailer`)
+   * `Content` (`content-type`, `content-length`, `content-encoding`, etc.)
+   * `Caching` (`cache-control`, `etag`, `expires`, `if-none-match`, etc.)
+   * `Security` (`strict-transport-security`, `content-security-policy`, `x-content-type-options`, `x-frame-options`, etc.)
+   * `Authentication` (`authorization`, `www-authenticate`, `proxy-authenticate`)
+   * `CORS` (`access-control-allow-origin`, `origin`, `access-control-allow-methods`, etc.)
+   * `Cookies` (`cookie`, `set-cookie`)
+   * `Connection` (`connection`, `keep-alive`, `upgrade`, `transfer-encoding`)
+   * `Redirection` (`location`)
+   * `Server` (`server`, `via`, `x-powered-by`)
+   * `Other` (custom headers such as `x-custom-*` or unrecognized names)
+3. **Neutral Observations**: Generates technical observations (e.g. HSTS `includeSubDomains`, `no-store` caching directive, `SameSite` / `Secure` cookie attributes) without speculative security scoring.
+4. **Credential Protection**: Includes masking utilities (`mask_sensitive_value`) for Authorization bearer/basic tokens and Cookie session values. Headers are never logged to console or file logs.
 
 ---
 

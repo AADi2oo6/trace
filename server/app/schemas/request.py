@@ -40,6 +40,43 @@ class BodyType(str, Enum):
     BINARY = "binary"
 
 
+class HeaderCategory(str, Enum):
+    """Controlled categorization of HTTP headers."""
+
+    GENERAL = "General"
+    CONTENT = "Content"
+    CACHING = "Caching"
+    SECURITY = "Security"
+    AUTHENTICATION = "Authentication"
+    CORS = "CORS"
+    COOKIES = "Cookies"
+    CONNECTION = "Connection"
+    REDIRECTION = "Redirection"
+    SERVER = "Server"
+    OTHER = "Other"
+
+
+class HeaderSource(str, Enum):
+    """Origin source of the analyzed header (request vs response)."""
+
+    REQUEST = "request"
+    RESPONSE = "response"
+
+
+class HeaderAnalysisItem(BaseModel):
+    """Normalized analysis and explanation of a single HTTP header."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(description="Header name")
+    value: str = Field(description="Header value")
+    category: HeaderCategory = Field(description="Controlled classification category")
+    description: str = Field(description="Technical explanation of the header purpose")
+    source: HeaderSource = Field(description="Header source: request or response")
+    observations: list[str] | None = Field(default=None, description="Neutral contextual observations")
+
+
+
 class RequestCreate(BaseModel):
     """Validation schema for incoming TRACE request execution instructions."""
 
@@ -155,6 +192,10 @@ class RequestResponse(BaseModel):
     duration_ms: float | None = Field(
         default=None,
         description="Total round-trip request duration in milliseconds",
+    )
+    header_analysis: list[HeaderAnalysisItem] | None = Field(
+        default=None,
+        description="Detailed categorical analysis and descriptions of request and response headers",
     )
     error: ErrorDetail | None = Field(
         default=None,
