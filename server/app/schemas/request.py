@@ -20,6 +20,26 @@ class HTTPMethod(str, Enum):
     OPTIONS = "OPTIONS"
 
 
+class StatusCategory(str, Enum):
+    """Normalized category for standard HTTP status code ranges."""
+
+    INFORMATIONAL = "informational"  # 100-199
+    SUCCESS = "success"              # 200-299
+    REDIRECTION = "redirection"      # 300-399
+    CLIENT_ERROR = "client_error"    # 400-499
+    SERVER_ERROR = "server_error"    # 500-599
+
+
+class BodyType(str, Enum):
+    """Normalized body payload format classification."""
+
+    JSON = "json"
+    TEXT = "text"
+    HTML = "html"
+    EMPTY = "empty"
+    BINARY = "binary"
+
+
 class RequestCreate(BaseModel):
     """Validation schema for incoming TRACE request execution instructions."""
 
@@ -76,7 +96,7 @@ class RequestCreate(BaseModel):
 
 
 class RequestResponse(BaseModel):
-    """Standardized response schema representing request results and diagnostics."""
+    """Standardized response schema representing request results and Response Inspector diagnostics."""
 
     model_config = ConfigDict(extra="ignore")
 
@@ -87,6 +107,14 @@ class RequestResponse(BaseModel):
     status_code: int | None = Field(
         default=None,
         description="HTTP response status code returned by target server",
+    )
+    status_text: str | None = Field(
+        default=None,
+        description="Standard HTTP status phrase (e.g. OK, Created, Not Found)",
+    )
+    status_category: StatusCategory | None = Field(
+        default=None,
+        description="Normalized category of the HTTP status code (informational, success, redirection, client_error, server_error)",
     )
     message: str | None = Field(
         default=None,
@@ -108,9 +136,21 @@ class RequestResponse(BaseModel):
         default=None,
         description="Response headers returned by target server",
     )
+    content_type: str | None = Field(
+        default=None,
+        description="Content-Type header value or detected MIME type",
+    )
     body: str | None = Field(
         default=None,
-        description="Raw or formatted response body",
+        description="Formatted response body text, or null for empty/binary payloads",
+    )
+    body_type: BodyType | None = Field(
+        default=None,
+        description="Detected body format classification (json, text, html, empty, binary)",
+    )
+    body_size: int | None = Field(
+        default=None,
+        description="Exact byte size of the received response body",
     )
     duration_ms: float | None = Field(
         default=None,

@@ -91,7 +91,7 @@ Key differentiators include:
 | Feature | Description | Status |
 | :--- | :--- | :--- |
 | **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Planned |
-| **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Planned |
+| **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
 | **Header Analyzer** | Categorize and explain headers with masking for credentials | Planned |
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Planned |
 | **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Planned |
@@ -234,13 +234,16 @@ trace/
     │   ├── schemas/               # Pydantic request & response validation schemas
     │   │   └── request.py
     │   ├── services/              # Business logic & request execution services
-    │   │   └── request_service.py # Bounded HTTP request execution engine
+    │   │   ├── request_service.py # Bounded HTTP request execution engine
+    │   │   └── response_inspector.py # Response normalization, status & body inspector
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
+        ├── conftest.py            # Shared test fixtures & deterministic mock DNS
         ├── test_execution.py      # HTTP execution engine & response tests
         ├── test_health.py         # API health verification tests
+        ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
         ├── test_security.py       # SSRF and network protection tests
         └── test_validation.py     # API contract and schema validation tests
 ```
@@ -273,6 +276,7 @@ trace/
 - [x] Backend API architecture and contracts
 - [x] HTTP request execution
 - [x] Response normalization
+- [x] Response Inspector engine
 - [x] Request validation and limits
 - [x] Error handling
 
@@ -321,9 +325,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: HTTP Request Execution Engine Complete (Step 4)**
+> **Current Phase: Response Inspector Complete (Step 5)**
 >
-> The backend now executes real, bounded outbound HTTP requests via `httpx.AsyncClient` supporting `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, and `OPTIONS`. Built-in security protections enforce finite timeouts (10s), bounded redirects (max 5), response body caps (2MB), and comprehensive SSRF validation blocking private, loopback, link-local, and cloud metadata addresses. Results are normalized into structured responses with duration timing and sanitized logging. All 64 backend tests and frontend builds pass cleanly.
+> The backend now includes a dedicated Response Inspector (`app.services.response_inspector`) that normalizes HTTP responses into structured metadata for the future frontend. It classifies HTTP status ranges into RFC categories (`informational`, `success`, `redirection`, `client_error`, `server_error`), captures standard reason phrases, inspects headers, computes exact body size in bytes, measures wall-clock duration, and detects body payload formats (`json` with pretty-printing, `html`, `text`, `empty`, and `binary` without raw byte leakage). All 76 backend tests and frontend builds pass cleanly.
 
 ---
 

@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
 from app.schemas.request import RequestCreate, RequestResponse
+from app.services.response_inspector import response_inspector
 
 logger = logging.getLogger("trace.request_service")
 
@@ -162,41 +163,31 @@ class RequestService:
                 finally:
                     await response.aclose()
 
-            # 7. Safe body decoding & representation
-            content_type = response.headers.get("content-type", "").lower()
-            is_binary = b"\x00" in raw_bytes[:1024] or any(
-                btype in content_type
-                for btype in ("image/", "video/", "audio/", "application/octet-stream", "application/pdf", "application/zip", "application/gzip")
+            # 7. Normalize and inspect response via ResponseInspector
+            response_headers = {k: v for k, v in response.headers.items()}
+            inspected = response_inspector.inspect(
+                status_code=response.status_code,
+                headers=response_headers,
+                raw_bytes=raw_bytes,
             )
 
-            if is_binary:
-                body_text = f"[Binary content: {len(raw_bytes)} bytes, Content-Type: {content_type or 'unknown'}]"
-            else:
-                decoded = raw_bytes.decode("utf-8", errors="replace")
-                if "application/json" in content_type or (decoded.strip().startswith(("{", "[")) and decoded.strip().endswith(("}", "]"))):
-                    try:
-                        parsed_json = json.loads(decoded)
-                        body_text = json.dumps(parsed_json, indent=2)
-                    except Exception:
-                        body_text = decoded
-                else:
-                    body_text = decoded
-
-            # Normalize headers
-            response_headers = {k: v for k, v in response.headers.items()}
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
-
             self._log_result(request_id, method, str(response.url), duration_ms, True, str(response.status_code))
 
             return RequestResponse(
                 success=True,
-                status_code=response.status_code,
+                status_code=inspected.status_code,
+                status_text=inspected.status_text,
+                status_category=inspected.status_category,
                 message="Request executed successfully.",
                 request_id=request_id,
                 method=method,
                 url=str(response.url),
-                headers=response_headers,
-                body=body_text,
+                headers=inspected.headers,
+                content_type=inspected.content_type,
+                body=inspected.body,
+                body_type=inspected.body_type,
+                body_size=inspected.body_size,
                 duration_ms=duration_ms,
                 error=None,
             )

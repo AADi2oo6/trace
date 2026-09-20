@@ -14,20 +14,6 @@ from app.services.request_service import request_service
 
 client = TestClient(app)
 
-MOCK_PUBLIC_IP = "93.184.216.34"
-
-
-@pytest.fixture(autouse=True)
-def mock_dns_for_test_domains(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Mock socket.getaddrinfo so tests do not rely on live external DNS resolution."""
-    real_getaddrinfo = socket.getaddrinfo
-
-    def patched_getaddrinfo(host: str, port: Any, *args: Any, **kwargs: Any) -> Any:
-        if "mock-api" in host or "example.com" in host:
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (MOCK_PUBLIC_IP, port or 0))]
-        return real_getaddrinfo(host, port, *args, **kwargs)
-
-    monkeypatch.setattr(socket, "getaddrinfo", patched_getaddrinfo)
 
 
 @pytest.fixture(autouse=True)
@@ -172,8 +158,9 @@ def test_binary_body_safe_representation() -> None:
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["success"] is True
-    assert "[Binary content: 7 bytes" in data["body"]
+    assert data["body_type"] == "binary"
+    assert data["body"] is None
+    assert data["body_size"] == 7
 
 
 def test_timeout_error_handling() -> None:

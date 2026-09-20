@@ -22,13 +22,16 @@ server/
 │   ├── schemas/
 │   │   └── request.py         # RequestCreate & RequestResponse Pydantic models
 │   ├── services/
-│   │   └── request_service.py # Bounded HTTP request execution engine (httpx)
+│   │   ├── request_service.py # Bounded HTTP request execution engine (httpx)
+│   │   └── response_inspector.py # Response normalization, status & body inspector
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
 ├── tests/
+│   ├── conftest.py            # Shared test fixtures & deterministic mock DNS
 │   ├── test_execution.py      # Real HTTP request execution & response handling
 │   ├── test_health.py         # Health check tests
+│   ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
 │   ├── test_security.py       # SSRF protection and network boundary tests
 │   └── test_validation.py     # Schema constraints & method validation tests
 ├── pyproject.toml             # uv package and dependency configuration
@@ -40,10 +43,10 @@ server/
 
 ## API Contract
 
-### Request Execution
+### Request Execution & Inspection
 
 * **Endpoint**: `POST /api/requests` (alias: `POST /api/requests/execute`)
-* **Purpose**: Receive user-defined HTTP request specifications, validate structure, inspect for security hazards, and execute outbound requests.
+* **Purpose**: Receive user-defined HTTP request specifications, validate structure, inspect for security hazards, execute outbound requests, and normalize response metadata.
 
 #### Request Schema (`RequestCreate`)
 
@@ -73,19 +76,43 @@ server/
 {
   "success": true,
   "status_code": 200,
+  "status_text": "OK",
+  "status_category": "success",
   "message": "Request executed successfully.",
   "request_id": "req_a1b2c3d4e5f6",
   "method": "GET",
   "url": "https://example.com/api",
   "headers": {
-    "content-type": "application/json",
+    "content-type": "application/json; charset=utf-8",
     "server": "nginx"
   },
+  "content_type": "application/json; charset=utf-8",
   "body": "{\n  \"status\": \"ok\"\n}",
+  "body_type": "json",
+  "body_size": 18,
   "duration_ms": 142.5,
   "error": null
 }
 ```
+
+* `status_category`: Normalized RFC range (`informational`, `success`, `redirection`, `client_error`, `server_error`).
+* `status_text`: Standard HTTP reason phrase (e.g., `OK`, `Created`, `Not Found`).
+* `body_type`: Normalized body format classification (`json`, `text`, `html`, `empty`, `binary`).
+* `body_size`: Exact byte count of the received response body.
+* `body`: Safe string representation (formatted JSON or text; `null` for binary or empty payloads).
+
+---
+
+## Response Inspector Engine (`app.services.response_inspector`)
+
+The Response Inspector normalizes response data for frontend display:
+1. **Status Code & Reason**: Maps numeric status codes to standard reason phrases and RFC categories.
+2. **Body Format Classification**:
+   * **JSON**: Detects JSON content-types or structure, verifies parsing, and pretty-prints formatting. Malformed JSON with `application/json` falls back safely to plain text without crashing.
+   * **HTML**: Identifies HTML markup via MIME type or DOCTYPE tags.
+   * **Text**: Handles plain text formats cleanly.
+   * **Empty**: Gracefully identifies 0-byte or 204 No Content payloads (`body = null`, `body_size = 0`).
+   * **Binary**: Detects null bytes and media streams (`image/*`, `video/*`, `audio/*`, `application/octet-stream`, `application/pdf`, etc.), returning `body = null` with exact byte counts to prevent raw byte corruption.
 
 ---
 
