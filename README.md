@@ -96,7 +96,7 @@ Key differentiators include:
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
 | **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Backend Ready |
 | **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Backend Ready |
-| **Request Journey** | Visual representation of client-to-server network stages | Planned |
+| **Request Journey** | Visual representation of client-to-server network stages | Backend Ready |
 | **Request History** | Local persistent history of executed requests for replay | Planned |
 | **Basic Monitoring** | Automated periodic endpoint health checks and response time tracking | Planned |
 | **Demo API** | Controlled local API endpoints for demonstrating edge cases and errors | Planned |

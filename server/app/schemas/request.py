@@ -291,6 +291,72 @@ class DnsAnalysis(BaseModel):
     )
 
 
+class JourneyPhaseStatus(str, Enum):
+    """Execution status of a request journey phase."""
+
+    COMPLETED = "completed"
+    UNAVAILABLE = "unavailable"
+    FAILED = "failed"
+    NOT_APPLICABLE = "not_applicable"
+
+
+class JourneyPhaseSource(str, Enum):
+    """Source component providing lifecycle phase data."""
+
+    DNS_INSPECTOR = "dns_inspector"
+    HTTP_EXECUTION = "http_execution"
+    RESPONSE_INSPECTOR = "response_inspector"
+    DERIVED = "derived"
+
+
+class JourneyPhase(BaseModel):
+    """Representation of an individual phase in the HTTP request journey."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(
+        description="Name of the request lifecycle phase (dns, connection, tls, http, response)",
+    )
+    status: JourneyPhaseStatus = Field(
+        description="Execution status of this phase",
+    )
+    duration_ms: float | None = Field(
+        default=None,
+        description="Independently measured duration in milliseconds, or null if unavailable or not applicable",
+    )
+    source: JourneyPhaseSource | None = Field(
+        default=None,
+        description="Origin source or system component supplying the phase data",
+    )
+    observations: list[str] = Field(
+        default_factory=list,
+        description="Truthful, technical observations regarding this lifecycle phase",
+    )
+
+
+class RequestJourney(BaseModel):
+    """Structured, truthful representation of the end-to-end HTTP request journey."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    total_duration_ms: float | None = Field(
+        default=None,
+        description="Authoritative measured total HTTP round-trip execution duration in milliseconds",
+    )
+    completed: bool = Field(
+        default=False,
+        description="True if all applicable phases in the request journey completed successfully",
+    )
+    phases: list[JourneyPhase] = Field(
+        default_factory=list,
+        description="Ordered list of lifecycle phases for the request",
+    )
+    observations: list[str] = Field(
+        default_factory=list,
+        description="Neutral, non-speculative technical observations regarding the overall journey",
+    )
+
+
 class RequestResponse(BaseModel):
     """Standardized response schema representing request results and Response Inspector diagnostics."""
 
@@ -367,6 +433,10 @@ class RequestResponse(BaseModel):
     dns_analysis: DnsAnalysis | None = Field(
         default=None,
         description="Structured analysis of DNS resolution, IPv4/IPv6 addresses, and lookup duration",
+    )
+    request_journey: RequestJourney | None = Field(
+        default=None,
+        description="Structured representation of the sequential request journey across lifecycle phases",
     )
     error: ErrorDetail | None = Field(
         default=None,

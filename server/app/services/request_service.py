@@ -17,6 +17,7 @@ from app.services.cors_analyzer import cors_analyzer
 from app.services.dns_inspector import dns_inspector
 from app.services.header_analyzer import header_analyzer
 from app.services.options_inspector import options_inspector
+from app.services.request_journey import request_journey_service
 from app.services.response_inspector import response_inspector
 
 logger = logging.getLogger("trace.request_service")
@@ -95,6 +96,14 @@ class RequestService:
                         if redirect_count > settings.max_redirects:
                             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
                             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.REDIRECT_ERROR.value)
+                            journey = request_journey_service.build(
+                                url=current_url,
+                                method=method,
+                                total_duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
+                                success=False,
+                                error_message=f"Exceeded maximum allowed redirect limit of {settings.max_redirects}.",
+                            )
                             return RequestResponse(
                                 success=False,
                                 request_id=request_id,
@@ -102,6 +111,7 @@ class RequestService:
                                 url=current_url,
                                 duration_ms=duration_ms,
                                 dns_analysis=dns_analysis_result,
+                                request_journey=journey,
                                 error=ErrorDetail(
                                     code=ErrorCode.REDIRECT_ERROR,
                                     message=f"Exceeded maximum allowed redirect limit of {settings.max_redirects}.",
@@ -132,6 +142,15 @@ class RequestService:
                             await response.aclose()
                             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
                             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.RESPONSE_TOO_LARGE.value)
+                            journey = request_journey_service.build(
+                                url=str(response.url),
+                                method=method,
+                                total_duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
+                                success=False,
+                                status_code=response.status_code,
+                                error_message=f"Response Content-Length ({content_length} bytes) exceeds limit of {settings.max_response_bytes} bytes.",
+                            )
                             return RequestResponse(
                                 success=False,
                                 request_id=request_id,
@@ -139,6 +158,8 @@ class RequestService:
                                 method=method,
                                 url=str(response.url),
                                 duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
+                                request_journey=journey,
                                 error=ErrorDetail(
                                     code=ErrorCode.RESPONSE_TOO_LARGE,
                                     message=f"Response Content-Length ({content_length} bytes) exceeds limit of {settings.max_response_bytes} bytes.",
@@ -154,6 +175,15 @@ class RequestService:
                             await response.aclose()
                             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
                             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.RESPONSE_TOO_LARGE.value)
+                            journey = request_journey_service.build(
+                                url=str(response.url),
+                                method=method,
+                                total_duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
+                                success=False,
+                                status_code=response.status_code,
+                                error_message=f"Response payload exceeded maximum allowed size of {settings.max_response_bytes} bytes.",
+                            )
                             return RequestResponse(
                                 success=False,
                                 request_id=request_id,
@@ -161,6 +191,8 @@ class RequestService:
                                 method=method,
                                 url=str(response.url),
                                 duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
+                                request_journey=journey,
                                 error=ErrorDetail(
                                     code=ErrorCode.RESPONSE_TOO_LARGE,
                                     message=f"Response payload exceeded maximum allowed size of {settings.max_response_bytes} bytes.",
@@ -204,6 +236,15 @@ class RequestService:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, str(response.url), duration_ms, True, str(response.status_code))
 
+            journey = request_journey_service.build(
+                url=str(response.url),
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=True,
+                status_code=inspected.status_code,
+            )
+
             return RequestResponse(
                 success=True,
                 status_code=inspected.status_code,
@@ -223,6 +264,7 @@ class RequestService:
                 options_analysis=options_result,
                 cors_analysis=cors_analysis_data,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=None,
             )
 
@@ -234,6 +276,14 @@ class RequestService:
                     dns_analysis_result = await dns_inspector.inspect(current_url)
                 except Exception:
                     pass
+            journey = request_journey_service.build(
+                url=current_url,
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=False,
+                error_message=exc.message,
+            )
             return RequestResponse(
                 success=False,
                 request_id=request_id,
@@ -241,12 +291,21 @@ class RequestService:
                 url=current_url,
                 duration_ms=duration_ms,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=ErrorDetail(code=exc.code, message=exc.message),
             )
 
         except httpx.TimeoutException:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.REQUEST_TIMEOUT.value)
+            journey = request_journey_service.build(
+                url=current_url,
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=False,
+                error_message="The target server did not respond within the allowed time.",
+            )
             return RequestResponse(
                 success=False,
                 request_id=request_id,
@@ -254,6 +313,7 @@ class RequestService:
                 url=current_url,
                 duration_ms=duration_ms,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=ErrorDetail(
                     code=ErrorCode.REQUEST_TIMEOUT,
                     message="The target server did not respond within the allowed time.",
@@ -263,6 +323,14 @@ class RequestService:
         except (httpx.ConnectError, httpx.NetworkError) as exc:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.CONNECTION_ERROR.value)
+            journey = request_journey_service.build(
+                url=current_url,
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=False,
+                error_message=f"Failed to connect to target server: {exc.__class__.__name__}",
+            )
             return RequestResponse(
                 success=False,
                 request_id=request_id,
@@ -270,6 +338,7 @@ class RequestService:
                 url=current_url,
                 duration_ms=duration_ms,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=ErrorDetail(
                     code=ErrorCode.CONNECTION_ERROR,
                     message=f"Failed to connect to target server: {exc.__class__.__name__}",
@@ -279,6 +348,14 @@ class RequestService:
         except httpx.UnsupportedProtocol as exc:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, current_url, duration_ms, False, ErrorCode.INVALID_URL.value)
+            journey = request_journey_service.build(
+                url=current_url,
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=False,
+                error_message="Unsupported or invalid URL protocol.",
+            )
             return RequestResponse(
                 success=False,
                 request_id=request_id,
@@ -286,6 +363,7 @@ class RequestService:
                 url=current_url,
                 duration_ms=duration_ms,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=ErrorDetail(
                     code=ErrorCode.INVALID_URL,
                     message="Unsupported or invalid URL protocol.",
@@ -295,6 +373,14 @@ class RequestService:
         except Exception as exc:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, current_url, duration_ms, False, "UNEXPECTED_ERROR")
+            journey = request_journey_service.build(
+                url=current_url,
+                method=method,
+                total_duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
+                success=False,
+                error_message=f"An unexpected error occurred during request execution: {exc.__class__.__name__}",
+            )
             return RequestResponse(
                 success=False,
                 request_id=request_id,
@@ -302,6 +388,7 @@ class RequestService:
                 url=current_url,
                 duration_ms=duration_ms,
                 dns_analysis=dns_analysis_result,
+                request_journey=journey,
                 error=ErrorDetail(
                     code=ErrorCode.CONNECTION_ERROR,
                     message=f"An unexpected error occurred during request execution: {exc.__class__.__name__}",

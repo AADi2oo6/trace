@@ -27,7 +27,8 @@ server/
 │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
 │   │   ├── options_inspector.py # Server capability & advertised policy interpreter
 │   │   ├── cors_analyzer.py   # Cross-origin policy & header matching analyzer
-│   │   └── dns_inspector.py   # Asynchronous DNS resolution & address inspector
+│   │   ├── dns_inspector.py   # Asynchronous DNS resolution & address inspector
+│   │   └── request_journey.py # Structured request lifecycle & truthful phase synthesizer
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
@@ -39,6 +40,7 @@ server/
 │   ├── test_header_analyzer.py # Technical header categorization & masking tests
 │   ├── test_health.py         # Health check tests
 │   ├── test_options_inspector.py # OPTIONS capabilities and CORS header extraction tests
+│   ├── test_request_journey.py # Request journey lifecycle, phase ordering & technical honesty tests
 │   ├── test_response_inspector.py # Response Inspector status, body type & edge case tests
 │   ├── test_security.py       # SSRF protection and network boundary tests
 │   └── test_validation.py     # Schema constraints & method validation tests
@@ -173,6 +175,51 @@ server/
       "Resolved 1 IPv6 address(es): 2606:2800:220:1:248:1893:25c8:1946."
     ]
   },
+  "request_journey": {
+    "total_duration_ms": 142.5,
+    "completed": true,
+    "phases": [
+      {
+        "name": "dns",
+        "status": "completed",
+        "duration_ms": 12.4,
+        "source": "dns_inspector",
+        "observations": ["Resolved hostname 'myapp.dev' via DNS in 12.40 ms."]
+      },
+      {
+        "name": "connection",
+        "status": "unavailable",
+        "duration_ms": null,
+        "source": "derived",
+        "observations": ["TCP connection timing is not independently measured by the current HTTP transport."]
+      },
+      {
+        "name": "tls",
+        "status": "unavailable",
+        "duration_ms": null,
+        "source": "derived",
+        "observations": ["TLS handshake timing is not independently measured by the current HTTP transport."]
+      },
+      {
+        "name": "http",
+        "status": "completed",
+        "duration_ms": 142.5,
+        "source": "http_execution",
+        "observations": ["HTTP GET exchange completed in 142.50 ms."]
+      },
+      {
+        "name": "response",
+        "status": "completed",
+        "duration_ms": null,
+        "source": "response_inspector",
+        "observations": ["Received HTTP 200 response."]
+      }
+    ],
+    "observations": [
+      "Request journey completed successfully in 142.50 ms.",
+      "TCP connection and TLS handshake timings are omitted in accordance with technical honesty principles."
+    ]
+  },
   "error": null
 }
 ```
@@ -186,6 +233,7 @@ server/
 * `options_analysis`: Structured interpretation of server capabilities and CORS policies (populated only for `OPTIONS` requests).
 * `cors_analysis`: Technical evaluation of CORS configurations and origin/method/header matches (populated when CORS headers exist).
 * `dns_analysis`: Structured DNS resolution details (hostname, resolved IPv4/IPv6 addresses, lookup duration in ms).
+* `request_journey`: Truthful representation of the end-to-end request lifecycle with independent phase measurements.
 
 ---
 
@@ -280,6 +328,23 @@ The DNS Inspector provides dedicated programmatic DNS resolution and record insp
    * Gracefully captures `NXDOMAIN`, `NoAnswer`, query timeouts, and DNS exceptions into structured diagnostic errors and neutral observations without throwing unhandled exceptions or causing HTTP 500 errors.
 5. **SSRF Guardrails Intact**:
    * Works alongside `app.core.security` SSRF protections without bypassing private, loopback, link-local, carrier-grade NAT, or cloud metadata IP blocking.
+
+---
+
+## Request Journey Engine (`app.services.request_journey`)
+
+The Request Journey synthesizes the logical lifecycle of an HTTP request across 5 sequential phases, adhering strictly to **technical honesty**:
+1. **Phased Lifecycle Structure**:
+   * `dns`: Populated truthfully from DNS Inspector (`status: completed` or `failed`, `duration_ms` from DNS lookup).
+   * `connection`: TCP connection timing is not independently measured by the HTTP transport, so it is marked `status: unavailable` and `duration_ms: null`.
+   * `tls`: For HTTPS requests, marked `status: unavailable` and `duration_ms: null`. For plain HTTP requests, marked `status: not_applicable`.
+   * `http`: Sourced from HTTP execution engine (`status: completed` or `failed`, `duration_ms` equal to measured request duration).
+   * `response`: Sourced from Response Inspector with HTTP status code details (`status: completed`, `duration_ms: null`).
+2. **Zero Fabricated Timings**:
+   * Timings are never estimated, faked, or derived by arbitrary subtraction.
+   * DNS duration is **never** added into the HTTP `total_duration_ms`.
+3. **Graceful Failure Halting**:
+   * When DNS fails, downstream connection, TLS, and HTTP phases are halted with neutral diagnostics explaining the resolution failure.
 
 ---
 
