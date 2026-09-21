@@ -1,37 +1,28 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Activity } from 'lucide-react'
+import { PageContainer } from '../components/layout/PageContainer'
+import { EmptyState } from '../components/feedback/EmptyState'
 
 export const Monitor: React.FC = () => {
-  return (
-    <div className="flex-1 flex flex-col p-6 gap-4">
-      <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-4">
-        <div className="flex items-center gap-3">
-          <Activity className="w-5 h-5 text-[#FF6A00]" />
-          <div>
-            <h1 className="text-sm font-semibold tracking-wider uppercase text-[#FFFFFF]">
-              Monitor
-            </h1>
-            <p className="text-xs text-[#6B6B6B] font-mono">
-              Endpoint Health & Network Telemetry
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-none bg-[#FF6A00]" />
-          <span className="text-xs font-mono text-[#6B6B6B] uppercase">
-            Route: /monitor
-          </span>
-        </div>
-      </div>
+  const navigate = useNavigate()
 
-      <div className="border border-[#2A2A2A] bg-[#0A0A0A] p-6 text-center">
-        <p className="text-xs font-mono text-[#6B6B6B] uppercase tracking-wider mb-2">
-          Monitor Environment Ready
-        </p>
-        <p className="text-sm text-[#E8E8E8]">
-          Monitoring metrics and timeline charts will be initialized in subsequent phases.
-        </p>
-      </div>
-    </div>
+  return (
+    <PageContainer
+      title="Monitor"
+      description="Track endpoint health and response time over time."
+      icon={<Activity className="w-4.5 h-4.5" />}
+    >
+      <EmptyState
+        icon={<Activity className="w-8 h-8" />}
+        title="No monitoring targets"
+        description="Add an endpoint to monitor its uptime and response time on a recurring schedule."
+        action={{
+          label: 'Go to Dashboard',
+          onClick: () => navigate('/'),
+        }}
+        className="mt-8"
+      />
+    </PageContainer>
   )
 }

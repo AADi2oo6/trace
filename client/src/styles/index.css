@@ -1,27 +1,134 @@
 @import "tailwindcss";
 
 @theme {
+  /* ── Core Palette ─────────────────────────────────────────────── */
   --color-trace-black: #000000;
   --color-trace-near-black: #0A0A0A;
+  --color-trace-panel: #111111;
+  --color-trace-panel-hover: #161616;
   --color-trace-white: #FFFFFF;
   --color-trace-off-white: #F5F5F5;
   --color-trace-gray: #6B6B6B;
   --color-trace-light-gray: #E8E8E8;
+  --color-trace-muted: #3A3A3A;
+  --color-trace-border: #222222;
+  --color-trace-border-strong: #333333;
+
+  /* ── Orange Accent ────────────────────────────────────────────── */
   --color-trace-orange: #FF6A00;
   --color-trace-dark-orange: #D94F00;
+  --color-trace-orange-dim: #FF6A0020;
+  --color-trace-orange-subtle: #FF6A000D;
 
+  /* ── Semantic Status ──────────────────────────────────────────── */
+  --color-trace-success: #22C55E;
+  --color-trace-warning: #F59E0B;
+  --color-trace-error: #EF4444;
+  --color-trace-info: #3B82F6;
+
+  /* ── Typography ───────────────────────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/* ── Base ─────────────────────────────────────────────────────────── */
 :root {
   color-scheme: dark;
 }
 
 body {
-  background-color: #0A0A0A;
+  background-color: #000000;
   color: #F5F5F5;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection ────────────────────────────────────────────────────── */
+::selection {
+  background-color: #FF6A00;
+  color: #000000;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+
+/* ── Focus Ring ───────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 1px solid #FF6A00;
+  outline-offset: 2px;
+}
+
+/* ── Animations ───────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes trace-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes trace-travel {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+
+@keyframes trace-dot-travel {
+  0% { offset-distance: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Utility Classes ──────────────────────────────────────────────── */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1A1A1A 0px,
+    #242424 40px,
+    #1A1A1A 80px
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.2s ease-out both;
+}
+
+.trace-font-mono {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
