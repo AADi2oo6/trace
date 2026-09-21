@@ -12,8 +12,9 @@ import httpx
 from app.core.config import settings
 from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
-from app.schemas.request import RequestCreate, RequestResponse
+from app.schemas.request import DnsAnalysis, RequestCreate, RequestResponse
 from app.services.cors_analyzer import cors_analyzer
+from app.services.dns_inspector import dns_inspector
 from app.services.header_analyzer import header_analyzer
 from app.services.options_inspector import options_inspector
 from app.services.response_inspector import response_inspector
@@ -59,6 +60,7 @@ class RequestService:
                 content = str(body).encode("utf-8")
 
         redirect_count = 0
+        dns_analysis_result: DnsAnalysis | None = None
 
         try:
             # Enforce finite timeout and security boundary
@@ -70,7 +72,10 @@ class RequestService:
                     # 1. SSRF Validation for current target (including redirect hops)
                     validate_url_for_ssrf(current_url)
 
-                    # 2. Build request
+                    # 2. Perform DNS Inspection for current target
+                    dns_analysis_result = await dns_inspector.inspect(current_url)
+
+                    # 3. Build request
                     req = client.build_request(
                         method=method,
                         url=current_url,
@@ -80,10 +85,10 @@ class RequestService:
                         content=content if redirect_count == 0 else None,
                     )
 
-                    # 3. Send streaming request to bound memory
+                    # 4. Send streaming request to bound memory
                     response = await client.send(req, stream=True)
 
-                    # 4. Handle bounded redirects manually to protect against SSRF redirect bypass
+                    # 5. Handle bounded redirects manually to protect against SSRF redirect bypass
                     if response.is_redirect:
                         await response.aclose()
                         redirect_count += 1
@@ -96,6 +101,7 @@ class RequestService:
                                 method=method,
                                 url=current_url,
                                 duration_ms=duration_ms,
+                                dns_analysis=dns_analysis_result,
                                 error=ErrorDetail(
                                     code=ErrorCode.REDIRECT_ERROR,
                                     message=f"Exceeded maximum allowed redirect limit of {settings.max_redirects}.",
@@ -216,18 +222,25 @@ class RequestService:
                 header_analysis=analyzed_headers,
                 options_analysis=options_result,
                 cors_analysis=cors_analysis_data,
+                dns_analysis=dns_analysis_result,
                 error=None,
             )
 
         except SecurityValidationError as exc:
             duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             self._log_result(request_id, method, current_url, duration_ms, False, exc.code.value)
+            if exc.code == ErrorCode.DNS_ERROR and dns_analysis_result is None:
+                try:
+                    dns_analysis_result = await dns_inspector.inspect(current_url)
+                except Exception:
+                    pass
             return RequestResponse(
                 success=False,
                 request_id=request_id,
                 method=method,
                 url=current_url,
                 duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
                 error=ErrorDetail(code=exc.code, message=exc.message),
             )
 
@@ -240,6 +253,7 @@ class RequestService:
                 method=method,
                 url=current_url,
                 duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
                 error=ErrorDetail(
                     code=ErrorCode.REQUEST_TIMEOUT,
                     message="The target server did not respond within the allowed time.",
@@ -255,6 +269,7 @@ class RequestService:
                 method=method,
                 url=current_url,
                 duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
                 error=ErrorDetail(
                     code=ErrorCode.CONNECTION_ERROR,
                     message=f"Failed to connect to target server: {exc.__class__.__name__}",
@@ -270,6 +285,7 @@ class RequestService:
                 method=method,
                 url=current_url,
                 duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
                 error=ErrorDetail(
                     code=ErrorCode.INVALID_URL,
                     message="Unsupported or invalid URL protocol.",
@@ -285,6 +301,7 @@ class RequestService:
                 method=method,
                 url=current_url,
                 duration_ms=duration_ms,
+                dns_analysis=dns_analysis_result,
                 error=ErrorDetail(
                     code=ErrorCode.CONNECTION_ERROR,
                     message=f"An unexpected error occurred during request execution: {exc.__class__.__name__}",

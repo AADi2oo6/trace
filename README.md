@@ -95,7 +95,7 @@ Key differentiators include:
 | **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
 | **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Backend Ready |
-| **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Planned |
+| **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Backend Ready |
 | **Request Journey** | Visual representation of client-to-server network stages | Planned |
 | **Request History** | Local persistent history of executed requests for replay | Planned |
 | **Basic Monitoring** | Automated periodic endpoint health checks and response time tracking | Planned |
@@ -238,13 +238,15 @@ trace/
     │   │   ├── response_inspector.py # Response normalization, status & body inspector
     │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
     │   │   ├── options_inspector.py # Server capability & advertised policy interpreter
-    │   │   └── cors_analyzer.py   # Cross-origin policy & header matching analyzer
+    │   │   ├── cors_analyzer.py   # Cross-origin policy & header matching analyzer
+    │   │   └── dns_inspector.py   # Asynchronous DNS resolution & address inspector
     │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers
     │   └── utils/                 # General backend utilities
     └── tests/
         ├── __init__.py
         ├── conftest.py            # Shared test fixtures & deterministic mock DNS
         ├── test_cors_analyzer.py  # CORS rules, origin, method & header matching tests
+        ├── test_dns_inspector.py  # DNS resolution, IPv4/IPv6 & timing tests
         ├── test_execution.py      # HTTP execution engine & response tests
         ├── test_header_analyzer.py # Technical header categorization & masking tests
         ├── test_health.py         # API health verification tests
@@ -290,7 +292,7 @@ trace/
 - [x] Header Analyzer
 - [x] OPTIONS Inspector
 - [x] CORS Analyzer
-- [ ] DNS Inspector
+- [x] DNS Inspector
 - [ ] Request Timing
 - [ ] Request Journey
 
@@ -331,9 +333,9 @@ trace/
 
 ## Current Status
 
-> **Current Phase: CORS Analyzer Complete (Step 8)**
+> **Current Phase: DNS Inspector Complete (Step 9)**
 >
-> The backend now includes a dedicated CORS Analyzer (`app.services.cors_analyzer`) that interprets cross-origin configurations across request and response headers. It evaluates origin permissions (exact matching, missing headers, wildcard `*`), methods permissions (`Access-Control-Allow-Methods` independent of `Allow`), requested headers (`Access-Control-Request-Headers` vs `Access-Control-Allow-Headers`), credential allowances, preflight caching `Max-Age`, and exposed headers. It compiles factual technical observations (including wildcard credentials specifications) without attempting browser-side execution blocking. All 125 backend tests and frontend builds pass cleanly.
+> The backend now includes a dedicated DNS Inspector (`app.services.dns_inspector`) that performs programmatic asynchronous DNS resolution for target hostnames using `dnspython`. It extracts clean hostnames from request URLs, fast-paths IP literals without issuing unnecessary network queries, categorizes resolved addresses into deduplicated IPv4 (`A`) and IPv6 (`AAAA`) records, measures DNS lookup duration in milliseconds (`resolution_time_ms`), and handles resolution failures (`NXDOMAIN`, timeouts, empty records) safely with structured diagnostics without throwing 500 errors. All existing SSRF protections remain fully intact. All 143 backend tests and frontend builds pass cleanly.
 
 ---
 

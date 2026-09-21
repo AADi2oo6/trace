@@ -26,13 +26,15 @@ server/
 │   │   ├── response_inspector.py # Response normalization, status & body inspector
 │   │   ├── header_analyzer.py # Technical header categorization & neutral observations
 │   │   ├── options_inspector.py # Server capability & advertised policy interpreter
-│   │   └── cors_analyzer.py   # Cross-origin policy & header matching analyzer
+│   │   ├── cors_analyzer.py   # Cross-origin policy & header matching analyzer
+│   │   └── dns_inspector.py   # Asynchronous DNS resolution & address inspector
 │   ├── models/                # SQLAlchemy database models (future)
 │   ├── analyzers/             # Header, CORS, OPTIONS, and DNS analyzers (future)
 │   └── utils/                 # General utility helpers
 ├── tests/
 │   ├── conftest.py            # Shared test fixtures & deterministic mock DNS
 │   ├── test_cors_analyzer.py  # CORS rules, origin, method & header matching tests
+│   ├── test_dns_inspector.py  # DNS resolution, IPv4/IPv6 & timing tests
 │   ├── test_execution.py      # Real HTTP request execution & response handling
 │   ├── test_header_analyzer.py # Technical header categorization & masking tests
 │   ├── test_health.py         # Health check tests
@@ -158,6 +160,19 @@ server/
       "Credentials are enabled (Access-Control-Allow-Credentials: true)."
     ]
   },
+  "dns_analysis": {
+    "hostname": "myapp.dev",
+    "resolved": true,
+    "ipv4_addresses": ["93.184.216.34"],
+    "ipv6_addresses": ["2606:2800:220:1:248:1893:25c8:1946"],
+    "resolution_time_ms": 12.4,
+    "error": null,
+    "observations": [
+      "Hostname resolved successfully.",
+      "Resolved 1 IPv4 address(es): 93.184.216.34.",
+      "Resolved 1 IPv6 address(es): 2606:2800:220:1:248:1893:25c8:1946."
+    ]
+  },
   "error": null
 }
 ```
@@ -170,6 +185,7 @@ server/
 * `header_analysis`: List of categorized headers with source attribution and technical observations.
 * `options_analysis`: Structured interpretation of server capabilities and CORS policies (populated only for `OPTIONS` requests).
 * `cors_analysis`: Technical evaluation of CORS configurations and origin/method/header matches (populated when CORS headers exist).
+* `dns_analysis`: Structured DNS resolution details (hostname, resolved IPv4/IPv6 addresses, lookup duration in ms).
 
 ---
 
@@ -245,6 +261,25 @@ The CORS Analyzer evaluates cross-origin resource sharing configurations across 
    * Normalizes script-exposed headers from `Access-Control-Expose-Headers`.
 5. **Technical Observations**:
    * Emits factual, non-speculative explanations of the configuration without exaggerated vulnerability warnings.
+
+---
+
+## DNS Inspector Engine (`app.services.dns_inspector`)
+
+The DNS Inspector provides dedicated programmatic DNS resolution and record inspection for target hostnames using `dnspython`:
+1. **Asynchronous Resolution**:
+   * Resolves IPv4 (`A`) and IPv6 (`AAAA`) records asynchronously using `dns.asyncresolver.Resolver`.
+   * Fast-paths IP address literals (IPv4 and IPv6) to skip redundant network lookups.
+   * Deduplicates resolved addresses while preserving deterministic order.
+2. **Hostname Extraction**:
+   * Extracts clean hostnames directly from requested target URLs, cleanly stripping schemes, ports, query parameters, and path segments.
+3. **DNS Lookup Timing**:
+   * Measures the isolated wall-clock duration of the DNS resolution in milliseconds (`resolution_time_ms`).
+   * Distinct from total request duration, TCP connection time, or TLS handshake latency (deferred to Request Journey).
+4. **Safe Failure Handling**:
+   * Gracefully captures `NXDOMAIN`, `NoAnswer`, query timeouts, and DNS exceptions into structured diagnostic errors and neutral observations without throwing unhandled exceptions or causing HTTP 500 errors.
+5. **SSRF Guardrails Intact**:
+   * Works alongside `app.core.security` SSRF protections without bypassing private, loopback, link-local, carrier-grade NAT, or cloud metadata IP blocking.
 
 ---
 

@@ -257,6 +257,40 @@ class CorsAnalysis(BaseModel):
     )
 
 
+class DnsAnalysis(BaseModel):
+    """Structured DNS resolution analysis for the target hostname."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    hostname: str = Field(
+        description="Target hostname resolved via DNS",
+    )
+    resolved: bool = Field(
+        default=False,
+        description="True if DNS resolution succeeded and produced at least one address",
+    )
+    ipv4_addresses: list[str] = Field(
+        default_factory=list,
+        description="Deduplicated list of resolved IPv4 addresses (A records)",
+    )
+    ipv6_addresses: list[str] = Field(
+        default_factory=list,
+        description="Deduplicated list of resolved IPv6 addresses (AAAA records)",
+    )
+    resolution_time_ms: float | None = Field(
+        default=None,
+        description="Measured DNS resolution duration in milliseconds",
+    )
+    error: str | None = Field(
+        default=None,
+        description="Safe error diagnostic message if DNS resolution failed",
+    )
+    observations: list[str] = Field(
+        default_factory=list,
+        description="Neutral, non-speculative technical observations regarding DNS resolution",
+    )
+
+
 class RequestResponse(BaseModel):
     """Standardized response schema representing request results and Response Inspector diagnostics."""
 
@@ -329,6 +363,10 @@ class RequestResponse(BaseModel):
     cors_analysis: CorsAnalysis | None = Field(
         default=None,
         description="Structured analysis of CORS configuration and origin/method/header matching",
+    )
+    dns_analysis: DnsAnalysis | None = Field(
+        default=None,
+        description="Structured analysis of DNS resolution, IPv4/IPv6 addresses, and lookup duration",
     )
     error: ErrorDetail | None = Field(
         default=None,
