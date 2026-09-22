@@ -21,27 +21,31 @@ const phaseLabels: Record<string, string> = {
 
 const statusConfig: Record<
   JourneyPhaseStatus,
-  { dot: string; text: string; label: string }
+  { dot: string; text: string; label: string; icon: string }
 > = {
   completed: {
     dot: 'bg-[#22C55E] shadow-[0_0_6px_#22C55E60]',
     text: 'text-[#22C55E]',
-    label: 'completed',
+    label: 'COMPLETED',
+    icon: '✓',
   },
   failed: {
     dot: 'bg-[#EF4444] shadow-[0_0_6px_#EF444460]',
     text: 'text-[#EF4444]',
-    label: 'failed',
+    label: 'FAILED',
+    icon: '✗',
   },
   unavailable: {
     dot: 'bg-[#3A3A3A]',
     text: 'text-[#3A3A3A]',
-    label: 'unavailable',
+    label: 'UNAVAILABLE',
+    icon: '—',
   },
   not_applicable: {
     dot: 'bg-[#2A2A2A]',
     text: 'text-[#2A2A2A]',
-    label: 'N/A',
+    label: 'NOT APPLICABLE',
+    icon: '—',
   },
 }
 
@@ -106,28 +110,34 @@ export const JourneyPreview: React.FC<JourneyPreviewProps> = ({ journey }) => {
 
               {/* Phase content */}
               <div className={['flex-1 pb-5', isLast ? 'pb-0' : ''].join(' ')}>
-                <div className="flex items-baseline gap-3">
+                <div className="flex items-baseline gap-3 flex-wrap">
                   <span className="text-xs font-mono text-[#B0B0B0]">{label}</span>
 
-                  {/* Duration */}
-                  {phase.duration_ms !== null && phase.status === 'completed' && (
+                  {/* Duration for completed */}
+                  {phase.status === 'completed' && phase.duration_ms !== null && (
                     <span className="text-xs font-mono font-semibold text-[#E8E8E8]">
                       {formatMs(phase.duration_ms)}
                     </span>
                   )}
 
-                  {/* Status badge for non-completed */}
-                  {phase.status !== 'completed' && (
-                    <span className={['text-[10px] font-mono', cfg.text].join(' ')}>
-                      {cfg.label}
-                    </span>
-                  )}
+                  {/* Status label with icon — always shown */}
+                  <span
+                    className={[
+                      'text-[10px] font-mono tracking-wider',
+                      cfg.text,
+                    ].join(' ')}
+                  >
+                    {cfg.icon} {cfg.label}
+                  </span>
                 </div>
 
-                {/* Observations */}
+                {/* All observations */}
                 {phase.observations.length > 0 && (
-                  <ul className="mt-1 space-y-0.5" aria-label={`${label} observations`}>
-                    {phase.observations.slice(0, 2).map((obs, i) => (
+                  <ul
+                    className="mt-1 space-y-0.5"
+                    aria-label={`${label} observations`}
+                  >
+                    {phase.observations.map((obs, i) => (
                       <li
                         key={i}
                         className="text-[10px] font-mono text-[#3A3A3A] leading-relaxed"
@@ -153,6 +163,56 @@ export const JourneyPreview: React.FC<JourneyPreviewProps> = ({ journey }) => {
           ))}
         </div>
       )}
+
+      {/* Phase summary table */}
+      <div className="mt-5 pt-4 border-t border-[#1A1A1A]">
+        <p className="text-[9px] font-mono tracking-widest text-[#2A2A2A] uppercase mb-3">
+          Phase summary
+        </p>
+        <table className="w-full text-[10px] font-mono" aria-label="Journey phase summary">
+          <thead>
+            <tr className="border-b border-[#1A1A1A]">
+              <th
+                scope="col"
+                className="text-left py-1.5 text-[9px] tracking-widest text-[#2A2A2A] uppercase font-normal"
+              >
+                Phase
+              </th>
+              <th
+                scope="col"
+                className="text-left py-1.5 text-[9px] tracking-widest text-[#2A2A2A] uppercase font-normal"
+              >
+                Status
+              </th>
+              <th
+                scope="col"
+                className="text-right py-1.5 text-[9px] tracking-widest text-[#2A2A2A] uppercase font-normal"
+              >
+                Duration
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#111111]">
+            {journey.phases.map((phase) => {
+              const cfg = statusConfig[phase.status]
+              const label = phaseLabels[phase.name] ?? phase.name
+              return (
+                <tr key={phase.name} className="hover:bg-[#0D0D0D] transition-colors duration-75">
+                  <td className="py-1.5 text-[#6B6B6B]">{label}</td>
+                  <td className={['py-1.5', cfg.text].join(' ')}>
+                    {cfg.icon} {cfg.label}
+                  </td>
+                  <td className="py-1.5 text-right text-[#555555]">
+                    {phase.status === 'completed' && phase.duration_ms !== null
+                      ? formatMs(phase.duration_ms)
+                      : '—'}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

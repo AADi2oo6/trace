@@ -7,6 +7,7 @@ interface ResponseSummaryProps {
   statusCategory: StatusCategory | null
   durationMs: number | null
   bodySizeBytes: number | null
+  contentType?: string | null
 }
 
 function formatBytes(bytes: number | null): string {
@@ -21,6 +22,11 @@ function formatMs(ms: number | null): string {
   if (ms === null) return '—'
   if (ms < 1000) return `${Math.round(ms)} ms`
   return `${(ms / 1000).toFixed(2)} s`
+}
+
+/** Strip parameters like `;charset=utf-8` from a MIME type string */
+function stripMimeParams(contentType: string): string {
+  return contentType.split(';')[0].trim()
 }
 
 const categoryColors: Record<StatusCategory, { bg: string; text: string; border: string }> = {
@@ -57,10 +63,13 @@ export const ResponseSummary: React.FC<ResponseSummaryProps> = ({
   statusCategory,
   durationMs,
   bodySizeBytes,
+  contentType,
 }) => {
   const colors = statusCategory
     ? categoryColors[statusCategory]
     : { bg: 'bg-[#1A1A1A]', text: 'text-[#6B6B6B]', border: 'border-[#2A2A2A]' }
+
+  const mimeType = contentType ? stripMimeParams(contentType) : null
 
   return (
     <div className="flex flex-wrap items-center gap-3 py-3">
@@ -101,6 +110,18 @@ export const ResponseSummary: React.FC<ResponseSummaryProps> = ({
           {formatBytes(bodySizeBytes)}
         </span>
       </div>
+
+      {/* Content-Type */}
+      {mimeType && (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1E1E1E] bg-[#0D0D0D]">
+          <span className="text-[10px] font-mono text-[#3A3A3A] uppercase tracking-wider">
+            Type
+          </span>
+          <span className="text-sm font-mono font-semibold text-[#E8E8E8]">
+            {mimeType}
+          </span>
+        </div>
+      )}
     </div>
   )
 }

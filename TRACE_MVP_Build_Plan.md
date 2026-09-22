@@ -17,6 +17,30 @@ The MVP must be a real working full-stack application, not a visual mockup.
 
 ---
 
+### Implementation Progress
+
+| Step | Scope | Status | Notes |
+|:---|:---|:---|:---|
+| **Step 1–10** | Backend Engine (HTTP, SSRF, Response, Headers, OPTIONS, CORS, DNS, Journey) | ✅ Complete | 159 tests passing |
+| **Step 11** | Frontend App Shell & Design System | ✅ Complete | Dashboard, navigation, layout |
+| **Step 12** | API Tester UI | ✅ Complete | Request bar, params, headers, body, API client |
+| **Step 13** | Full Response Inspector UI | ✅ Complete | Body search, headers copy/search, full analysis, journey preview |
+
+#### STEP 13 — Full Response Inspector UI: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
+- **Delivered Capabilities:**
+  - Status summary with HTTP code, text, category, duration, payload size, and MIME content-type.
+  - Body Inspector with formatted JSON / plain text / HTML (escaped source only), copy-to-clipboard with 2s feedback, client-side search with match navigation (prev/next/clear) and highlighted occurrences, horizontal scrolling for long lines, and safe binary/empty body treatments.
+  - Headers Inspector with always-visible search/filtering, Copy All headers, per-row copy on hover with feedback, sticky table headers, and responsive horizontal scrolling.
+  - Full Response Analysis view with dedicated panels for DNS Resolution (status, timing, IPv4/IPv6, observations), CORS Analysis (request/allowed origin, method, credentials, max-age, wildcard, observations), OPTIONS Inspector (Allow header, allowed methods, CORS rules), and Header Analysis (grouped by category with descriptions). Truthful representation of UNAVAILABLE and NOT APPLICABLE.
+  - Request Journey view with uppercase status indicators (COMPLETED ✓, FAILED ✗, UNAVAILABLE —, NOT APPLICABLE —), un-truncated observations, and a comprehensive phase summary table.
+  - Proper distinction between network failures (null status_code, showing error panel) and HTTP error responses (4xx/5xx status codes, showing compact notice alongside full Body/Headers/Analysis/Journey inspection).
+- **Known Limitations:**
+  - In-body search is un-virtualized; optimal for typical API payload sizes, may show slower highlighting on extremely large responses (>500KB).
+  - Active match element scroll utilizes a conditional ref that may re-invoke during React concurrent transitions (benign extra scrollIntoView).
+
+---
+
 # 2. Technology Stack — LOCKED
 
 Do not replace these technologies without explicit approval.
