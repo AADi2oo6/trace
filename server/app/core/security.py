@@ -41,6 +41,7 @@ class DNSLookupError(SecurityValidationError):
 # Specific networks to block in addition to standard ipaddress properties
 CARRIER_GRADE_NAT = ipaddress.ip_network("100.64.0.0/10")
 CLOUD_METADATA_IP = ipaddress.ip_address("169.254.169.254")
+NAT64_PREFIX = ipaddress.ip_network("64:ff9b::/96")
 
 BLOCKED_HOSTNAME_SUFFIXES = (
     "localhost",
@@ -58,6 +59,9 @@ def is_ip_blocked(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     # Handle IPv4-mapped IPv6 addresses (e.g. ::ffff:127.0.0.1)
     if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
         ip = ip.ipv4_mapped
+    # Handle RFC 6052 NAT64 well-known prefix addresses (e.g. 64:ff9b::9f59:8c7a)
+    elif isinstance(ip, ipaddress.IPv6Address) and ip in NAT64_PREFIX:
+        ip = ipaddress.IPv4Address(ip.packed[-4:])
 
     if (
         ip.is_loopback

@@ -34,6 +34,8 @@ client = TestClient(app)
         "http://[fc00::1]",  # IPv6 Unique Local
         "http://[fe80::1]",  # IPv6 Link-Local
         "http://[::ffff:127.0.0.1]",  # IPv4-mapped IPv6 loopback
+        "http://[64:ff9b::7f00:1]",  # NAT64 embedded loopback
+        "http://[64:ff9b::a9fe:a9fe]",  # NAT64 embedded cloud metadata
         "http://service.internal",
         "http://cluster.local",
     ],
@@ -88,3 +90,11 @@ def test_public_ip_allowed_by_ssrf_validator() -> None:
     public_url = "https://93.184.216.34/resource"  # example.com public IP
     validated = validate_url_for_ssrf(public_url)
     assert validated == public_url
+
+
+def test_public_nat64_ip_allowed_by_ssrf_validator() -> None:
+    """Verify that public RFC 6052 NAT64 IP addresses pass SSRF validation."""
+    # 93.184.216.34 embedded in 64:ff9b:: -> 64:ff9b::5db8:d822
+    public_nat64_url = "https://[64:ff9b::5db8:d822]/resource"
+    validated = validate_url_for_ssrf(public_nat64_url)
+    assert validated == public_nat64_url

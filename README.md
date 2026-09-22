@@ -90,7 +90,7 @@ Key differentiators include:
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Planned |
+| **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Step 12 Complete |
 | **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
 | **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
 | **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
@@ -372,6 +372,10 @@ The frontend application will become available at:
 ```text
 http://localhost:5173/
 ```
+
+> **Browser development:**
+> The Vite frontend communicates with the local FastAPI backend through
+> explicit localhost CORS configuration.
 
 To run a production TypeScript check and build:
 

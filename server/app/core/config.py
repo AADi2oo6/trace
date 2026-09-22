@@ -10,6 +10,12 @@ class Settings:
     debug: bool = True
     api_prefix: str = "/api"
 
+    # Browser Development CORS Origins
+    cors_allowed_origins: tuple[str, ...] = (
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    )
+
     # Request Execution Engine Limits
     request_timeout_seconds: float = 10.0
     max_redirects: int = 5

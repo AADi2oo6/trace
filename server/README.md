@@ -35,6 +35,7 @@ server/
 ├── tests/
 │   ├── conftest.py            # Shared test fixtures & deterministic mock DNS
 │   ├── test_cors_analyzer.py  # CORS rules, origin, method & header matching tests
+│   ├── test_cors_middleware.py # Browser-to-backend CORS preflight & origin permission tests
 │   ├── test_dns_inspector.py  # DNS resolution, IPv4/IPv6 & timing tests
 │   ├── test_execution.py      # Real HTTP request execution & response handling
 │   ├── test_header_analyzer.py # Technical header categorization & masking tests
@@ -382,6 +383,11 @@ uv run uvicorn app.main:app --reload --port 8000
 * Health check: `http://127.0.0.1:8000/health`
 * Swagger UI: `http://127.0.0.1:8000/docs`
 * OpenAPI JSON: `http://127.0.0.1:8000/openapi.json`
+
+### Browser Development
+
+The Vite frontend communicates with the local FastAPI backend through explicit localhost CORS configuration.
+FastAPI's `CORSMiddleware` is configured to allow `http://localhost:5173` and `http://127.0.0.1:5173` with standard preflight support, keeping browser-to-backend communication distinct from outbound target-API CORS analysis.
 
 ### Running Tests
 
