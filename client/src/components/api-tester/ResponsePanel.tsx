@@ -373,6 +373,7 @@ export const ResponsePanel: React.FC<ResponsePanelProps> = ({
                   corsAnalysis={response.cors_analysis}
                   optionsAnalysis={response.options_analysis}
                   headerAnalysis={response.header_analysis}
+                  currentMethod={response.method || 'GET'}
                 />
               </div>
             )}

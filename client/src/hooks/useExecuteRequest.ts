@@ -6,6 +6,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { executeRequest, ApiNetworkError, ApiResponseError } from '../lib/api'
 import type { RequestCreate, RequestResponse } from '../types/api'
+import { useRequestStore } from '../store/requestStore'
 
 export interface ExecuteRequestError {
   /** User-facing title */
@@ -62,12 +63,25 @@ function toExecuteError(err: unknown): ExecuteRequestError {
  * We use Error as the TError generic and transform in the hook return value.
  */
 export function useExecuteRequest() {
+  const setLastResponse = useRequestStore((s) => s.setLastResponse)
+  const setLastRequestPayload = useRequestStore((s) => s.setLastRequestPayload)
+  const setLastNetworkError = useRequestStore((s) => s.setLastNetworkError)
+
   const mutation = useMutation<RequestResponse, Error, RequestCreate>({
     mutationFn: executeRequest,
     throwOnError: false,
+    onSuccess: (data) => {
+      setLastResponse(data)
+      setLastNetworkError(null)
+    },
+    onError: (err) => {
+      setLastNetworkError(toExecuteError(err))
+      setLastResponse(null)
+    },
   })
 
   const send = (payload: RequestCreate) => {
+    setLastRequestPayload(payload)
     mutation.mutate(payload)
   }
 

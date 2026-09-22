@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppShell } from './components/layout/AppShell'
 import { Dashboard } from './pages/Dashboard'
 import { ApiTester } from './pages/ApiTester'
+import { NetworkAnalysis } from './pages/NetworkAnalysis'
 import { History } from './pages/History'
 import { Monitor } from './pages/Monitor'
 import { Docs } from './pages/Docs'
@@ -27,6 +28,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/tester" element={<ApiTester />} />
+        <Route path="/analysis" element={<NetworkAnalysis />} />
         <Route path="/history" element={<History />} />
         <Route path="/monitor" element={<Monitor />} />
         <Route path="/docs" element={<Docs />} />

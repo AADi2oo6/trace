@@ -2,6 +2,7 @@ import React from 'react'
 import {
   LayoutDashboard,
   Terminal,
+  Network,
   Clock,
   Activity,
   BookOpen,
@@ -29,6 +30,12 @@ const primaryNavItems = [
     icon: <Terminal className="w-4 h-4" />,
     label: 'API Tester',
     description: 'Send & inspect HTTP requests',
+  },
+  {
+    to: '/analysis',
+    icon: <Network className="w-4 h-4" />,
+    label: 'Analysis',
+    description: 'DNS, headers & CORS analysis',
   },
   {
     to: '/history',

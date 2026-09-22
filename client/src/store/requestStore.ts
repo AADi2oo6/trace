@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand'
-import type { HTTPMethod, RequestCreate } from '../types/api'
+import type { HTTPMethod, RequestCreate, RequestResponse } from '../types/api'
 
 // ── Key-value row (params / headers) ───────────────────────────────────────
 
@@ -61,6 +61,14 @@ interface RequestEditorState {
   // Reset
   resetEditor: () => void
 
+  // Last executed request result (shared with Network Analysis page)
+  lastResponse: RequestResponse | null
+  lastRequestPayload: RequestCreate | null
+  lastNetworkError: { title: string; message: string; kind: 'network' | 'backend' | 'unknown' } | null
+  setLastResponse: (res: RequestResponse | null) => void
+  setLastRequestPayload: (payload: RequestCreate | null) => void
+  setLastNetworkError: (err: { title: string; message: string; kind: 'network' | 'backend' | 'unknown' } | null) => void
+
   // Computed: build the payload for POST /api/requests
   buildPayload: () => RequestCreate
 }
@@ -74,6 +82,9 @@ const initialState = {
   requestHeaders: [] as KVRow[],
   bodyContentType: 'none' as BodyContentType,
   bodyText: '',
+  lastResponse: null as RequestResponse | null,
+  lastRequestPayload: null as RequestCreate | null,
+  lastNetworkError: null as { title: string; message: string; kind: 'network' | 'backend' | 'unknown' } | null,
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -134,6 +145,11 @@ export const useRequestStore = create<RequestEditorState>((set, get) => ({
 
   // Reset
   resetEditor: () => set(initialState),
+
+  // Last executed request result
+  setLastResponse: (lastResponse) => set({ lastResponse }),
+  setLastRequestPayload: (lastRequestPayload) => set({ lastRequestPayload }),
+  setLastNetworkError: (lastNetworkError) => set({ lastNetworkError }),
 
   // Build payload
   buildPayload: (): RequestCreate => {

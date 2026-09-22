@@ -83,19 +83,19 @@ export const Dashboard: React.FC = () => {
       icon: <ListFilter className="w-4 h-4" />,
       label: 'Headers',
       description: 'Analyze and understand HTTP headers',
-      to: '/tester',
+      to: '/analysis',
     },
     {
       icon: <Globe className="w-4 h-4" />,
       label: 'DNS',
       description: 'Resolve hostnames and inspect records',
-      to: '/tester',
+      to: '/analysis',
     },
     {
       icon: <ShieldCheck className="w-4 h-4" />,
       label: 'CORS',
       description: 'Diagnose cross-origin configurations',
-      to: '/tester',
+      to: '/analysis',
     },
     {
       icon: <Route className="w-4 h-4" />,
