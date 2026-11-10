@@ -61,6 +61,16 @@ interface RequestEditorState {
   // Reset
   resetEditor: () => void
 
+  // Load a historical request configuration into the editor
+  loadHistoricalRequest: (req: {
+    method: HTTPMethod
+    url: string
+    params?: Record<string, string> | null
+    headers?: Record<string, string> | null
+    body?: string | null
+    bodyType?: string | null
+  }) => void
+
   // Last executed request result (shared with Network Analysis page)
   lastResponse: RequestResponse | null
   lastRequestPayload: RequestCreate | null
@@ -145,6 +155,47 @@ export const useRequestStore = create<RequestEditorState>((set, get) => ({
 
   // Reset
   resetEditor: () => set(initialState),
+
+  // Load a historical request configuration into the editor
+  loadHistoricalRequest: (req) => {
+    const params: KVRow[] = req.params
+      ? Object.entries(req.params).map(([key, value]) => ({
+          id: crypto.randomUUID(),
+          key,
+          value,
+          enabled: true,
+        }))
+      : []
+
+    const requestHeaders: KVRow[] = req.headers
+      ? Object.entries(req.headers).map(([key, value]) => ({
+          id: crypto.randomUUID(),
+          key,
+          value,
+          enabled: true,
+        }))
+      : []
+
+    let bodyContentType: BodyContentType = 'none'
+    let bodyText = ''
+    if (req.body) {
+      bodyText = req.body
+      if (req.bodyType === 'json') {
+        bodyContentType = 'json'
+      } else {
+        bodyContentType = 'text'
+      }
+    }
+
+    set({
+      method: req.method,
+      url: req.url,
+      params,
+      requestHeaders,
+      bodyContentType,
+      bodyText,
+    })
+  },
 
   // Last executed request result
   setLastResponse: (lastResponse) => set({ lastResponse }),

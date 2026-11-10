@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   Terminal,
   Network,
+  Route,
   Clock,
   Activity,
   BookOpen,
@@ -36,6 +37,12 @@ const primaryNavItems = [
     icon: <Network className="w-4 h-4" />,
     label: 'Analysis',
     description: 'DNS, headers & CORS analysis',
+  },
+  {
+    to: '/journey',
+    icon: <Route className="w-4 h-4" />,
+    label: 'Journey',
+    description: 'Request network lifecycle',
   },
   {
     to: '/history',

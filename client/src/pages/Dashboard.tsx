@@ -101,7 +101,7 @@ export const Dashboard: React.FC = () => {
       icon: <Route className="w-4 h-4" />,
       label: 'Journey',
       description: 'Visualize the full request lifecycle',
-      to: '/tester',
+      to: '/journey',
     },
   ]
 

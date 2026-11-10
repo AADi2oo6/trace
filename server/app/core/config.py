@@ -22,5 +22,8 @@ class Settings:
     max_response_bytes: int = 2 * 1024 * 1024  # 2 MB limit
     allowed_schemes: tuple[str, ...] = ("http", "https")
 
+    # Database Configuration
+    database_url: str = "sqlite:///./data/trace.db"
+
 
 settings = Settings()

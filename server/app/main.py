@@ -5,6 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import api_router
 from app.core.config import settings
+from app.db.session import init_db
+
+# Initialize database tables on startup
+init_db()
 
 app = FastAPI(
     title=settings.app_name,

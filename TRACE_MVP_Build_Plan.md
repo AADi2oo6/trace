@@ -26,6 +26,8 @@ The MVP must be a real working full-stack application, not a visual mockup.
 | **Step 12** | API Tester UI | ✅ Complete | Request bar, params, headers, body, API client |
 | **Step 13** | Full Response Inspector UI | ✅ Complete | Body search, headers copy/search, full analysis, journey preview |
 | **Step 14** | Full Network Analysis UI | ✅ Complete | Dedicated /analysis page: DNS, Headers, CORS, OPTIONS panels |
+| **Step 15** | Full Request Journey Visualization | ✅ Complete | Dedicated /journey page: vertical lifecycle timeline, status honesty, phase details |
+| **Step 16** | History + SQLite Persistence | ✅ Complete | Full SQLite persistence, secret redaction, history API & interactive /history UI |
 
 #### STEP 13 — Full Response Inspector UI: COMPLETE
 - **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
@@ -54,6 +56,41 @@ The MVP must be a real working full-stack application, not a visual mockup.
 - **Known Limitations:**
   - Request analysis is stored in memory (`useRequestStore`); refreshing the browser resets the active analysis to the empty state until persistent history is implemented in Step 16.
   - Expanding numerous large headers simultaneously in Header Analysis may lengthen the document; table layout ensures horizontal responsiveness.
+
+#### STEP 15 — Full Request Journey Visualization: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
+- **Delivered Capabilities:**
+  - Dedicated `/journey` route and sidebar navigation item (`Route` icon).
+  - Clear `JourneyHeader` with request method, target URL, HTTP status badge, total authoritative duration, and journey completion status banner.
+  - Vertical request lifecycle timeline (`JourneyTimeline`) with connected phase nodes (`DNS` → `TCP Connection` → `TLS Handshake` → `HTTP Exchange` → `Response Ingestion`).
+  - Strict adherence to technical honesty: distinct visual treatments for `COMPLETED`, `FAILED`, `UNAVAILABLE` (timing/telemetry unexposed), and `NOT APPLICABLE` (e.g. TLS for unencrypted HTTP).
+  - Expandable/collapsible phase inspection cards (`JourneyPhaseCard`) showing authoritative duration, telemetry source (`dns_inspector`, `http_execution`, `response_inspector`, `derived`), technical evaluation context, and un-truncated backend observations.
+  - Compact `JourneySummary` aggregating total duration, completed phase count, unavailable count, not-applicable count, failed count, and overall lifecycle observations.
+  - Proper error handling: `JourneyEmptyState` with a call-to-action to API Tester when awaiting execution, and `JourneyErrorState` for network failures displaying the interrupted timeline diagnostics without fabricating fake HTTP response statuses.
+  - Full support for HTTP error responses (404, 405, 500) where HTTP and Response phases correctly report `COMPLETED` alongside the server's actual status code.
+- **Known Limitations:**
+  - Connection (TCP) and TLS timings remain `UNAVAILABLE` or `NOT APPLICABLE` as TRACE relies on the Python HTTP client execution layer and strictly does not fabricate lower-level socket metrics.
+  - Active request journey data is stored in memory via `useRequestStore`; page reloads reset the journey to the empty state until persistent history is implemented in Step 16.
+
+#### STEP 16 — History + SQLite Persistence: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 175 passed)
+- **Delivered Capabilities:**
+  - Robust SQLite persistence engine using SQLAlchemy (`server/data/trace.db` auto-created and initialized on startup).
+  - Non-invasive pipeline integration: `HistoryService.save_request_execution()` automatically stores all executed requests without affecting outbound execution latency or error states.
+  - Secret sanitization engine (`server/app/core/sanitizer.py`): raw credentials (`Authorization`, `Cookie`, `Set-Cookie`, `Proxy-Authorization`, `X-Api-Key`, etc.) are redacted to `[REDACTED]` prior to SQLite write.
+  - Capped body storage: response bodies exceeding 512 KB are truncated with `response_body_truncated: true` to prevent SQLite bloat.
+  - Full REST API endpoints (`GET /api/history`, `GET /api/history/{id}`, `DELETE /api/history/{id}`, `DELETE /api/history`) with Pydantic validation and error handling.
+  - Dedicated `/history` frontend page with search across URL, hostname, method, status code, and error text.
+  - Interactive filters for HTTP methods (`ALL`, `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`, `HEAD`) and HTTP status categories (`ALL`, `2xx`, `3xx`, `4xx`, `5xx`, `ERROR`).
+  - Sorting options (`Newest first`, `Oldest first`, `Duration (slowest)`, `Status code`).
+  - History Table displaying timestamp, method badge, truncated URL, status badge, duration, size, and inline action buttons.
+  - Comprehensive Slide-Over Detail Drawer displaying full historical Request payload (headers, query params, body), Response summary, body (searchable & pretty-printed), headers, full Analysis diagnostics (DNS, CORS, OPTIONS, Headers), and full Request Journey timeline.
+  - "Reopen in Tester" capability: loads historical request method, URL, headers, params, and body directly into `useRequestStore` and navigates to `/tester` without auto-executing.
+  - Delete individual item and Clear All history with confirmation modal.
+  - Responsive empty, loading (`SkeletonTable`), and backend error states with retry functionality.
+- **Known Limitations:**
+  - SQLite database is single-node local storage (`sqlite:///./data/trace.db`); not configured for distributed multi-tenant deployments.
+  - Response bodies over 512 KB are truncated for persistent storage to maintain lightweight database footprint.
 
 ---
 

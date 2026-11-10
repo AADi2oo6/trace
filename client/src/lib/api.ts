@@ -4,12 +4,19 @@
  * All fetch() calls to the backend must go through this module.
  */
 
-import type { RequestCreate, RequestResponse } from '../types/api'
+import type {
+  HistoryDeleteResponse,
+  HistoryDetailResponse,
+  HistoryListResponse,
+  RequestCreate,
+  RequestResponse,
+} from '../types/api'
 
 // ── Configuration ──────────────────────────────────────────────────────────
 
 const BASE_URL = 'http://localhost:8000'
 const API_ENDPOINT = `${BASE_URL}/api/requests`
+const HISTORY_ENDPOINT = `${BASE_URL}/api/history`
 
 // ── Error types ────────────────────────────────────────────────────────────
 
@@ -83,4 +90,106 @@ export async function executeRequest(payload: RequestCreate): Promise<RequestRes
   // Parse the successful response
   const data: RequestResponse = await response.json() as RequestResponse
   return data
+}
+
+// ── History endpoints ──────────────────────────────────────────────────────
+
+export async function fetchHistory(limit = 50, offset = 0): Promise<HistoryListResponse> {
+  let response: Response
+  try {
+    response = await fetch(`${HISTORY_ENDPOINT}?limit=${limit}&offset=${offset}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network request failed'
+    throw new ApiNetworkError(`Cannot reach TRACE backend at ${BASE_URL}.\n${message}`)
+  }
+
+  if (!response.ok) {
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      body = null
+    }
+    throw new ApiResponseError(response.status, body)
+  }
+
+  return (await response.json()) as HistoryListResponse
+}
+
+export async function fetchHistoryDetail(id: string): Promise<HistoryDetailResponse> {
+  let response: Response
+  try {
+    response = await fetch(`${HISTORY_ENDPOINT}/${encodeURIComponent(id)}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network request failed'
+    throw new ApiNetworkError(`Cannot reach TRACE backend at ${BASE_URL}.\n${message}`)
+  }
+
+  if (!response.ok) {
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      body = null
+    }
+    throw new ApiResponseError(response.status, body)
+  }
+
+  return (await response.json()) as HistoryDetailResponse
+}
+
+export async function deleteHistoryItem(id: string): Promise<HistoryDeleteResponse> {
+  let response: Response
+  try {
+    response = await fetch(`${HISTORY_ENDPOINT}/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network request failed'
+    throw new ApiNetworkError(`Cannot reach TRACE backend at ${BASE_URL}.\n${message}`)
+  }
+
+  if (!response.ok) {
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      body = null
+    }
+    throw new ApiResponseError(response.status, body)
+  }
+
+  return (await response.json()) as HistoryDeleteResponse
+}
+
+export async function clearAllHistory(): Promise<HistoryDeleteResponse> {
+  let response: Response
+  try {
+    response = await fetch(HISTORY_ENDPOINT, {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' },
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network request failed'
+    throw new ApiNetworkError(`Cannot reach TRACE backend at ${BASE_URL}.\n${message}`)
+  }
+
+  if (!response.ok) {
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      body = null
+    }
+    throw new ApiResponseError(response.status, body)
+  }
+
+  return (await response.json()) as HistoryDeleteResponse
 }

@@ -171,3 +171,58 @@ export interface RequestResponse {
   request_journey: RequestJourney | null
   error: ErrorDetail | null
 }
+
+// ── History contracts ───────────────────────────────────────────────────────
+
+export interface HistoryListItem {
+  id: string
+  created_at: string
+  method: HTTPMethod
+  url: string
+  status_code: number | null
+  status_text: string | null
+  status_category: StatusCategory | null
+  duration_ms: number | null
+  response_size: number | null
+  content_type: string | null
+  success: boolean
+  error: ErrorDetail | null
+}
+
+export interface HistoryListResponse {
+  items: HistoryListItem[]
+  total: number
+}
+
+export interface HistoryDetailResponse {
+  id: string
+  created_at: string
+  method: HTTPMethod
+  url: string
+  query_params: Record<string, string> | null
+  request_headers: Record<string, string> | null
+  request_body: string | null
+  request_body_type: string | null
+  success: boolean
+  status_code: number | null
+  status_text: string | null
+  status_category: StatusCategory | null
+  duration_ms: number | null
+  content_type: string | null
+  response_size: number | null
+  response_body: string | null
+  response_body_truncated: boolean
+  response_headers: Record<string, string> | null
+  dns_analysis: DnsAnalysis | null
+  header_analysis: HeaderAnalysisItem[] | null
+  cors_analysis: CorsAnalysis | null
+  options_analysis: OptionsAnalysis | null
+  request_journey: RequestJourney | null
+  error: ErrorDetail | null
+}
+
+export interface HistoryDeleteResponse {
+  success: boolean
+  message: string
+  deleted_count: number
+}
