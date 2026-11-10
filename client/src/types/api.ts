@@ -226,3 +226,93 @@ export interface HistoryDeleteResponse {
   message: string
   deleted_count: number
 }
+
+// ── Monitoring contracts ───────────────────────────────────────────────────
+
+export type MonitorStatus = 'UP' | 'DOWN' | 'PAUSED' | 'UNKNOWN'
+export type MonitorMethod = 'GET' | 'HEAD'
+
+export interface MonitorListItem {
+  id: string
+  name: string
+  url: string
+  method: string
+  interval_seconds: number
+  timeout_seconds: number
+  enabled: boolean
+  status: MonitorStatus
+  last_checked_at: string | null
+  next_run_at: string | null
+  last_status_code: number | null
+  last_duration_ms: number | null
+  consecutive_failures: number
+  created_at: string
+}
+
+export interface MonitorListResponse {
+  items: MonitorListItem[]
+  total: number
+  total_up: number
+  total_down: number
+  total_paused: number
+  avg_response_time_ms: number | null
+}
+
+export interface MonitorDetailResponse extends MonitorListItem {
+  updated_at: string
+}
+
+export interface MonitorCreatePayload {
+  name: string
+  url: string
+  method: MonitorMethod
+  interval_seconds: number
+  timeout_seconds?: number
+}
+
+export interface MonitorUpdatePayload {
+  name?: string
+  url?: string
+  method?: MonitorMethod
+  interval_seconds?: number
+  timeout_seconds?: number
+}
+
+export interface MonitorResultItem {
+  id: string
+  monitor_id: string
+  checked_at: string
+  success: boolean
+  status_code: number | null
+  duration_ms: number | null
+  response_size: number | null
+  error_code: string | null
+  error_message: string | null
+}
+
+export interface MonitorResultListResponse {
+  items: MonitorResultItem[]
+  total: number
+}
+
+export interface AnalyticsDataPoint {
+  timestamp: string
+  duration_ms: number | null
+  status_code: number | null
+  success: boolean
+}
+
+export interface MonitorAnalyticsResponse {
+  period: string
+  total_checks: number
+  successful_checks: number
+  failed_checks: number
+  uptime_percentage: number | null
+  average_duration_ms: number | null
+  minimum_duration_ms: number | null
+  maximum_duration_ms: number | null
+  latest_status: MonitorStatus
+  latest_check_at: string | null
+  history_points: AnalyticsDataPoint[]
+}
+

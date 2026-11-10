@@ -1,14 +1,26 @@
 """TRACE Backend — Application Entrypoint."""
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import api_router
 from app.core.config import settings
 from app.db.session import init_db
+from app.services.scheduler import monitoring_scheduler
 
-# Initialize database tables on startup
+# Initialize database tables on module import
 init_db()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application startup and shutdown lifecycle."""
+    init_db()
+    await monitoring_scheduler.start()
+    yield
+    await monitoring_scheduler.stop()
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -16,6 +28,7 @@ app = FastAPI(
     description="TRACE — API Testing and Network Analysis Tool Backend",
     docs_url="/docs",
     openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
 # Configure CORS for local browser development (e.g. Vite frontend)

@@ -7,6 +7,8 @@ import {
   Globe,
   ShieldCheck,
   Route,
+  Clock,
+  Activity,
   ArrowRight,
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
@@ -102,6 +104,18 @@ export const Dashboard: React.FC = () => {
       label: 'Journey',
       description: 'Visualize the full request lifecycle',
       to: '/journey',
+    },
+    {
+      icon: <Clock className="w-4 h-4" />,
+      label: 'History',
+      description: 'Inspect and replay past HTTP executions',
+      to: '/history',
+    },
+    {
+      icon: <Activity className="w-4 h-4" />,
+      label: 'Monitor',
+      description: 'Continuous health checks and uptime tracking',
+      to: '/monitor',
     },
   ]
 

@@ -25,5 +25,12 @@ class Settings:
     # Database Configuration
     database_url: str = "sqlite:///./data/trace.db"
 
+    # Monitoring & Performance Analytics Settings
+    monitoring_min_interval_seconds: int = 60
+    monitoring_default_interval_seconds: int = 300
+    monitoring_max_concurrent_checks: int = 5
+    monitoring_retention_days: int = 30
+    monitoring_check_tick_seconds: float = 2.0
+
 
 settings = Settings()

@@ -28,6 +28,7 @@ The MVP must be a real working full-stack application, not a visual mockup.
 | **Step 14** | Full Network Analysis UI | ✅ Complete | Dedicated /analysis page: DNS, Headers, CORS, OPTIONS panels |
 | **Step 15** | Full Request Journey Visualization | ✅ Complete | Dedicated /journey page: vertical lifecycle timeline, status honesty, phase details |
 | **Step 16** | History + SQLite Persistence | ✅ Complete | Full SQLite persistence, secret redaction, history API & interactive /history UI |
+| **Step 17** | API Monitoring + Performance Analytics | ✅ Complete | Background scheduler, periodic checks, Recharts analytics & /monitor dashboard |
 
 #### STEP 13 — Full Response Inspector UI: COMPLETE
 - **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
@@ -91,6 +92,25 @@ The MVP must be a real working full-stack application, not a visual mockup.
 - **Known Limitations:**
   - SQLite database is single-node local storage (`sqlite:///./data/trace.db`); not configured for distributed multi-tenant deployments.
   - Response bodies over 512 KB are truncated for persistent storage to maintain lightweight database footprint.
+
+#### STEP 17 — API Monitoring + Performance Analytics: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 190 passed)
+- **Delivered Capabilities:**
+  - Database schema: `Monitor` and `MonitorResult` SQLAlchemy models in `server/app/models/monitor.py` with foreign-key cascade deletion and indexes.
+  - Persistent background scheduler (`server/app/services/scheduler.py`): in-process asyncio event loop starting/stopping with FastAPI `lifespan`. Recovers enabled monitors without burst-firing missed executions, bounds concurrency with `asyncio.Semaphore(5)`, and prevents duplicate concurrent checks via active ID tracking.
+  - Secured execution pipeline reuse: health checks reuse `RequestService.execute_request()` with full SSRF protection, private IP blocking, and runtime re-validation.
+  - Health check classification: HTTP 2xx/3xx are marked as successful health checks (`UP`); 4xx/5xx responses record the server's actual status code but are marked as unsuccessful (`DOWN`); network failures/SSRF blocks preserve `status_code = None`.
+  - Retention policy: automated cleanup of results older than 30 days (`monitoring_retention_days`).
+  - Full REST APIs (`POST /api/monitors`, `GET /api/monitors`, `GET /api/monitors/{id}`, `PATCH /api/monitors/{id}`, `DELETE /api/monitors/{id}`, `POST /api/monitors/{id}/pause`, `POST /api/monitors/{id}/resume`, `POST /api/monitors/{id}/run`, `GET /api/monitors/{id}/results`, `GET /api/monitors/{id}/analytics`).
+  - Performance analytics engine calculating truthful uptime percentage, mean latency, min/max latency, outage counts, and chronological time-series points.
+  - Frontend dashboard (`/monitor`): summary metric cards, interactive table with status badges (`UP`, `DOWN`, `PAUSED`, `UNKNOWN`), interval pills, latency, last/next check times, and quick action buttons.
+  - Real-time controls: manual "Run Now" with loading spinner, Pause/Resume toggle, and Delete with confirmation modal.
+  - Monitor Detail Drawer: period selector (`1h`, `24h`, `7d`, `30d`), Recharts `ResponseTimeChart` area graph with custom tooltip, `AvailabilityTimeline` visual blocks, and historical check results table.
+  - TanStack Query auto-refreshing polling (every 30s) without full page reload.
+- **Known Limitations:**
+  - Single-process scheduler limitation: designed for a single FastAPI process instance; not configured for multi-node distributed workers.
+  - Supported methods for automated recurring monitoring are restricted to `GET` and `HEAD` to prevent unintended side effects from mutating methods (`POST`, `PUT`, `DELETE`).
+  - Persisted authentication headers are not supported in monitor configuration for MVP security.
 
 ---
 

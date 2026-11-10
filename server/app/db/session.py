@@ -22,6 +22,19 @@ if db_url.startswith("sqlite:///"):
 connect_args = {"check_same_thread": False} if "sqlite" in db_url else {}
 engine = create_engine(db_url, connect_args=connect_args)
 
+
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    """Enable SQLite foreign key support."""
+    if type(dbapi_connection).__module__ == "sqlite3":
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
