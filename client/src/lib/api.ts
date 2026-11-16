@@ -99,9 +99,12 @@ export async function executeRequest(payload: RequestCreate): Promise<RequestRes
 // ── History endpoints ──────────────────────────────────────────────────────
 
 export async function fetchHistory(limit = 50, offset = 0): Promise<HistoryListResponse> {
+  // Ensure limit is clamped to the backend supported range [1, 100]
+  const safeLimit = Math.min(Math.max(1, limit), 100)
+  const safeOffset = Math.max(0, offset)
   let response: Response
   try {
-    response = await fetch(`${HISTORY_ENDPOINT}?limit=${limit}&offset=${offset}`, {
+    response = await fetch(`${HISTORY_ENDPOINT}?limit=${safeLimit}&offset=${safeOffset}`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
     })

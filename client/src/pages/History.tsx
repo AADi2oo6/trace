@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Clock, FilterX } from 'lucide-react'
+import { Clock, FilterX, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PageContainer } from '../components/layout/PageContainer'
 import { EmptyState } from '../components/feedback/EmptyState'
 import { ErrorState } from '../components/feedback/ErrorState'
@@ -14,9 +14,15 @@ import { ClearHistoryModal } from '../components/history/ClearHistoryModal'
 import { fetchHistory, deleteHistoryItem, clearAllHistory } from '../lib/api'
 import type { HistoryListItem } from '../types/api'
 
+const PAGE_SIZE = 50
+
 export const History: React.FC = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
+  // Pagination State (50 items per page, backend max 100)
+  const [page, setPage] = useState(1)
+  const offset = (page - 1) * PAGE_SIZE
 
   // Filter & Sort State
   const [searchQuery, setSearchQuery] = useState('')
@@ -28,10 +34,10 @@ export const History: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [isClearModalOpen, setIsClearModalOpen] = useState(false)
 
-  // Query: fetch history items
+  // Query: fetch history items with safe page size
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['history'],
-    queryFn: () => fetchHistory(200, 0),
+    queryKey: ['history', page],
+    queryFn: () => fetchHistory(PAGE_SIZE, offset),
   })
 
   // Mutation: delete single item
@@ -52,11 +58,13 @@ export const History: React.FC = () => {
       void queryClient.invalidateQueries({ queryKey: ['history'] })
       setIsClearModalOpen(false)
       setSelectedId(null)
+      setPage(1)
     },
   })
 
   const rawItems = useMemo(() => data?.items ?? [], [data?.items])
   const totalCount = data?.total ?? rawItems.length
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
 
   // Filter & Sort logic
   const filteredItems = useMemo(() => {
@@ -142,6 +150,7 @@ export const History: React.FC = () => {
     setSelectedMethod('ALL')
     setSelectedStatus('ALL')
     setSortOption('newest')
+    setPage(1)
   }
 
   return (
@@ -233,13 +242,52 @@ export const History: React.FC = () => {
                 </Button>
               </div>
             ) : (
-              <HistoryTable
-                items={filteredItems}
-                selectedId={selectedId}
-                onSelect={handleSelectItem}
-                onDelete={handleDeleteItem}
-                isDeletingId={deleteMutation.variables}
-              />
+              <div className="space-y-3">
+                <HistoryTable
+                  items={filteredItems}
+                  selectedId={selectedId}
+                  onSelect={handleSelectItem}
+                  onDelete={handleDeleteItem}
+                  isDeletingId={deleteMutation.variables}
+                />
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between border border-[#1E1E1E] bg-[#0A0A0A] px-4 py-2.5">
+                    <div className="text-xs font-mono text-[#6B6B6B]">
+                      Page <span className="text-[#E8E8E8]">{page}</span> of{' '}
+                      <span className="text-[#E8E8E8]">{totalPages}</span>
+                      <span className="ml-2 text-[#555555]">
+                        ({totalCount} total requests, {PAGE_SIZE} per page)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page <= 1}
+                        leftIcon={<ChevronLeft className="w-3.5 h-3.5" />}
+                        className="text-xs"
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={page >= totalPages}
+                        rightIcon={<ChevronRight className="w-3.5 h-3.5" />}
+                        className="text-xs"
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </>
         )}

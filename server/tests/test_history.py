@@ -240,3 +240,72 @@ def test_history_large_body_truncation(db_session):
     assert detail.response_body_truncated is True
     assert len(detail.response_body) == 512 * 1024
 
+
+def test_api_history_pagination_contract(client, db_session):
+    from datetime import datetime, timezone, timedelta
+
+    # 6. Empty history response
+    empty_res = client.get("/api/history")
+    assert empty_res.status_code == 200
+    assert empty_res.json()["total"] == 0
+    assert empty_res.json()["items"] == []
+
+    # Insert 60 records to test multiple pages
+    now = datetime.now(timezone.utc)
+    records = [
+        RequestHistory(
+            id=f"rec_page_{i:03d}",
+            created_at=now - timedelta(minutes=i),
+            method="GET",
+            url=f"https://example.com/{i}",
+            success=True,
+            status_code=200,
+        )
+        for i in range(60)
+    ]
+    db_session.add_all(records)
+    db_session.commit()
+
+    # 1. GET /api/history with no parameters (defaults: limit=50, offset=0)
+    res_default = client.get("/api/history")
+    assert res_default.status_code == 200
+    data_default = res_default.json()
+    assert data_default["total"] == 60
+    assert len(data_default["items"]) == 50
+    assert data_default["items"][0]["url"] == "https://example.com/0"
+
+    # 2. GET /api/history?limit=50&offset=0
+    res_page1 = client.get("/api/history?limit=50&offset=0")
+    assert res_page1.status_code == 200
+    data_page1 = res_page1.json()
+    assert data_page1["total"] == 60
+    assert len(data_page1["items"]) == 50
+
+    # 3. GET /api/history?limit=100&offset=0 (maximum allowed limit)
+    res_max = client.get("/api/history?limit=100&offset=0")
+    assert res_max.status_code == 200
+    data_max = res_max.json()
+    assert data_max["total"] == 60
+    assert len(data_max["items"]) == 60
+
+    # 4. GET /api/history?limit=200&offset=0 (exceeds limit=100, returns 422)
+    res_over = client.get("/api/history?limit=200&offset=0")
+    assert res_over.status_code == 422
+    err_body = res_over.json()
+    assert "detail" in err_body
+    assert any("limit" in str(loc) for loc in err_body["detail"])
+
+    # 5. GET /api/history?limit=50&offset=50 (second page)
+    res_page2 = client.get("/api/history?limit=50&offset=50")
+    assert res_page2.status_code == 200
+    data_page2 = res_page2.json()
+    assert data_page2["total"] == 60
+    assert len(data_page2["items"]) == 10
+    assert data_page2["items"][0]["url"] == "https://example.com/50"
+
+    # 7. Multi-page continuity verification: page 1 and page 2 must not overlap
+    page1_ids = {item["id"] for item in data_page1["items"]}
+    page2_ids = {item["id"] for item in data_page2["items"]}
+    assert len(page1_ids.intersection(page2_ids)) == 0
+
+
