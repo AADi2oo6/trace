@@ -8,6 +8,7 @@ import { NetworkAnalysis } from './pages/NetworkAnalysis'
 import { RequestJourneyPage } from './pages/RequestJourney'
 import { History } from './pages/History'
 import { Monitor } from './pages/Monitor'
+import { DemoApi } from './pages/DemoApi'
 import { Docs } from './pages/Docs'
 import { Settings } from './pages/Settings'
 import { useAppStore } from './store'
@@ -33,6 +34,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/journey" element={<RequestJourneyPage />} />
         <Route path="/history" element={<History />} />
         <Route path="/monitor" element={<Monitor />} />
+        <Route path="/demo" element={<DemoApi />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>

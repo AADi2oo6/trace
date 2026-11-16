@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import api_router
+from app.api.routes.demo import router as demo_router
 from app.core.config import settings
 from app.db.session import init_db
 from app.services.scheduler import monitoring_scheduler
@@ -42,6 +43,9 @@ app.add_middleware(
 
 # Register API routes under /api
 app.include_router(api_router, prefix=settings.api_prefix)
+
+# Register Controlled Demo API routes under /demo
+app.include_router(demo_router, prefix="/demo", tags=["Demo API"])
 
 
 @app.get("/health", tags=["Health"])

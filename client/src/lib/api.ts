@@ -5,6 +5,7 @@
  */
 
 import type {
+  DemoCatalogueResponse,
   HistoryDeleteResponse,
   HistoryDetailResponse,
   HistoryListResponse,
@@ -25,6 +26,9 @@ const BASE_URL = 'http://localhost:8000'
 const API_ENDPOINT = `${BASE_URL}/api/requests`
 const HISTORY_ENDPOINT = `${BASE_URL}/api/history`
 const MONITORS_ENDPOINT = `${BASE_URL}/api/monitors`
+const DEMO_ENDPOINT = `${BASE_URL}/demo`
+
+export const DEMO_BASE_URL = BASE_URL
 
 // ── Error types ────────────────────────────────────────────────────────────
 
@@ -466,4 +470,31 @@ export async function fetchMonitorAnalytics(
   }
 
   return (await response.json()) as MonitorAnalyticsResponse
+}
+
+// ── Demo API Catalogue (Step 18) ──────────────────────────────────────────
+
+export async function fetchDemoCatalogue(): Promise<DemoCatalogueResponse> {
+  let response: Response
+  try {
+    response = await fetch(DEMO_ENDPOINT, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network request failed'
+    throw new ApiNetworkError(`Cannot reach TRACE backend at ${BASE_URL}.\n${message}`)
+  }
+
+  if (!response.ok) {
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      body = null
+    }
+    throw new ApiResponseError(response.status, body)
+  }
+
+  return (await response.json()) as DemoCatalogueResponse
 }

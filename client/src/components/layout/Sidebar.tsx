@@ -6,6 +6,7 @@ import {
   Route,
   Clock,
   Activity,
+  FlaskConical,
   BookOpen,
   Settings,
   X,
@@ -55,6 +56,12 @@ const primaryNavItems = [
     icon: <Activity className="w-4 h-4" />,
     label: 'Monitor',
     description: 'Endpoint health & uptime',
+  },
+  {
+    to: '/demo',
+    icon: <FlaskConical className="w-4 h-4" />,
+    label: 'Demo API',
+    description: 'Controlled testing endpoints',
   },
 ]
 

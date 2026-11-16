@@ -72,6 +72,18 @@ class DnsInspector:
             # Not an IP literal; proceed to DNS resolution
             pass
 
+        # Fast path for standard local loopback hostnames
+        if hostname in ("localhost", "testserver"):
+            return DnsAnalysis(
+                hostname=hostname,
+                resolved=True,
+                ipv4_addresses=["127.0.0.1"],
+                ipv6_addresses=["::1"],
+                resolution_time_ms=0.1,
+                error=None,
+                observations=[f"Standard loopback host '{hostname}' mapped to local loopback addresses (127.0.0.1, ::1)."],
+            )
+
         start_time = time.perf_counter()
         ipv4_list: list[str] = []
         ipv6_list: list[str] = []

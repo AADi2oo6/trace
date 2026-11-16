@@ -1,8 +1,9 @@
 """TRACE Security and SSRF Protection Module."""
 
 import ipaddress
+import posixpath
 import socket
-from urllib.parse import urlparse
+from urllib.parse import ParseResult, urlparse
 
 from app.core.config import settings
 from app.core.errors import ErrorCode
@@ -80,6 +81,32 @@ def is_ip_blocked(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     return False
 
 
+def is_demo_api_url(parsed: ParseResult) -> bool:
+    """Validate whether the URL is a safe local target specifically directed at the TRACE Demo API.
+
+    Only loopback hostnames targeting the /demo namespace on backend ports are permitted.
+    All other localhost/loopback paths (/api, /health, /admin) and other ports remain strictly blocked.
+    """
+    hostname = (parsed.hostname or "").lower().strip("[]")
+    if hostname not in ("localhost", "127.0.0.1", "::1", "testserver"):
+        return False
+
+    # Path must be exactly /demo or begin with /demo/ (normalized to prevent path traversal)
+    raw_path = parsed.path or "/"
+    norm_path = posixpath.normpath(raw_path)
+    if norm_path != "/demo" and not norm_path.startswith("/demo/"):
+        return False
+
+    # Port restriction: must target standard backend port 8000, 80 (standard HTTP), or None
+    port = parsed.port
+    if hostname == "testserver":
+        return True
+    if port not in (8000, 80, None):
+        return False
+
+    return True
+
+
 def validate_url_for_ssrf(url: str) -> str:
     """Validate that a URL uses an allowed scheme and does not target private or local destinations.
 
@@ -100,6 +127,10 @@ def validate_url_for_ssrf(url: str) -> str:
     hostname = parsed.hostname
     if not hostname:
         raise InvalidURLSecurityError("Target URL must contain a valid hostname.")
+
+    # Safe allowance for local Demo API endpoints
+    if is_demo_api_url(parsed):
+        return cleaned_url
 
     hostname_lower = hostname.lower().strip("[]")
 

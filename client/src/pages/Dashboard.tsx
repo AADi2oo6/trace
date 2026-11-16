@@ -9,6 +9,7 @@ import {
   Route,
   Clock,
   Activity,
+  FlaskConical,
   ArrowRight,
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
@@ -116,6 +117,12 @@ export const Dashboard: React.FC = () => {
       label: 'Monitor',
       description: 'Continuous health checks and uptime tracking',
       to: '/monitor',
+    },
+    {
+      icon: <FlaskConical className="w-4 h-4" />,
+      label: 'Demo API',
+      description: 'Predictable endpoints for testing & diagnostics',
+      to: '/demo',
     },
   ]
 

@@ -316,3 +316,36 @@ export interface MonitorAnalyticsResponse {
   history_points: AnalyticsDataPoint[]
 }
 
+// ── Demo API Types (Step 18) ───────────────────────────────────────────────
+
+export interface DemoQueryParamDef {
+  name: string
+  type: string
+  required: boolean
+  default: unknown
+  description: string
+  options?: string[] | null
+}
+
+export interface DemoEndpointCatalogueItem {
+  id: string
+  name: string
+  category: string
+  method: HTTPMethod
+  path: string
+  description: string
+  expected_status: number
+  query_params: DemoQueryParamDef[]
+  headers: Record<string, string>
+  body?: unknown
+  sample_response?: unknown
+  tags: string[]
+}
+
+export interface DemoCatalogueResponse {
+  endpoints: DemoEndpointCatalogueItem[]
+  categories: string[]
+  total: number
+}
+
+

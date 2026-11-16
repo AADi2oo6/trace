@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand'
-import type { HTTPMethod, RequestCreate, RequestResponse } from '../types/api'
+import type { DemoEndpointCatalogueItem, HTTPMethod, RequestCreate, RequestResponse } from '../types/api'
 
 // ── Key-value row (params / headers) ───────────────────────────────────────
 
@@ -70,6 +70,9 @@ interface RequestEditorState {
     body?: string | null
     bodyType?: string | null
   }) => void
+
+  // Load a demo endpoint into the editor without auto-executing
+  loadDemoEndpoint: (endpoint: DemoEndpointCatalogueItem, baseUrl?: string) => void
 
   // Last executed request result (shared with Network Analysis page)
   lastResponse: RequestResponse | null
@@ -194,6 +197,48 @@ export const useRequestStore = create<RequestEditorState>((set, get) => ({
       requestHeaders,
       bodyContentType,
       bodyText,
+    })
+  },
+
+  loadDemoEndpoint: (endpoint, baseUrl = 'http://localhost:8000') => {
+    const params: KVRow[] = (endpoint.query_params || [])
+      .filter((p) => p.default !== null && p.default !== undefined)
+      .map((p) => ({
+        id: crypto.randomUUID(),
+        key: p.name,
+        value: String(p.default),
+        enabled: true,
+      }))
+
+    const requestHeaders: KVRow[] = Object.entries(endpoint.headers || {}).map(([key, value]) => ({
+      id: crypto.randomUUID(),
+      key,
+      value,
+      enabled: true,
+    }))
+
+    let bodyContentType: BodyContentType = 'none'
+    let bodyText = ''
+    if (endpoint.body !== null && endpoint.body !== undefined) {
+      if (typeof endpoint.body === 'object') {
+        bodyContentType = 'json'
+        bodyText = JSON.stringify(endpoint.body, null, 2)
+      } else {
+        bodyContentType = 'text'
+        bodyText = String(endpoint.body)
+      }
+    }
+
+    set({
+      method: endpoint.method,
+      url: `${baseUrl}${endpoint.path}`,
+      params,
+      requestHeaders,
+      bodyContentType,
+      bodyText,
+      lastResponse: null,
+      lastRequestPayload: null,
+      lastNetworkError: null,
     })
   },
 

@@ -29,6 +29,7 @@ The MVP must be a real working full-stack application, not a visual mockup.
 | **Step 15** | Full Request Journey Visualization | ✅ Complete | Dedicated /journey page: vertical lifecycle timeline, status honesty, phase details |
 | **Step 16** | History + SQLite Persistence | ✅ Complete | Full SQLite persistence, secret redaction, history API & interactive /history UI |
 | **Step 17** | API Monitoring + Performance Analytics | ✅ Complete | Background scheduler, periodic checks, Recharts analytics & /monitor dashboard |
+| **Step 18** | Controlled Demo API + Interactive Testing | ✅ Complete | In-tree predictable endpoints (/demo), SSRF allowance for demo, interactive /demo explorer |
 
 #### STEP 13 — Full Response Inspector UI: COMPLETE
 - **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
@@ -111,6 +112,24 @@ The MVP must be a real working full-stack application, not a visual mockup.
   - Single-process scheduler limitation: designed for a single FastAPI process instance; not configured for multi-node distributed workers.
   - Supported methods for automated recurring monitoring are restricted to `GET` and `HEAD` to prevent unintended side effects from mutating methods (`POST`, `PUT`, `DELETE`).
   - Persisted authentication headers are not supported in monitor configuration for MVP security.
+
+#### STEP 18 — Controlled Demo API + Interactive Testing Environment: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 207 passed)
+- **Delivered Capabilities:**
+  - Controlled Demo Service (`/demo` namespace): predictable endpoints hosted in FastAPI backend without bypassing normal TRACE request execution pipelines.
+  - Authoritative endpoint catalogue (`GET /demo`): structured metadata, parameter schemas, recommended headers, sample requests, and sample responses across 8 categories (Basics, Request Inspection, Status Codes, Performance, Headers & Caching, CORS & Preflight, Authentication, Payloads & Errors).
+  - Basics & Inspection: `GET /demo/hello`, `GET /demo/health`, `GET /demo/users` (pagination & search), `GET /demo/users/{id}`, `POST /demo/echo` and `GET /demo/echo` (with sensitive header redaction).
+  - Status codes simulator: `GET /demo/status/{code}` (200, 201, 204 with NO body/headers per RFC 9110, 301/302 safe redirect, 400, 401 with WWW-Authenticate, 403, 404, 418 Teapot, 429 with Retry-After, 500, 502, 503).
+  - Performance latency simulator: `GET /demo/delay/{ms}` (asyncio sleep bounded between 0 and 5000ms).
+  - Custom headers & caching: `GET /demo/headers` demonstrating `X-Trace-Demo-Header`, `Cache-Control`, and `ETag`.
+  - CORS & Preflight: `GET /demo/cors` and `OPTIONS /demo/cors` supporting `wildcard`, `restricted`, `credentials`, and `preflight` scenarios with correct `Allow` and `Access-Control-*` separation.
+  - Authentication simulator: `GET /demo/auth` with `Bearer demo-token-read` (viewer) and `Bearer demo-token-admin` (admin) support and 401/403 status enforcement.
+  - Payloads & Errors: `GET /demo/large` (bounded dataset 1-500 items) and `GET /demo/error` (controlled errors without stack trace or secret leakage).
+  - Precise SSRF boundary: `validate_url_for_ssrf` safely allows loopback hostnames targeting `/demo` and `/demo/*` on backend ports (8000, 80, None) while strictly maintaining SSRF blocking for all other loopback paths (`/api`, `/health`, `/admin`), other ports, and path traversal attempts (`/demo/../api/requests`).
+  - Interactive UI (`/demo`): Category pills, live search, endpoint card list with method and status badges, detailed parameter tables, sample request/response blocks with copy feedback, and "Test in API Tester" action that populates the editor without auto-executing.
+- **Known Limitations:**
+  - Demo tokens (`demo-token-read`, `demo-token-admin`) are static test fixtures intended exclusively for testing TRACE UI and analysis features; not for production access control.
+  - Delay endpoint enforces a strict 5000ms ceiling to prevent worker starvation during automated or interactive test runs.
 
 ---
 
