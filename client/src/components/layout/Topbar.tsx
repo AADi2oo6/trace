@@ -40,7 +40,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
         {/* Mobile brand (hidden on desktop — sidebar has brand) */}
         <div className="flex items-center gap-2 lg:hidden">
-          <div className="bg-[#FF6A00] text-black font-black text-xs px-1.5 py-0.5 tracking-widest font-mono">
+          <div className="bg-blue-600 dark:bg-blue-500 text-white font-black text-xs px-2 py-0.5 tracking-widest font-mono rounded">
             TRACE
           </div>
         </div>
@@ -52,11 +52,11 @@ export const Topbar: React.FC<TopbarProps> = ({
       </div>
 
       {/* Right: theme toggle & backend status */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         {/* Theme Quick Toggle */}
         <button
           onClick={handleCycleTheme}
-          className="flex items-center gap-1.5 px-2.5 py-1 border border-[#1E1E1E] bg-[#111111] hover:border-[#333333] transition-colors text-xs font-mono text-[#888888] hover:text-[#E8E8E8]"
+          className="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--border-default)] bg-[var(--bg-panel)] hover:bg-[var(--bg-panel-hover)] transition-colors text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded"
           title={`Current: ${themeMode.toUpperCase()} (Click to cycle Dark → Light → System)`}
           aria-label={`Toggle color theme. Current theme is ${themeMode}`}
         >
@@ -67,21 +67,21 @@ export const Topbar: React.FC<TopbarProps> = ({
           ) : (
             <Laptop className="w-3.5 h-3.5 text-emerald-400" />
           )}
-          <span className="text-[10px] uppercase hidden sm:inline">{themeMode}</span>
+          <span className="text-[10px] uppercase hidden sm:inline font-semibold">{themeMode}</span>
         </button>
 
         {/* Backend Status */}
-        <div className="flex items-center gap-2 px-2.5 py-1 border border-[#1E1E1E] bg-[#111111]">
-          <span className="text-[10px] font-mono text-[#3A3A3A] tracking-wider uppercase">
+        <div className="flex items-center gap-2 px-2.5 py-1 border border-[var(--border-default)] bg-[var(--bg-panel)] rounded">
+          <span className="text-[10px] font-mono text-[var(--text-dim)] tracking-wider uppercase font-semibold">
             API
           </span>
           <StatusIndicator status={backendStatus} showLabel={false} />
           <span
-            className="text-[10px] font-mono tracking-wider"
+            className="text-[10px] font-mono tracking-wider font-semibold"
             style={{
               color:
                 backendStatus === 'connected'
-                  ? '#22C55E'
+                  ? '#10B981'
                   : backendStatus === 'error'
                     ? '#EF4444'
                     : '#F59E0B',

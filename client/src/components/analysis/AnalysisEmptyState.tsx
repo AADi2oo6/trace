@@ -9,19 +9,19 @@ export const AnalysisEmptyState: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-6 text-center max-w-md mx-auto">
       {/* Icon frame */}
-      <div className="w-12 h-12 border border-[#222222] bg-[#0D0D0D] flex items-center justify-center mb-6 text-[#444444]">
+      <div className="w-12 h-12 rounded-lg border border-[var(--border-default)] bg-[var(--bg-surface)] flex items-center justify-center mb-6 text-blue-500 shadow-xs">
         <Network className="w-6 h-6" />
       </div>
 
-      <p className="text-[10px] font-mono tracking-widest text-[#FF6A00] uppercase mb-2">
+      <p className="text-[10px] font-mono tracking-widest text-blue-500 uppercase font-semibold mb-2">
         Awaiting Execution
       </p>
 
-      <h2 className="text-sm font-mono font-semibold text-[#E8E8E8] tracking-wider uppercase mb-3">
+      <h2 className="text-sm font-mono font-semibold text-[var(--text-primary)] tracking-wider uppercase mb-3">
         No Network Analysis
       </h2>
 
-      <p className="text-xs font-mono text-[#666666] leading-relaxed mb-6">
+      <p className="text-xs font-mono text-[var(--text-secondary)] leading-relaxed mb-6">
         Execute a request in the API Tester to inspect its DNS resolution, headers, CORS configuration, and server capabilities.
       </p>
 

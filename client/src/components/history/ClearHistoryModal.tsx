@@ -33,19 +33,19 @@ export const ClearHistoryModal: React.FC<ClearHistoryModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby="clear-history-title"
     >
-      <div className="w-full max-w-md border border-[#222222] bg-[#0E0E0E] shadow-2xl">
+      <div className="w-full max-w-md rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#1E1E1E] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--border-muted)] px-5 py-4 bg-[var(--bg-panel)]">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 border border-[#EF444433] bg-[#EF444410]">
-              <Trash2 className="w-4 h-4 text-[#EF4444]" />
+            <div className="flex items-center justify-center w-7 h-7 rounded-md border border-rose-500/30 bg-rose-500/10">
+              <Trash2 className="w-4 h-4 text-rose-500" />
             </div>
-            <h2 id="clear-history-title" className="text-sm font-semibold tracking-wide text-[#E8E8E8]">
+            <h2 id="clear-history-title" className="text-sm font-semibold tracking-wide text-[var(--text-primary)]">
               Clear Request History
             </h2>
           </div>
@@ -53,7 +53,7 @@ export const ClearHistoryModal: React.FC<ClearHistoryModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="text-[#6B6B6B] hover:text-[#E8E8E8] transition-colors p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-sm"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
@@ -62,19 +62,19 @@ export const ClearHistoryModal: React.FC<ClearHistoryModalProps> = ({
 
         {/* Body */}
         <div className="p-5 space-y-4">
-          <div className="flex items-start gap-3 p-3 border border-[#EF444425] bg-[#EF444408]">
-            <AlertTriangle className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" />
-            <div className="text-xs text-[#B0B0B0] leading-relaxed">
-              Are you sure you want to delete <span className="font-semibold text-white">{totalCount}</span> {totalCount === 1 ? 'record' : 'records'} from your SQLite request history? This action is permanent and cannot be undone.
+          <div className="flex items-start gap-3 p-3 rounded-lg border border-rose-500/25 bg-rose-500/10">
+            <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+            <div className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              Are you sure you want to delete <span className="font-semibold text-[var(--text-primary)]">{totalCount}</span> {totalCount === 1 ? 'record' : 'records'} from your SQLite request history? This action is permanent and cannot be undone.
             </div>
           </div>
-          <p className="text-xs text-[#6B6B6B]">
+          <p className="text-xs text-[var(--text-muted)]">
             All executed requests, response bodies, header analysis, DNS results, and journey timelines will be removed from local persistence.
           </p>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-[#1E1E1E] bg-[#0A0A0A] px-5 py-3.5">
+        <div className="flex items-center justify-end gap-3 border-t border-[var(--border-muted)] bg-[var(--bg-panel)] px-5 py-3.5">
           <Button
             type="button"
             variant="ghost"

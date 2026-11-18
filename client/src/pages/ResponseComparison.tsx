@@ -287,9 +287,9 @@ export const ResponseComparisonPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('summary')}
-                  className={`px-3 py-1.5 text-xs rounded transition-colors ${
+                  className={`px-3 py-1.5 text-xs rounded transition-all ${
                     activeTab === 'summary'
-                      ? 'bg-orange-500 text-white font-semibold'
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white font-semibold shadow-xs'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                   }`}
                 >
@@ -298,9 +298,9 @@ export const ResponseComparisonPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('headers')}
-                  className={`px-3 py-1.5 text-xs rounded transition-colors ${
+                  className={`px-3 py-1.5 text-xs rounded transition-all ${
                     activeTab === 'headers'
-                      ? 'bg-orange-500 text-white font-semibold'
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white font-semibold shadow-xs'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                   }`}
                 >
@@ -309,9 +309,9 @@ export const ResponseComparisonPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('body')}
-                  className={`px-3 py-1.5 text-xs rounded transition-colors ${
+                  className={`px-3 py-1.5 text-xs rounded transition-all ${
                     activeTab === 'body'
-                      ? 'bg-orange-500 text-white font-semibold'
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white font-semibold shadow-xs'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                   }`}
                 >

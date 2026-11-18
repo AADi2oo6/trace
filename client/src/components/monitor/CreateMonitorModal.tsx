@@ -96,19 +96,19 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-monitor-title"
     >
-      <div className="w-full max-w-lg border border-[#222222] bg-[#0E0E0E] shadow-2xl">
+      <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#1E1E1E] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--border-muted)] px-6 py-4 bg-[var(--bg-panel)]">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 border border-[#FF6A0033] bg-[#FF6A0010]">
-              <Activity className="w-4 h-4 text-[#FF6A00]" />
+            <div className="flex items-center justify-center w-7 h-7 rounded-md border border-blue-500/30 bg-blue-500/10">
+              <Activity className="w-4 h-4 text-blue-500" />
             </div>
-            <h2 id="create-monitor-title" className="text-sm font-semibold tracking-wide text-[#E8E8E8]">
+            <h2 id="create-monitor-title" className="text-sm font-semibold tracking-wide text-[var(--text-primary)]">
               Register New Monitor
             </h2>
           </div>
@@ -116,7 +116,7 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
             type="button"
             onClick={handleClose}
             disabled={isLoading}
-            className="text-[#6B6B6B] hover:text-[#E8E8E8] transition-colors p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-sm"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
@@ -127,9 +127,9 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Validation or API error display */}
           {(validationError || error) && (
-            <div className="p-3 border border-[#EF444430] bg-[#EF44440a] flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" />
-              <div className="text-xs text-[#EF4444] font-mono leading-relaxed">
+            <div className="p-3 rounded-lg border border-rose-500/30 bg-rose-500/10 flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+              <div className="text-xs text-rose-500 font-mono leading-relaxed">
                 {validationError || error}
               </div>
             </div>
@@ -137,8 +137,8 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
 
           {/* Name Field */}
           <div className="space-y-1.5">
-            <label htmlFor="monitor-name" className="text-xs font-mono uppercase tracking-wider text-[#A0A0A0] block">
-              Monitor Name <span className="text-[#FF6A00]">*</span>
+            <label htmlFor="monitor-name" className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] block font-semibold">
+              Monitor Name <span className="text-blue-500">*</span>
             </label>
             <input
               id="monitor-name"
@@ -146,7 +146,7 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Production Public API"
-              className="w-full bg-[#121212] border border-[#222222] px-3 py-2 text-xs font-mono text-[#E8E8E8] placeholder-[#555555] focus:outline-none focus:border-[#FF6A00] transition-colors"
+              className="w-full bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg px-3 py-2 text-xs font-mono text-[var(--text-primary)] placeholder:[var(--text-muted)] focus:outline-none focus:border-blue-500 transition-colors"
               disabled={isLoading}
               autoFocus
             />
@@ -154,20 +154,20 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
 
           {/* URL & Method Row */}
           <div className="space-y-1.5">
-            <label htmlFor="monitor-url" className="text-xs font-mono uppercase tracking-wider text-[#A0A0A0] block">
-              Target URL <span className="text-[#FF6A00]">*</span>
+            <label htmlFor="monitor-url" className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] block font-semibold">
+              Target URL <span className="text-blue-500">*</span>
             </label>
             <div className="flex">
               {/* Method select */}
               <select
                 value={method}
                 onChange={(e) => setMethod(e.target.value as MonitorMethod)}
-                className="bg-[#181818] border border-r-0 border-[#222222] px-2.5 py-2 text-xs font-mono font-bold text-[#FF6A00] outline-none cursor-pointer"
+                className="bg-[var(--bg-input)] border border-r-0 border-[var(--border-default)] rounded-l-lg px-2.5 py-2 text-xs font-mono font-bold text-blue-500 outline-none cursor-pointer"
                 disabled={isLoading}
                 aria-label="HTTP Method"
               >
-                <option value="GET" className="bg-[#111111] text-[#E8E8E8]">GET</option>
-                <option value="HEAD" className="bg-[#111111] text-[#E8E8E8]">HEAD</option>
+                <option value="GET">GET</option>
+                <option value="HEAD">HEAD</option>
               </select>
               {/* URL input */}
               <input
@@ -176,11 +176,11 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://api.example.com/v1/health"
-                className="flex-1 bg-[#121212] border border-[#222222] px-3 py-2 text-xs font-mono text-[#E8E8E8] placeholder-[#555555] focus:outline-none focus:border-[#FF6A00] transition-colors"
+                className="flex-1 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-r-lg px-3 py-2 text-xs font-mono text-[var(--text-primary)] placeholder:[var(--text-muted)] focus:outline-none focus:border-blue-500 transition-colors"
                 disabled={isLoading}
               />
             </div>
-            <p className="text-[10px] text-[#555555] font-mono">
+            <p className="text-[10px] text-[var(--text-muted)] font-mono">
               Recurring checks are restricted to safe idempotent methods (GET, HEAD) with strict SSRF protection.
             </p>
           </div>
@@ -189,18 +189,18 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
           <div className="grid grid-cols-2 gap-3 pt-1">
             {/* Interval */}
             <div className="space-y-1.5">
-              <label htmlFor="monitor-interval" className="text-xs font-mono uppercase tracking-wider text-[#A0A0A0] block">
+              <label htmlFor="monitor-interval" className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] block font-semibold">
                 Interval
               </label>
               <select
                 id="monitor-interval"
                 value={intervalSeconds}
                 onChange={(e) => setIntervalSeconds(Number(e.target.value))}
-                className="w-full bg-[#121212] border border-[#222222] px-3 py-2 text-xs font-mono text-[#E8E8E8] outline-none cursor-pointer"
+                className="w-full bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg px-3 py-2 text-xs font-mono text-[var(--text-primary)] outline-none cursor-pointer"
                 disabled={isLoading}
               >
                 {INTERVAL_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-[#111111] text-[#E8E8E8]">
+                  <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
                 ))}
@@ -209,7 +209,7 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
 
             {/* Timeout */}
             <div className="space-y-1.5">
-              <label htmlFor="monitor-timeout" className="text-xs font-mono uppercase tracking-wider text-[#A0A0A0] block">
+              <label htmlFor="monitor-timeout" className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] block font-semibold">
                 Timeout (seconds)
               </label>
               <input
@@ -219,14 +219,14 @@ export const CreateMonitorModal: React.FC<CreateMonitorModalProps> = ({
                 max={30}
                 value={timeoutSeconds}
                 onChange={(e) => setTimeoutSeconds(Number(e.target.value))}
-                className="w-full bg-[#121212] border border-[#222222] px-3 py-2 text-xs font-mono text-[#E8E8E8] outline-none focus:border-[#FF6A00] transition-colors"
+                className="w-full bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg px-3 py-2 text-xs font-mono text-[var(--text-primary)] outline-none focus:border-blue-500 transition-colors"
                 disabled={isLoading}
               />
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#1E1E1E]">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-muted)]">
             <Button
               type="button"
               variant="ghost"

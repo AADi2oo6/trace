@@ -27,7 +27,7 @@ export const RequestBar: React.FC<RequestBarProps> = ({
   onReset,
 }) => {
   return (
-    <div className="border border-[#222222] bg-[#0A0A0A] overflow-hidden">
+    <div className="border border-[var(--border-default)] bg-[var(--bg-surface)] rounded-lg overflow-hidden shadow-xs">
       {/* Main row */}
       <div className="flex items-stretch">
         {/* Method selector */}
@@ -48,7 +48,7 @@ export const RequestBar: React.FC<RequestBarProps> = ({
         />
 
         {/* Actions */}
-        <div className="flex items-center gap-1 px-2 border-l border-[#222222] bg-[#0D0D0D] shrink-0">
+        <div className="flex items-center gap-1.5 px-3 border-l border-[var(--border-default)] bg-[var(--bg-surface-secondary)] shrink-0">
           {/* Reset */}
           <button
             type="button"
@@ -57,8 +57,8 @@ export const RequestBar: React.FC<RequestBarProps> = ({
             title="Reset editor (clear all fields)"
             aria-label="Reset editor"
             className={[
-              'p-2 text-[#3A3A3A] hover:text-[#6B6B6B] transition-colors duration-100',
-              'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
+              'p-2 text-[var(--text-dim)] hover:text-[var(--text-primary)] rounded transition-colors duration-100',
+              'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500',
               'disabled:opacity-40 disabled:cursor-not-allowed',
             ].join(' ')}
           >

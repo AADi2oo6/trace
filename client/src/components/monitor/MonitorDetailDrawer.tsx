@@ -132,25 +132,25 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-40 flex justify-end bg-black/70 backdrop-blur-xs transition-opacity"
+      className="fixed inset-0 z-40 flex justify-end bg-black/60 backdrop-blur-xs transition-opacity"
       role="dialog"
       aria-modal="true"
       aria-labelledby="monitor-drawer-title"
     >
       <div
-        className="w-full max-w-4xl h-full bg-[#090909] border-l border-[#1E1E1E] flex flex-col shadow-2xl animate-in slide-in-from-right duration-200"
+        className="w-full max-w-4xl h-full bg-[var(--bg-surface)] border-l border-[var(--border-default)] flex flex-col shadow-2xl animate-in slide-in-from-right duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="border-b border-[#1E1E1E] bg-[#0C0C0C] px-6 py-4 flex flex-col gap-3">
+        <div className="border-b border-[var(--border-default)] bg-[var(--bg-panel)] px-6 py-4 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               {monitor && (
                 <span
-                  className={`px-2 py-0.5 text-xs font-mono font-bold tracking-wider border ${
+                  className={`px-2 py-0.5 text-xs font-mono font-bold tracking-wider border rounded-xs ${
                     monitor.method === 'GET'
-                      ? 'text-[#22C55E] border-[#22C55E30] bg-[#22C55E10]'
-                      : 'text-[#6B6B6B] border-[#6B6B6B30] bg-[#6B6B6B10]'
+                      ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10'
+                      : 'text-[var(--text-muted)] border-[var(--border-default)] bg-[var(--bg-input)]'
                   }`}
                 >
                   {monitor.method}
@@ -159,14 +159,14 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
 
               {statusCfg && (
                 <span
-                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-mono border ${statusCfg.text} ${statusCfg.bg} ${statusCfg.border}`}
+                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-mono border rounded-md font-semibold ${statusCfg.text} ${statusCfg.bg} ${statusCfg.border}`}
                 >
                   {statusCfg.icon}
                   <span>{statusCfg.label}</span>
                 </span>
               )}
 
-              <h2 id="monitor-drawer-title" className="text-sm font-semibold text-[#E8E8E8] truncate">
+              <h2 id="monitor-drawer-title" className="text-sm font-semibold text-[var(--text-primary)] truncate">
                 {monitor?.name || 'Monitor Details'}
               </h2>
             </div>
@@ -174,7 +174,7 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 text-[#6B6B6B] hover:text-[#E8E8E8] transition-colors"
+              className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-sm"
               aria-label="Close drawer"
             >
               <X className="w-5 h-5" />
@@ -184,19 +184,19 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
           {/* URL bar & Action Buttons */}
           {monitor && (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-              <div className="flex items-center gap-2 min-w-0 flex-1 bg-[#121212] border border-[#222222] px-3 py-1.5">
-                <span className="text-xs font-mono text-[#E8E8E8] truncate select-all">
+              <div className="flex items-center gap-2 min-w-0 flex-1 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-md px-3 py-1.5">
+                <span className="text-xs font-mono text-[var(--text-primary)] truncate select-all">
                   {monitor.url}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCopyUrl(monitor.url)}
-                  className="text-[#6B6B6B] hover:text-[#E8E8E8] p-1 shrink-0 ml-auto"
+                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 shrink-0 ml-auto rounded-sm"
                   title="Copy URL"
                   aria-label="Copy URL"
                 >
                   {copiedUrl ? (
-                    <Check className="w-3.5 h-3.5 text-[#22C55E]" />
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
                   ) : (
                     <Copy className="w-3.5 h-3.5" />
                   )}
@@ -225,9 +225,9 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                   onClick={() => onTogglePause(monitor.id, monitor.enabled)}
                   leftIcon={
                     monitor.enabled ? (
-                      <Pause className="w-3.5 h-3.5 text-[#F59E0B]" />
+                      <Pause className="w-3.5 h-3.5 text-amber-500" />
                     ) : (
-                      <Play className="w-3.5 h-3.5 text-[#22C55E]" />
+                      <Play className="w-3.5 h-3.5 text-emerald-500" />
                     )
                   }
                   className="text-xs"
@@ -241,8 +241,8 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onDelete(monitor.id, monitor.name)}
-                  leftIcon={<Trash2 className="w-3.5 h-3.5 text-[#EF4444]" />}
-                  className="text-xs text-[#EF4444] hover:bg-[#EF444410]"
+                  leftIcon={<Trash2 className="w-3.5 h-3.5 text-rose-500" />}
+                  className="text-xs text-rose-500 hover:bg-rose-500/10"
                   title="Delete monitor"
                 >
                   Delete
@@ -253,9 +253,9 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
         </div>
 
         {/* Period Selector Tabs */}
-        <div className="flex items-center justify-between border-b border-[#1E1E1E] bg-[#0A0A0A] px-6 py-2.5">
+        <div className="flex items-center justify-between border-b border-[var(--border-default)] bg-[var(--bg-panel)] px-6 py-2.5">
           <div className="flex items-center gap-1">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] mr-2">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mr-2 font-semibold">
               Time Range:
             </span>
             {(['1h', '24h', '7d', '30d'] as PeriodType[]).map((p) => {
@@ -265,10 +265,10 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                   key={p}
                   type="button"
                   onClick={() => setPeriod(p)}
-                  className={`px-2.5 py-1 text-xs font-mono tracking-wider transition-colors border ${
+                  className={`px-2.5 py-1 text-xs font-mono tracking-wider transition-colors border rounded-md ${
                     isActive
-                      ? 'border-[#FF6A00] text-[#FF6A00] bg-[#FF6A0010] font-semibold'
-                      : 'border-[#1E1E1E] text-[#6B6B6B] hover:text-[#B0B0B0] bg-[#111111]'
+                      ? 'border-blue-500 text-blue-500 bg-blue-500/10 font-bold'
+                      : 'border-[var(--border-default)] text-[var(--text-muted)] hover:text-[var(--text-primary)] bg-[var(--bg-input)]'
                   }`}
                 >
                   {p}
@@ -277,7 +277,7 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
             })}
           </div>
 
-          <div className="text-[11px] font-mono text-[#555555]">
+          <div className="text-[11px] font-mono text-[var(--text-muted)]">
             {PERIOD_LABELS[period]}
           </div>
         </div>
@@ -297,63 +297,63 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
               {/* Analytics Key Metrics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {/* Uptime */}
-                <div className="border border-[#1E1E1E] bg-[#0C0C0C] p-3.5">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#666666] mb-1">
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-panel)] p-3.5 shadow-xs">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 font-semibold">
                     Uptime
                   </div>
-                  <div className="text-xl font-mono font-bold text-[#E8E8E8]">
+                  <div className="text-xl font-mono font-bold text-[var(--text-primary)]">
                     {analytics?.uptime_percentage !== null && analytics?.uptime_percentage !== undefined ? (
-                      <span className={analytics.uptime_percentage >= 99 ? 'text-[#22C55E]' : analytics.uptime_percentage >= 95 ? 'text-[#F59E0B]' : 'text-[#EF4444]'}>
+                      <span className={analytics.uptime_percentage >= 99 ? 'text-emerald-500' : analytics.uptime_percentage >= 95 ? 'text-amber-500' : 'text-rose-500'}>
                         {analytics.uptime_percentage.toFixed(2)}%
                       </span>
                     ) : (
-                      <span className="text-[#555555]">No checks</span>
+                      <span className="text-[var(--text-muted)]">No checks</span>
                     )}
                   </div>
-                  <div className="text-[10px] text-[#555555] font-mono mt-1">
+                  <div className="text-[10px] text-[var(--text-muted)] font-mono mt-1">
                     {analytics?.successful_checks ?? 0} of {analytics?.total_checks ?? 0} successful
                   </div>
                 </div>
 
                 {/* Avg Latency */}
-                <div className="border border-[#1E1E1E] bg-[#0C0C0C] p-3.5">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#666666] mb-1">
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-panel)] p-3.5 shadow-xs">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 font-semibold">
                     Avg Latency
                   </div>
-                  <div className="text-xl font-mono font-bold text-[#FF6A00]">
+                  <div className="text-xl font-mono font-bold text-blue-500">
                     {analytics?.average_duration_ms !== null && analytics?.average_duration_ms !== undefined ? (
                       `${Math.round(analytics.average_duration_ms)} ms`
                     ) : (
                       '—'
                     )}
                   </div>
-                  <div className="text-[10px] text-[#555555] font-mono mt-1">Mean duration</div>
+                  <div className="text-[10px] text-[var(--text-muted)] font-mono mt-1">Mean duration</div>
                 </div>
 
                 {/* Latency Min / Max */}
-                <div className="border border-[#1E1E1E] bg-[#0C0C0C] p-3.5">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#666666] mb-1">
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-panel)] p-3.5 shadow-xs">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 font-semibold">
                     Latency Range
                   </div>
-                  <div className="text-xl font-mono font-bold text-[#E8E8E8]">
+                  <div className="text-xl font-mono font-bold text-[var(--text-primary)]">
                     {analytics?.minimum_duration_ms !== null && analytics?.minimum_duration_ms !== undefined ? (
                       `${Math.round(analytics.minimum_duration_ms)} - ${Math.round(analytics.maximum_duration_ms ?? 0)} ms`
                     ) : (
                       '—'
                     )}
                   </div>
-                  <div className="text-[10px] text-[#555555] font-mono mt-1">Min to Max</div>
+                  <div className="text-[10px] text-[var(--text-muted)] font-mono mt-1">Min to Max</div>
                 </div>
 
                 {/* Outages / Consecutive Failures */}
-                <div className="border border-[#1E1E1E] bg-[#0C0C0C] p-3.5">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#666666] mb-1">
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-panel)] p-3.5 shadow-xs">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] mb-1 font-semibold">
                     Outages / Failures
                   </div>
-                  <div className="text-xl font-mono font-bold text-[#EF4444]">
+                  <div className="text-xl font-mono font-bold text-rose-500">
                     {analytics?.failed_checks ?? 0}
                   </div>
-                  <div className="text-[10px] text-[#555555] font-mono mt-1">
+                  <div className="text-[10px] text-[var(--text-muted)] font-mono mt-1">
                     {monitor.consecutive_failures > 0 ? `${monitor.consecutive_failures} consecutive` : '0 consecutive'}
                   </div>
                 </div>
@@ -376,9 +376,9 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
 
               {/* Historical Check Results Table */}
               <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between text-xs font-mono text-[#888888]">
-                  <span className="uppercase tracking-wider">Recent Health Checks</span>
-                  <span className="text-[10px] text-[#555555]">
+                <div className="flex items-center justify-between text-xs font-mono text-[var(--text-secondary)]">
+                  <span className="uppercase tracking-wider font-semibold">Recent Health Checks</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-medium">
                     {resultsData?.total ?? 0} total checks
                   </span>
                 </div>
@@ -386,33 +386,33 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                 {isResultsLoading ? (
                   <SkeletonTable rows={5} cols={5} />
                 ) : resultsData && resultsData.items.length > 0 ? (
-                  <div className="border border-[#1E1E1E] bg-[#0A0A0A] overflow-hidden">
+                  <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
                     <table className="w-full text-left border-collapse font-mono text-xs">
                       <thead>
-                        <tr className="border-b border-[#1E1E1E] bg-[#0D0D0D] text-[10px] tracking-wider text-[#6B6B6B] uppercase">
-                          <th className="py-2 px-3">Time</th>
-                          <th className="py-2 px-3">Verdict</th>
-                          <th className="py-2 px-3">Status</th>
-                          <th className="py-2 px-3 text-right">Duration</th>
-                          <th className="py-2 px-3">Detail</th>
+                        <tr className="border-b border-[var(--border-muted)] bg-[var(--bg-panel)] text-[10px] tracking-wider text-[var(--text-muted)] uppercase font-semibold">
+                          <th className="py-2.5 px-3">Time</th>
+                          <th className="py-2.5 px-3">Verdict</th>
+                          <th className="py-2.5 px-3">Status</th>
+                          <th className="py-2.5 px-3 text-right">Duration</th>
+                          <th className="py-2.5 px-3">Detail</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#161616]">
+                      <tbody className="divide-y divide-[var(--border-muted)]">
                         {resultsData.items.map((res) => {
                           const d = new Date(res.checked_at)
                           const timeStr = `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour12: false })}`
 
                           return (
-                            <tr key={res.id} className="hover:bg-[#121212] transition-colors">
-                              <td className="py-2 px-3 text-[#777777] whitespace-nowrap text-[11px]">
+                            <tr key={res.id} className="hover:bg-[var(--bg-hover)] transition-colors">
+                              <td className="py-2 px-3 text-[var(--text-muted)] whitespace-nowrap text-[11px]">
                                 {timeStr}
                               </td>
                               <td className="py-2 px-3 whitespace-nowrap">
                                 <span
-                                  className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 border ${
+                                  className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 border rounded-xs ${
                                     res.success
-                                      ? 'text-[#22C55E] bg-[#22C55E10] border-[#22C55E30]'
-                                      : 'text-[#EF4444] bg-[#EF444410] border-[#EF444430]'
+                                      ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30'
+                                      : 'text-rose-500 bg-rose-500/10 border-rose-500/30'
                                   }`}
                                 >
                                   {res.success ? 'PASS' : 'FAIL'}
@@ -420,17 +420,17 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                               </td>
                               <td className="py-2 px-3 whitespace-nowrap">
                                 {res.status_code ? (
-                                  <span className={res.status_code < 400 ? 'text-[#22C55E]' : 'text-[#EF4444]'}>
+                                  <span className={res.status_code < 400 ? 'text-emerald-500 font-semibold' : 'text-rose-500 font-semibold'}>
                                     HTTP {res.status_code}
                                   </span>
                                 ) : (
-                                  <span className="text-[#EF4444]">NO_RESPONSE</span>
+                                  <span className="text-rose-500 font-semibold">NO_RESPONSE</span>
                                 )}
                               </td>
-                              <td className="py-2 px-3 text-right text-[#FF6A00] whitespace-nowrap">
+                              <td className="py-2 px-3 text-right text-blue-500 font-bold whitespace-nowrap">
                                 {res.duration_ms !== null ? `${Math.round(res.duration_ms)} ms` : '—'}
                               </td>
-                              <td className="py-2 px-3 text-[#888888] truncate max-w-xs text-[11px]">
+                              <td className="py-2 px-3 text-[var(--text-secondary)] truncate max-w-xs text-[11px]">
                                 {res.error_message || (res.success ? 'Healthy' : res.error_code || '—')}
                               </td>
                             </tr>
@@ -440,7 +440,7 @@ export const MonitorDetailDrawer: React.FC<MonitorDetailDrawerProps> = ({
                     </table>
                   </div>
                 ) : (
-                  <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-6 text-center text-xs font-mono text-[#555555]">
+                  <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 text-center text-xs font-mono text-[var(--text-muted)]">
                     No historical checks recorded yet.
                   </div>
                 )}

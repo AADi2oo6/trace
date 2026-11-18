@@ -51,9 +51,9 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         aria-describedby={error ? 'url-error' : undefined}
         className={[
           'h-10 w-full px-4 text-sm font-mono tracking-wide',
-          'bg-[#0A0A0A] border-0 outline-none',
-          'text-[#F5F5F5] placeholder:text-[#3A3A3A]',
-          'selection:bg-[#FF6A00] selection:text-black',
+          'bg-[var(--bg-input)] border-0 outline-none',
+          'text-[var(--text-primary)] placeholder:text-[var(--text-dim)]',
+          'selection:bg-blue-600 selection:text-white',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'transition-colors duration-100',
         ].join(' ')}

@@ -133,15 +133,15 @@ export const DemoApi: React.FC = () => {
       description="Predictable endpoints for testing HTTP methods, status codes, CORS preflight, delays, headers, and SSRF boundaries."
       icon={<FlaskConical className="w-4 h-4" />}
       actions={
-        <div className="flex items-center gap-2 bg-[#121212] border border-[#222222] px-3 py-1.5 shrink-0">
-          <span className="text-[11px] font-mono text-[#666666]">BASE:</span>
-          <code className="text-xs font-mono text-[#E8E8E8]">{DEMO_BASE_URL}/demo</code>
+        <div className="flex items-center gap-2 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg px-3 py-1.5 shrink-0">
+          <span className="text-[11px] font-mono text-[var(--text-muted)] font-semibold">BASE:</span>
+          <code className="text-xs font-mono text-[var(--text-primary)]">{DEMO_BASE_URL}/demo</code>
           <button
             onClick={() => handleCopyUrl('')}
-            className="text-[#666666] hover:text-[#FF6A00] transition-colors p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-sm"
             title="Copy Base URL"
           >
-            {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
         </div>
       }
@@ -152,10 +152,10 @@ export const DemoApi: React.FC = () => {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <button
             onClick={() => setSelectedCategory('ALL')}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border transition-colors shrink-0 ${
+            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border rounded-md transition-colors shrink-0 ${
               selectedCategory === 'ALL'
-                ? 'bg-[#FF6A00]/10 border-[#FF6A00] text-[#FF6A00]'
-                : 'bg-[#121212] border-[#222222] text-[#888888] hover:border-[#333333] hover:text-[#CCCCCC]'
+                ? 'border-blue-500 text-blue-500 bg-blue-500/10 font-bold'
+                : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             All ({data?.total || 0})
@@ -167,10 +167,10 @@ export const DemoApi: React.FC = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border transition-colors shrink-0 ${
+                className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider border rounded-md transition-colors shrink-0 ${
                   isSelected
-                    ? 'bg-[#FF6A00]/10 border-[#FF6A00] text-[#FF6A00]'
-                    : 'bg-[#121212] border-[#222222] text-[#888888] hover:border-[#333333] hover:text-[#CCCCCC]'
+                    ? 'border-blue-500 text-blue-500 bg-blue-500/10 font-bold'
+                    : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {cat} ({count})
@@ -181,13 +181,13 @@ export const DemoApi: React.FC = () => {
 
         {/* Search Input */}
         <div className="relative">
-          <Search className="w-4 h-4 text-[#555555] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search demo endpoints by name, path, tag, or status code..."
-            className="w-full bg-[#0D0D0D] border border-[#1E1E1E] text-xs text-[#E8E8E8] pl-9 pr-3 py-2 font-mono placeholder:text-[#444444] focus:outline-none focus:border-[#FF6A00] transition-colors"
+            className="w-full bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg text-xs text-[var(--text-primary)] pl-9 pr-3 py-2 font-mono placeholder:[var(--text-muted)] focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
       </div>
@@ -195,7 +195,7 @@ export const DemoApi: React.FC = () => {
       {/* ── Content Layout ───────────────────────────────────────── */}
       <div className="mt-6">
         {isLoading && (
-          <div className="p-8 border border-[#1E1E1E] bg-[#0E0E0E] text-center font-mono text-xs text-[#666666]">
+          <div className="p-8 border border-[var(--border-default)] bg-[var(--bg-surface)] rounded-xl text-center font-mono text-xs text-[var(--text-muted)]">
             Loading TRACE Demo API Catalogue...
           </div>
         )}
@@ -225,27 +225,27 @@ export const DemoApi: React.FC = () => {
                   <button
                     key={ep.id}
                     onClick={() => setSelectedEndpointId(ep.id)}
-                    className={`flex flex-col text-left p-3 border transition-all ${
+                    className={`flex flex-col text-left p-3 border rounded-xl transition-all ${
                       isSelected
-                        ? 'border-[#FF6A00] bg-[#161616] shadow-sm'
-                        : 'border-[#1E1E1E] bg-[#0E0E0E] hover:border-[#2C2C2C] hover:bg-[#121212]'
+                        ? 'border-blue-500 bg-[var(--bg-active)] shadow-xs'
+                        : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 min-w-0">
                         <span
-                          className={`text-[10px] font-mono px-1.5 py-0.5 border font-semibold ${getMethodBadgeClass(
+                          className={`text-[10px] font-mono px-1.5 py-0.5 border rounded-xs font-semibold ${getMethodBadgeClass(
                             ep.method,
                           )}`}
                         >
                           {ep.method}
                         </span>
-                        <span className="text-xs font-mono font-medium text-[#E8E8E8] truncate">
+                        <span className="text-xs font-mono font-medium text-[var(--text-primary)] truncate">
                           {ep.path}
                         </span>
                       </div>
                       <span
-                        className={`text-[10px] font-mono px-1.5 py-0.5 border shrink-0 ${getStatusBadgeClass(
+                        className={`text-[10px] font-mono px-1.5 py-0.5 border rounded-md shrink-0 font-semibold ${getStatusBadgeClass(
                           ep.expected_status,
                         )}`}
                       >
@@ -253,11 +253,11 @@ export const DemoApi: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="mt-1.5 text-[11px] text-[#A0A0A0] line-clamp-1">
+                    <div className="mt-1.5 text-[11px] text-[var(--text-secondary)] line-clamp-1 font-medium">
                       {ep.name}
                     </div>
 
-                    <div className="mt-1 text-[10px] text-[#666666] line-clamp-2">
+                    <div className="mt-1 text-[10px] text-[var(--text-muted)] line-clamp-2">
                       {ep.description}
                     </div>
 
@@ -266,7 +266,7 @@ export const DemoApi: React.FC = () => {
                         {ep.tags.map((t) => (
                           <span
                             key={t}
-                            className="text-[9px] font-mono px-1.5 py-0.2 bg-[#121212] border border-[#222222] text-[#777777]"
+                            className="text-[9px] font-mono px-1.5 py-0.2 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-xs text-[var(--text-muted)]"
                           >
                             #{t}
                           </span>
@@ -280,36 +280,36 @@ export const DemoApi: React.FC = () => {
 
             {/* ── Right Column: Selected Endpoint Inspector (7 cols) ─ */}
             {activeEndpoint && (
-              <div className="lg:col-span-7 border border-[#1E1E1E] bg-[#0E0E0E] p-5 space-y-6">
+              <div className="lg:col-span-7 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-5 space-y-6 shadow-xs">
                 {/* Header Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1E1E1E]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--border-muted)]">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
-                        className={`text-xs font-mono px-2 py-0.5 border font-bold ${getMethodBadgeClass(
+                        className={`text-xs font-mono px-2 py-0.5 border rounded-xs font-bold ${getMethodBadgeClass(
                           activeEndpoint.method,
                         )}`}
                       >
                         {activeEndpoint.method}
                       </span>
-                      <span className="text-sm font-mono font-semibold text-[#FFFFFF]">
+                      <span className="text-sm font-mono font-semibold text-[var(--text-primary)]">
                         {activeEndpoint.path}
                       </span>
                       <span
-                        className={`text-xs font-mono px-2 py-0.5 border ${getStatusBadgeClass(
+                        className={`text-xs font-mono px-2 py-0.5 border rounded-md font-semibold ${getStatusBadgeClass(
                           activeEndpoint.expected_status,
                         )}`}
                       >
                         Expected: {activeEndpoint.expected_status}
                       </span>
                     </div>
-                    <div className="text-xs font-medium text-[#E8E8E8]">{activeEndpoint.name}</div>
+                    <div className="text-xs font-medium text-[var(--text-secondary)]">{activeEndpoint.name}</div>
                   </div>
 
                   {/* Open in API Tester Button */}
                   <button
                     onClick={() => handleOpenInTester(activeEndpoint)}
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[#FF6A00] hover:bg-[#FF7A1A] text-black font-mono text-xs font-bold transition-colors shrink-0 shadow-sm"
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-semibold rounded-lg transition-colors shrink-0 shadow-xs"
                   >
                     <Terminal className="w-3.5 h-3.5" />
                     <span>Test in API Tester</span>
@@ -319,21 +319,21 @@ export const DemoApi: React.FC = () => {
 
                 {/* Target URL with Copy */}
                 <div>
-                  <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider mb-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider mb-1 font-semibold">
                     Target Execution URL
                   </div>
-                  <div className="flex items-center justify-between gap-2 p-2 bg-[#121212] border border-[#222222]">
-                    <code className="text-xs font-mono text-[#FF6A00] break-all">
+                  <div className="flex items-center justify-between gap-2 p-2 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg">
+                    <code className="text-xs font-mono text-blue-500 break-all font-semibold">
                       {DEMO_BASE_URL}
                       {activeEndpoint.path}
                     </code>
                     <button
                       onClick={() => handleCopyUrl(activeEndpoint.path)}
-                      className="text-[#888888] hover:text-[#FFFFFF] transition-colors p-1 shrink-0"
+                      className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors p-1 shrink-0 rounded-sm"
                       title="Copy URL"
                     >
                       {copiedUrl ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <Check className="w-3.5 h-3.5 text-emerald-500" />
                       ) : (
                         <Copy className="w-3.5 h-3.5" />
                       )}
@@ -343,10 +343,10 @@ export const DemoApi: React.FC = () => {
 
                 {/* Description & Technical Guidance */}
                 <div>
-                  <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider mb-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider mb-1 font-semibold">
                     Behavior & Testing Guidance
                   </div>
-                  <p className="text-xs text-[#CCCCCC] leading-relaxed">
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                     {activeEndpoint.description}
                   </p>
                 </div>
@@ -354,30 +354,30 @@ export const DemoApi: React.FC = () => {
                 {/* Query Parameters Section */}
                 {activeEndpoint.query_params && activeEndpoint.query_params.length > 0 && (
                   <div>
-                    <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <Code2 className="w-3.5 h-3.5 text-[#888888]" />
+                    <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5 font-semibold">
+                      <Code2 className="w-3.5 h-3.5 text-blue-500" />
                       <span>Supported Query Parameters</span>
                     </div>
-                    <div className="border border-[#1E1E1E] overflow-x-auto">
+                    <div className="border border-[var(--border-default)] rounded-lg overflow-x-auto bg-[var(--bg-input)]">
                       <table className="w-full text-left text-xs font-mono">
-                        <thead className="bg-[#121212] text-[#888888] border-b border-[#1E1E1E]">
+                        <thead className="bg-[var(--bg-panel)] text-[var(--text-muted)] border-b border-[var(--border-muted)]">
                           <tr>
-                            <th className="p-2 font-normal">Param</th>
-                            <th className="p-2 font-normal">Type</th>
-                            <th className="p-2 font-normal">Default</th>
-                            <th className="p-2 font-normal">Description</th>
+                            <th className="p-2 font-semibold">Param</th>
+                            <th className="p-2 font-semibold">Type</th>
+                            <th className="p-2 font-semibold">Default</th>
+                            <th className="p-2 font-semibold">Description</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#1A1A1A] text-[#CCCCCC]">
+                        <tbody className="divide-y divide-[var(--border-muted)] text-[var(--text-secondary)]">
                           {activeEndpoint.query_params.map((qp) => (
-                            <tr key={qp.name} className="hover:bg-[#121212]/50">
-                              <td className="p-2 text-[#FF6A00] font-semibold">{qp.name}</td>
-                              <td className="p-2 text-[#888888]">{qp.type}</td>
-                              <td className="p-2 text-[#AAAAAA]">{String(qp.default ?? '—')}</td>
-                              <td className="p-2 text-[#999999] text-[11px] leading-snug">
+                            <tr key={qp.name} className="hover:bg-[var(--bg-hover)]">
+                              <td className="p-2 text-blue-500 font-semibold">{qp.name}</td>
+                              <td className="p-2 text-[var(--text-muted)]">{qp.type}</td>
+                              <td className="p-2 text-[var(--text-primary)]">{String(qp.default ?? '—')}</td>
+                              <td className="p-2 text-[var(--text-secondary)] text-[11px] leading-snug">
                                 {qp.description}
                                 {qp.options && (
-                                  <div className="text-[10px] text-[#666666] mt-0.5">
+                                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
                                     Options: {qp.options.join(', ')}
                                   </div>
                                 )}
@@ -393,15 +393,15 @@ export const DemoApi: React.FC = () => {
                 {/* Request Headers Section */}
                 {activeEndpoint.headers && Object.keys(activeEndpoint.headers).length > 0 && (
                   <div>
-                    <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-[#888888]" />
+                    <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5 font-semibold">
+                      <Layers className="w-3.5 h-3.5 text-blue-500" />
                       <span>Recommended Request Headers</span>
                     </div>
-                    <div className="p-3 bg-[#121212] border border-[#1E1E1E] space-y-1 font-mono text-xs">
+                    <div className="p-3 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg space-y-1 font-mono text-xs">
                       {Object.entries(activeEndpoint.headers).map(([k, v]) => (
                         <div key={k} className="flex items-center gap-2">
-                          <span className="text-[#888888]">{k}:</span>
-                          <span className="text-emerald-400 font-medium">{v}</span>
+                          <span className="text-[var(--text-muted)]">{k}:</span>
+                          <span className="text-emerald-500 font-medium">{v}</span>
                         </div>
                       ))}
                     </div>
@@ -412,25 +412,25 @@ export const DemoApi: React.FC = () => {
                 {activeEndpoint.body !== null && activeEndpoint.body !== undefined && (
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider flex items-center gap-1.5">
-                        <FileJson className="w-3.5 h-3.5 text-[#888888]" />
+                      <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5 font-semibold">
+                        <FileJson className="w-3.5 h-3.5 text-blue-500" />
                         <span>Sample Request Body (JSON)</span>
                       </div>
                       <button
                         onClick={() =>
                           handleCopyText(JSON.stringify(activeEndpoint.body, null, 2), 'body')
                         }
-                        className="text-[11px] font-mono text-[#888888] hover:text-[#FFFFFF] flex items-center gap-1"
+                        className="text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1 rounded-sm"
                       >
                         {copiedBody ? (
-                          <Check className="w-3 h-3 text-emerald-400" />
+                          <Check className="w-3 h-3 text-emerald-500" />
                         ) : (
                           <Copy className="w-3 h-3" />
                         )}
                         <span>{copiedBody ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <pre className="p-3 bg-[#080808] border border-[#1E1E1E] font-mono text-xs text-[#CCCCCC] overflow-x-auto max-h-48 leading-relaxed">
+                    <pre className="p-3 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg font-mono text-xs text-[var(--text-primary)] overflow-x-auto max-h-48 leading-relaxed">
                       {JSON.stringify(activeEndpoint.body, null, 2)}
                     </pre>
                   </div>
@@ -441,8 +441,8 @@ export const DemoApi: React.FC = () => {
                   activeEndpoint.sample_response !== undefined && (
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <div className="text-[10px] font-mono text-[#666666] uppercase tracking-wider flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-[#888888]" />
+                        <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5 font-semibold">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                           <span>Sample Expected Response</span>
                         </div>
                         <button
@@ -452,27 +452,27 @@ export const DemoApi: React.FC = () => {
                               'response',
                             )
                           }
-                          className="text-[11px] font-mono text-[#888888] hover:text-[#FFFFFF] flex items-center gap-1"
+                          className="text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1 rounded-sm"
                         >
                           {copiedResponse ? (
-                            <Check className="w-3 h-3 text-emerald-400" />
+                            <Check className="w-3 h-3 text-emerald-500" />
                           ) : (
                             <Copy className="w-3 h-3" />
                           )}
                           <span>{copiedResponse ? 'Copied' : 'Copy'}</span>
                         </button>
                       </div>
-                      <pre className="p-3 bg-[#080808] border border-[#1E1E1E] font-mono text-xs text-emerald-400/90 overflow-x-auto max-h-56 leading-relaxed">
+                      <pre className="p-3 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg font-mono text-xs text-[var(--text-primary)] overflow-x-auto max-h-48 leading-relaxed">
                         {JSON.stringify(activeEndpoint.sample_response, null, 2)}
                       </pre>
                     </div>
                   )}
 
                 {/* Action Note Callout */}
-                <div className="p-3 bg-[#111111] border border-[#222222] flex items-start gap-2.5 text-xs text-[#888888]">
-                  <Terminal className="w-4 h-4 text-[#FF6A00] shrink-0 mt-0.5" />
+                <div className="p-3 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-lg flex items-start gap-2.5 text-xs text-[var(--text-secondary)]">
+                  <Terminal className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <div className="leading-snug">
-                    <strong className="text-[#CCCCCC]">Controlled Testing Pipeline:</strong> When
+                    <strong className="text-[var(--text-primary)]">Controlled Testing Pipeline:</strong> When
                     you click &quot;Test in API Tester&quot;, TRACE configures the request parameters
                     and headers in the editor without triggering execution. You can inspect the
                     setup, adjust parameters, and send the request via the standard pipeline.

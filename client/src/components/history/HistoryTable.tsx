@@ -51,51 +51,51 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({
   isDeletingId,
 }) => {
   return (
-    <div className="border border-[#1E1E1E] bg-[#0A0A0A] overflow-hidden">
+    <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#1E1E1E] bg-[#0D0D0D] text-[10px] font-mono tracking-wider text-[#6B6B6B] uppercase select-none">
-              <th className="py-2.5 px-4 font-medium w-24">Time</th>
-              <th className="py-2.5 px-3 font-medium w-24">Method</th>
-              <th className="py-2.5 px-4 font-medium">Target URL</th>
-              <th className="py-2.5 px-4 font-medium w-32">Status</th>
-              <th className="py-2.5 px-4 font-medium w-24 text-right">Duration</th>
-              <th className="py-2.5 px-4 font-medium w-24 text-right">Size</th>
-              <th className="py-2.5 px-4 font-medium w-24 text-right">Actions</th>
+            <tr className="border-b border-[var(--border-muted)] bg-[var(--bg-panel)] text-[10px] font-mono tracking-wider text-[var(--text-muted)] uppercase select-none font-semibold">
+              <th className="py-2.5 px-4 font-semibold w-24">Time</th>
+              <th className="py-2.5 px-3 font-semibold w-24">Method</th>
+              <th className="py-2.5 px-4 font-semibold">Target URL</th>
+              <th className="py-2.5 px-4 font-semibold w-32">Status</th>
+              <th className="py-2.5 px-4 font-semibold w-24 text-right">Duration</th>
+              <th className="py-2.5 px-4 font-semibold w-24 text-right">Size</th>
+              <th className="py-2.5 px-4 font-semibold w-24 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#161616] font-mono text-xs">
+          <tbody className="divide-y divide-[var(--border-muted)] font-mono text-xs">
             {items.map((item) => {
               const isSelected = selectedId === item.id
               const isDeleting = isDeletingId === item.id
               const methodStyle = methodColorMap[item.method] || {
-                text: 'text-[#E8E8E8]',
-                bg: 'bg-[#1E1E1E]',
-                border: 'border-[#333333]',
+                text: 'text-[var(--text-primary)]',
+                bg: 'bg-[var(--bg-input)]',
+                border: 'border-[var(--border-default)]',
               }
 
               // Status badge styling
               let statusBadge = (
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono border text-[#EF4444] bg-[#EF444410] border-[#EF444430]">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono border text-rose-500 bg-rose-500/10 border-rose-500/30 rounded-md">
                   <AlertCircle className="w-3 h-3 shrink-0" />
                   {item.error?.code === 'SSRF_BLOCKED' ? 'BLOCKED' : 'ERR'}
                 </span>
               )
 
               if (item.status_code !== null) {
-                let badgeClass = 'text-[#22C55E] bg-[#22C55E10] border-[#22C55E30]'
+                let badgeClass = 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30'
                 if (item.status_code >= 300 && item.status_code < 400) {
-                  badgeClass = 'text-[#F59E0B] bg-[#F59E0B10] border-[#F59E0B30]'
+                  badgeClass = 'text-amber-500 bg-amber-500/10 border-amber-500/30'
                 } else if (item.status_code >= 400 && item.status_code < 500) {
-                  badgeClass = 'text-[#FF6A00] bg-[#FF6A0010] border-[#FF6A0030]'
+                  badgeClass = 'text-orange-500 bg-orange-500/10 border-orange-500/30'
                 } else if (item.status_code >= 500) {
-                  badgeClass = 'text-[#EF4444] bg-[#EF444410] border-[#EF444430]'
+                  badgeClass = 'text-rose-500 bg-rose-500/10 border-rose-500/30'
                 }
 
                 statusBadge = (
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono border ${badgeClass}`}
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono border rounded-md font-semibold ${badgeClass}`}
                   >
                     <span>{item.status_code}</span>
                     {item.status_text && (
@@ -113,26 +113,26 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({
                   onClick={() => onSelect(item)}
                   className={`group transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-[#1A1A1A] text-[#E8E8E8]'
-                      : 'hover:bg-[#121212] text-[#B0B0B0]'
+                      ? 'bg-[var(--bg-active)] text-[var(--text-primary)] font-medium'
+                      : 'hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]'
                   } ${isDeleting ? 'opacity-40 pointer-events-none' : ''}`}
                 >
                   {/* Time */}
-                  <td className="py-2.5 px-4 text-[#6B6B6B] whitespace-nowrap text-[11px]">
+                  <td className="py-2.5 px-4 text-[var(--text-muted)] whitespace-nowrap text-[11px]">
                     {formatTimestamp(item.created_at)}
                   </td>
 
                   {/* Method */}
                   <td className="py-2.5 px-3 whitespace-nowrap">
                     <span
-                      className={`inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider border ${methodStyle.text} ${methodStyle.bg} ${methodStyle.border}`}
+                      className={`inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider border rounded-xs ${methodStyle.text} ${methodStyle.bg} ${methodStyle.border}`}
                     >
                       {item.method}
                     </span>
                   </td>
 
                   {/* URL */}
-                  <td className="py-2.5 px-4 max-w-xs md:max-w-md lg:max-w-lg truncate text-[#E8E8E8] group-hover:text-white" title={item.url}>
+                  <td className="py-2.5 px-4 max-w-xs md:max-w-md lg:max-w-lg truncate text-[var(--text-primary)] group-hover:text-blue-500 font-medium transition-colors" title={item.url}>
                     {item.url}
                   </td>
 
@@ -142,12 +142,12 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({
                   </td>
 
                   {/* Duration */}
-                  <td className="py-2.5 px-4 text-right text-[#888888] whitespace-nowrap text-[11px]">
+                  <td className="py-2.5 px-4 text-right text-[var(--text-muted)] whitespace-nowrap text-[11px] font-semibold">
                     {formatMs(item.duration_ms)}
                   </td>
 
                   {/* Size */}
-                  <td className="py-2.5 px-4 text-right text-[#888888] whitespace-nowrap text-[11px]">
+                  <td className="py-2.5 px-4 text-right text-[var(--text-muted)] whitespace-nowrap text-[11px]">
                     {formatBytes(item.response_size)}
                   </td>
 
@@ -160,7 +160,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({
                           e.stopPropagation()
                           onSelect(item)
                         }}
-                        className="p-1 text-[#6B6B6B] hover:text-[#FF6A00] transition-colors"
+                        className="p-1 text-[var(--text-muted)] hover:text-blue-500 transition-colors rounded-sm"
                         title="Inspect details"
                         aria-label={`Inspect ${item.method} ${item.url}`}
                       >
@@ -169,7 +169,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({
                       <button
                         type="button"
                         onClick={(e) => onDelete(item.id, e)}
-                        className="p-1 text-[#6B6B6B] hover:text-[#EF4444] transition-colors"
+                        className="p-1 text-[var(--text-muted)] hover:text-rose-500 transition-colors rounded-sm"
                         title="Delete from history"
                         aria-label={`Delete ${item.method} ${item.url}`}
                       >

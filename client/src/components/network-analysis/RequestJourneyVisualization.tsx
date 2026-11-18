@@ -20,7 +20,7 @@ export const RequestJourneyVisualization: React.FC<RequestJourneyVisualizationPr
   return (
     <div className="space-y-6">
       {/* View Switcher Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#161922] p-4 border border-slate-200 dark:border-[#222736]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#161922] p-4 border border-slate-200 dark:border-[#222736] rounded-lg shadow-xs">
         <div>
           <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
             {title}
@@ -36,7 +36,7 @@ export const RequestJourneyVisualization: React.FC<RequestJourneyVisualizationPr
             onClick={() => setViewMode('both')}
             className={`px-3 py-1 rounded transition-colors ${
               viewMode === 'both'
-                ? 'bg-white dark:bg-[#1E2230] text-orange-500 font-semibold shadow-xs'
+                ? 'bg-white dark:bg-[#1E2230] text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -47,7 +47,7 @@ export const RequestJourneyVisualization: React.FC<RequestJourneyVisualizationPr
             onClick={() => setViewMode('waterfall')}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded transition-colors ${
               viewMode === 'waterfall'
-                ? 'bg-white dark:bg-[#1E2230] text-orange-500 font-semibold shadow-xs'
+                ? 'bg-white dark:bg-[#1E2230] text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -59,7 +59,7 @@ export const RequestJourneyVisualization: React.FC<RequestJourneyVisualizationPr
             onClick={() => setViewMode('timeline')}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded transition-colors ${
               viewMode === 'timeline'
-                ? 'bg-white dark:bg-[#1E2230] text-orange-500 font-semibold shadow-xs'
+                ? 'bg-white dark:bg-[#1E2230] text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >

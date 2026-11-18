@@ -14,11 +14,11 @@
   --color-trace-border: var(--border-default);
   --color-trace-border-strong: var(--border-strong);
 
-  /* ── Orange Accent ────────────────────────────────────────────── */
+  /* ── Vibrant Modern Accents ────────────────────────────────────── */
+  --color-trace-blue: var(--accent-blue);
+  --color-trace-purple: var(--accent-purple);
+  --color-trace-cyan: var(--accent-cyan);
   --color-trace-orange: var(--accent-orange);
-  --color-trace-dark-orange: var(--accent-orange-dark);
-  --color-trace-orange-dim: var(--accent-orange-dim);
-  --color-trace-orange-subtle: var(--accent-orange-subtle);
 
   /* ── Semantic Status ──────────────────────────────────────────── */
   --color-trace-success: var(--status-success);
@@ -27,7 +27,7 @@
   --color-trace-info: var(--status-info);
 
   /* ── Typography ───────────────────────────────────────────────── */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -53,13 +53,18 @@
   --border-strong: #3D465A;
   --divider: #282F3E;
 
+  /* Premium Accents */
+  --accent-blue: #3B82F6;
+  --accent-blue-hover: #2563EB;
+  --accent-purple: #8B5CF6;
+  --accent-cyan: #06B6D4;
   --accent-orange: #FF6A00;
   --accent-orange-dark: #D94F00;
   --accent-orange-hover: #FF7A1A;
   --accent-orange-dim: rgba(255, 106, 0, 0.12);
   --accent-orange-subtle: rgba(255, 106, 0, 0.05);
 
-  --status-success: #22C55E;
+  --status-success: #10B981;
   --status-warning: #F59E0B;
   --status-error: #EF4444;
   --status-info: #3B82F6;
@@ -79,8 +84,8 @@
   --bg-surface: #FFFFFF;           /* Pure white surface */
   --bg-surface-secondary: #F1F5F9; /* Elevated secondary surface */
   --bg-panel: #FFFFFF;
-  --bg-panel-secondary: #F1F5F9;
-  --bg-panel-hover: #E2E8F0;
+  --bg-panel-secondary: #F8FAFC;
+  --bg-panel-hover: #F1F5F9;
   --bg-card: #FFFFFF;
   --bg-input: #FFFFFF;
 
@@ -94,13 +99,18 @@
   --border-strong: #CBD5E1;
   --divider: #E2E8F0;
 
+  /* Premium Accents */
+  --accent-blue: #2563EB;
+  --accent-blue-hover: #1D4ED8;
+  --accent-purple: #7C3AED;
+  --accent-cyan: #0891B2;
   --accent-orange: #EA580C;
   --accent-orange-dark: #C2410C;
   --accent-orange-hover: #D94F00;
   --accent-orange-dim: rgba(234, 88, 12, 0.12);
   --accent-orange-subtle: rgba(234, 88, 12, 0.05);
 
-  --status-success: #16A34A;
+  --status-success: #059669;
   --status-warning: #D97706;
   --status-error: #DC2626;
   --status-info: #2563EB;

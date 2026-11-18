@@ -25,11 +25,11 @@ export const NavItem: React.FC<NavItemProps> = ({
       title={collapsed ? label : undefined}
       className={({ isActive }) =>
         [
-          'group relative flex items-center gap-3 px-3 py-2 transition-colors duration-150',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
+          'group relative flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-150 select-none text-xs font-mono',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500',
           isActive
-            ? 'bg-[#FF6A0010] text-[#FF6A00] border-l-2 border-[#FF6A00] pl-[10px]'
-            : 'text-[var(--text-muted)] border-l-2 border-transparent hover:text-[var(--text-primary)] hover:bg-[var(--bg-panel-hover)]',
+            ? 'bg-blue-600/10 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
+            : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-panel-hover)]',
         ]
           .filter(Boolean)
           .join(' ')
@@ -37,11 +37,19 @@ export const NavItem: React.FC<NavItemProps> = ({
     >
       {({ isActive }) => (
         <>
+          {/* Active Accent Bar */}
+          {isActive && (
+            <span
+              className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-blue-600 dark:bg-blue-500 rounded-r"
+              aria-hidden="true"
+            />
+          )}
+
           {/* Icon */}
           <span
             className={[
               'w-4 h-4 shrink-0 transition-colors duration-150',
-              isActive ? 'text-[#FF6A00]' : 'text-[var(--text-dim)] group-hover:text-[var(--text-secondary)]',
+              isActive ? 'text-blue-600 dark:text-blue-400' : 'text-[var(--text-dim)] group-hover:text-[var(--text-secondary)]',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -55,7 +63,7 @@ export const NavItem: React.FC<NavItemProps> = ({
             <div className="flex flex-col min-w-0">
               <span
                 className={[
-                  'text-xs font-mono tracking-wider leading-none',
+                  'text-xs tracking-wider leading-none truncate',
                   isActive ? 'text-[var(--text-primary)] font-semibold' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]',
                 ]
                   .filter(Boolean)
@@ -64,7 +72,7 @@ export const NavItem: React.FC<NavItemProps> = ({
                 {label}
               </span>
               {description && (
-                <span className="text-[10px] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] leading-tight mt-0.5 truncate transition-colors duration-150">
+                <span className="text-[10px] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] leading-tight mt-0.5 truncate transition-colors duration-150 font-normal">
                   {description}
                 </span>
               )}

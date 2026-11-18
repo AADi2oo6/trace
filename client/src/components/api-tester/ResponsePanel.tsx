@@ -301,7 +301,7 @@ export const ResponsePanel: React.FC<ResponsePanelProps> = ({
           {/* Tab bar */}
           {availableTabs.length > 0 && (
             <div
-              className="flex items-end border-b border-[#1E1E1E]"
+              className="flex items-end border-b border-[var(--border-default)]"
               role="tablist"
               aria-label="Response data"
             >
@@ -317,12 +317,11 @@ export const ResponsePanel: React.FC<ResponsePanelProps> = ({
                     aria-controls={`res-panel-${tab.id}`}
                     onClick={() => setActiveTab(tab.id)}
                     className={[
-                      'px-4 py-2.5 text-xs font-mono tracking-wider',
-                      'transition-colors duration-100 border-b-2 -mb-px',
-                      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00] focus-visible:ring-inset',
+                      'px-4 py-2.5 text-xs font-mono tracking-wider transition-all duration-150 border-b-2 -mb-px',
+                      'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:ring-inset',
                       isActive
-                        ? 'text-[#E8E8E8] border-[#FF6A00]'
-                        : 'text-[#3A3A3A] border-transparent hover:text-[#6B6B6B]',
+                        ? 'text-[var(--text-primary)] border-blue-600 dark:border-blue-500 font-bold'
+                        : 'text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]',
                     ].join(' ')}
                   >
                     {tab.label}

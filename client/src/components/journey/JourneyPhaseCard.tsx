@@ -140,12 +140,12 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
         {/* Node circle */}
         <div
           className={[
-            'w-7 h-7 rounded-none border flex items-center justify-center font-mono text-xs font-bold transition-all',
+            'w-7 h-7 rounded border flex items-center justify-center font-mono text-xs font-bold transition-all shadow-xs',
             visual.dotColor === 'bg-[#22C55E]'
-              ? 'border-[#22C55E60] bg-[#22C55E15] text-[#22C55E]'
+              ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-500'
               : visual.dotColor === 'bg-[#EF4444]'
-                ? 'border-[#EF444460] bg-[#EF444415] text-[#EF4444]'
-                : 'border-[#2A2A2A] bg-[#111111] text-[#666666]',
+                ? 'border-rose-500/50 bg-rose-500/15 text-rose-500'
+                : 'border-[var(--border-default)] bg-[var(--bg-panel)] text-[var(--text-dim)]',
           ].join(' ')}
           aria-hidden="true"
         >
@@ -156,8 +156,8 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
         {!isLast && (
           <div
             className={[
-              'w-px flex-1 my-1.5 transition-colors duration-200',
-              phase.status === 'completed' ? 'bg-[#22C55E30]' : 'bg-[#1E1E1E]',
+              'w-0.5 flex-1 my-1.5 transition-colors duration-200',
+              phase.status === 'completed' ? 'bg-emerald-500/40' : 'bg-[var(--border-default)]',
             ].join(' ')}
             style={{ minHeight: 48 }}
             aria-hidden="true"
@@ -168,9 +168,9 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
       {/* Main Phase Card */}
       <div
         className={[
-          'flex-1 border transition-all duration-150 mb-4',
+          'flex-1 border rounded-lg transition-all duration-150 mb-4 shadow-xs overflow-hidden',
           visual.borderColor,
-          isExpanded ? 'bg-[#0E0E0E]' : 'bg-[#0A0A0A]',
+          isExpanded ? 'bg-[var(--bg-panel-secondary)]' : 'bg-[var(--bg-panel)]',
         ].join(' ')}
       >
         {/* Header row (clickable to expand) */}
@@ -185,19 +185,19 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
           tabIndex={0}
           role="button"
           aria-expanded={isExpanded}
-          className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none hover:bg-[#121212] transition-colors"
+          className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none hover:bg-[var(--bg-panel-hover)] transition-colors"
         >
           {/* Phase Title + Subtitle */}
           <div className="space-y-0.5">
             <div className="flex items-center gap-2.5">
-              <span className="text-xs font-mono font-bold text-[#E8E8E8] tracking-wider uppercase">
+              <span className="text-xs font-mono font-bold text-[var(--text-primary)] tracking-wider uppercase">
                 {meta.title}
               </span>
-              <span className="text-[10px] font-mono text-[#555555]">
+              <span className="text-[10px] font-mono text-[var(--text-dim)]">
                 PHASE 0{stepNumber}
               </span>
             </div>
-            <p className="text-[11px] font-mono text-[#666666]">
+            <p className="text-[11px] font-mono text-[var(--text-muted)]">
               {meta.subtitle}
             </p>
           </div>
@@ -205,14 +205,14 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
           {/* Status + Duration + Expand Trigger */}
           <div className="flex items-center gap-3 shrink-0">
             {/* Measured Duration (or N/A) */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 border border-[#1E1E1E] bg-[#070707] text-xs font-mono">
-              <Clock className="w-3 h-3 text-[#444444]" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--border-default)] bg-[var(--bg-panel)] rounded text-xs font-mono">
+              <Clock className="w-3 h-3 text-[var(--text-dim)]" />
               {phase.duration_ms !== null ? (
-                <span className="font-semibold text-[#E8E8E8]">
+                <span className="font-semibold text-[var(--text-primary)]">
                   {formatMs(phase.duration_ms)}
                 </span>
               ) : (
-                <span className="text-[#555555]">
+                <span className="text-[var(--text-dim)]">
                   {phase.status === 'not_applicable' ? 'N/A' : 'UNMEASURED'}
                 </span>
               )}
@@ -221,7 +221,7 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
             {/* Status Badge */}
             <span
               className={[
-                'inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-semibold tracking-wider border',
+                'inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-semibold tracking-wider border rounded',
                 visual.badgeBg,
                 visual.badgeText,
                 visual.badgeBorder,
@@ -232,7 +232,7 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
             </span>
 
             {/* Expand / Collapse Icon */}
-            <span className="text-[#444444] group-hover:text-[#E8E8E8] transition-colors p-1">
+            <span className="text-[var(--text-dim)] group-hover:text-[var(--text-primary)] transition-colors p-1">
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4" />
               ) : (
@@ -244,19 +244,19 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
 
         {/* Collapsed view quick observation snippet if present */}
         {!isExpanded && phase.observations.length > 0 && (
-          <div className="px-4 pb-3 pt-0 border-t border-[#141414] mt-0 text-xs font-mono text-[#555555] truncate">
-            <span className="text-[#3A3A3A] mr-2">›</span>
+          <div className="px-4 pb-3 pt-0 border-t border-[var(--border-subtle)] mt-0 text-xs font-mono text-[var(--text-muted)] truncate">
+            <span className="text-blue-500 mr-2">›</span>
             {phase.observations[0]}
           </div>
         )}
 
         {/* Expanded Technical Details Panel */}
         {isExpanded && (
-          <div className="border-t border-[#1A1A1A] bg-[#080808] p-4 space-y-4 animate-fade-in text-xs font-mono">
+          <div className="border-t border-[var(--border-default)] bg-[var(--bg-panel-secondary)] p-4 space-y-4 animate-fade-in text-xs font-mono">
             {/* Metadata Table */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-2.5 space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                   Phase Status
                 </span>
                 <p className={['font-semibold', visual.textColor].join(' ')}>
@@ -264,32 +264,32 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
                 </p>
               </div>
 
-              <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-2.5 space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                   Measured Duration
                 </span>
-                <p className="text-[#E8E8E8] font-semibold">
+                <p className="text-[var(--text-primary)] font-semibold">
                   {phase.duration_ms !== null ? `${phase.duration_ms.toFixed(2)} ms` : 'Not Measured'}
                 </p>
               </div>
 
-              <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-2.5 space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                   Offset (Start → End)
                 </span>
-                <p className="text-[#E8E8E8] font-semibold">
+                <p className="text-[var(--text-primary)] font-semibold">
                   {phase.start_offset_ms !== null && phase.start_offset_ms !== undefined
                     ? `${phase.start_offset_ms.toFixed(1)}ms → ${phase.end_offset_ms?.toFixed(1) ?? '?'}ms`
                     : 'N/A'}
                 </p>
               </div>
 
-              <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-2.5 space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                   Telemetry Source
                 </span>
-                <div className="flex items-center gap-1.5 text-[#B0B0B0]">
-                  <Database className="w-3 h-3 text-[#555555]" />
+                <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                  <Database className="w-3 h-3 text-[var(--text-dim)]" />
                   <span>{phase.source || 'unspecified'}</span>
                 </div>
               </div>
@@ -297,15 +297,15 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
 
             {/* Diagnostic Details Dictionary */}
             {phase.details && Object.keys(phase.details).length > 0 && (
-              <div className="border border-[#141414] bg-[#0A0A0A] p-3 space-y-2">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-3 space-y-2">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)] font-semibold">
                   Phase Telemetry & Parameters
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                   {Object.entries(phase.details).map(([key, val]) => (
-                    <div key={key} className="flex items-start justify-between gap-2 p-1.5 bg-[#050505] border border-[#1A1A1A]">
-                      <span className="text-[#888888] font-mono">{key}:</span>
-                      <span className="text-[#E8E8E8] font-mono text-right truncate max-w-[200px]" title={String(val)}>
+                    <div key={key} className="flex items-start justify-between gap-2 p-1.5 bg-[var(--bg-panel-secondary)] border border-[var(--border-subtle)] rounded">
+                      <span className="text-[var(--text-muted)] font-mono">{key}:</span>
+                      <span className="text-[var(--text-primary)] font-mono text-right truncate max-w-[200px]" title={String(val)}>
                         {Array.isArray(val) ? val.join(', ') : typeof val === 'object' ? JSON.stringify(val) : String(val)}
                       </span>
                     </div>
@@ -315,32 +315,32 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
             )}
 
             {/* Phase Explanation / Context */}
-            <div className="border border-[#141414] bg-[#0A0A0A] p-3 space-y-1">
-              <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+            <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-3 space-y-1">
+              <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                 Technical Evaluation
               </span>
-              <p className="text-[#888888] leading-relaxed">
+              <p className="text-[var(--text-muted)] leading-relaxed">
                 {visual.description}
               </p>
             </div>
 
             {/* Observations List */}
             {phase.observations.length > 0 ? (
-              <div className="border border-[#141414] bg-[#0A0A0A] p-3 space-y-2">
-                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+              <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded p-3 space-y-2">
+                <span className="text-[9px] uppercase tracking-widest text-[var(--text-dim)]">
                   Phase Observations ({phase.observations.length})
                 </span>
                 <ul className="space-y-1.5" aria-label={`${meta.title} observations`}>
                   {phase.observations.map((obs, i) => (
-                    <li key={i} className="text-[#B0B0B0] flex items-start gap-2 leading-relaxed">
-                      <span className="text-[#FF6A00] select-none shrink-0 font-bold">•</span>
+                    <li key={i} className="text-[var(--text-secondary)] flex items-start gap-2 leading-relaxed">
+                      <span className="text-blue-500 select-none shrink-0 font-bold">•</span>
                       <span>{obs}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             ) : (
-              <div className="text-[#444444] text-[11px] italic">
+              <div className="text-[var(--text-dim)] text-[11px] italic">
                 No observations recorded for this phase.
               </div>
             )}

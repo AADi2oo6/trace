@@ -100,36 +100,36 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-40 flex justify-end bg-black/70 backdrop-blur-xs transition-opacity"
+      className="fixed inset-0 z-40 flex justify-end bg-black/60 backdrop-blur-xs transition-opacity"
       role="dialog"
       aria-modal="true"
       aria-labelledby="history-drawer-title"
     >
       <div
-        className="w-full max-w-3xl h-full bg-[#090909] border-l border-[#1E1E1E] flex flex-col shadow-2xl animate-in slide-in-from-right duration-200"
+        className="w-full max-w-3xl h-full bg-[var(--bg-surface)] border-l border-[var(--border-default)] flex flex-col shadow-2xl animate-in slide-in-from-right duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="border-b border-[#1E1E1E] bg-[#0C0C0C] px-6 py-4 flex flex-col gap-3">
+        <div className="border-b border-[var(--border-default)] bg-[var(--bg-panel)] px-6 py-4 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               {detail && (
                 <span
-                  className={`px-2 py-0.5 text-xs font-mono font-bold tracking-wider border ${methodStyle.text} ${methodStyle.bg} ${methodStyle.border}`}
+                  className={`px-2 py-0.5 text-xs font-mono font-bold tracking-wider border rounded-xs ${methodStyle.text} ${methodStyle.bg} ${methodStyle.border}`}
                 >
                   {detail.method}
                 </span>
               )}
               {detail?.status_code !== null && detail?.status_code !== undefined ? (
-                <span className="px-2 py-0.5 text-xs font-mono border text-[#22C55E] bg-[#22C55E10] border-[#22C55E30]">
+                <span className="px-2 py-0.5 text-xs font-mono border rounded-md text-emerald-500 bg-emerald-500/10 border-emerald-500/30 font-semibold">
                   {detail.status_code} {detail.status_text}
                 </span>
               ) : detail ? (
-                <span className="px-2 py-0.5 text-xs font-mono border text-[#EF4444] bg-[#EF444410] border-[#EF444430]">
+                <span className="px-2 py-0.5 text-xs font-mono border rounded-md text-rose-500 bg-rose-500/10 border-rose-500/30 font-semibold">
                   {detail.error?.code === 'SSRF_BLOCKED' ? 'SSRF BLOCKED' : 'FAILED'}
                 </span>
               ) : null}
-              <span className="text-xs font-mono text-[#6B6B6B]">
+              <span className="text-xs font-mono text-[var(--text-muted)]">
                 {detail?.created_at ? new Date(detail.created_at).toLocaleString() : ''}
               </span>
             </div>
@@ -138,7 +138,7 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 text-[#6B6B6B] hover:text-[#E8E8E8] transition-colors"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-md"
                 aria-label="Close drawer"
               >
                 <X className="w-5 h-5" />
@@ -149,19 +149,19 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
           {/* Target URL bar & Actions */}
           {detail && (
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-              <div className="flex items-center gap-2 min-w-0 flex-1 bg-[#121212] border border-[#222222] px-3 py-1.5">
-                <span className="text-xs font-mono text-[#E8E8E8] truncate select-all">
+              <div className="flex items-center gap-2 min-w-0 flex-1 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-md px-3 py-1.5">
+                <span className="text-xs font-mono text-[var(--text-primary)] truncate select-all">
                   {detail.url}
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCopyUrl(detail.url)}
-                  className="text-[#6B6B6B] hover:text-[#E8E8E8] p-1 shrink-0 ml-auto"
+                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 shrink-0 ml-auto rounded-sm"
                   title="Copy URL"
                   aria-label="Copy URL"
                 >
                   {copiedUrl ? (
-                    <Check className="w-3.5 h-3.5 text-[#22C55E]" />
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
                   ) : (
                     <Copy className="w-3.5 h-3.5" />
                   )}
@@ -195,8 +195,8 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
                   size="sm"
                   onClick={() => onDelete(detail.id)}
                   loading={isDeleting}
-                  leftIcon={<Trash2 className="w-3.5 h-3.5 text-[#EF4444]" />}
-                  className="text-xs text-[#EF4444] hover:bg-[#EF444410]"
+                  leftIcon={<Trash2 className="w-3.5 h-3.5 text-rose-500" />}
+                  className="text-xs text-rose-500 hover:bg-rose-500/10"
                   title="Delete from history"
                 >
                   Delete
@@ -208,14 +208,14 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
         {/* Tab Selection */}
         {detail && (
-          <div className="flex items-center border-b border-[#1E1E1E] bg-[#0A0A0A] px-6">
+          <div className="flex items-center border-b border-[var(--border-default)] bg-[var(--bg-panel)] px-6">
             <button
               type="button"
               onClick={() => setActiveTab('response')}
               className={`flex items-center gap-2 py-3 px-3 text-xs font-mono tracking-wider transition-colors border-b-2 ${
                 activeTab === 'response'
-                  ? 'border-[#FF6A00] text-[#FF6A00] font-semibold'
-                  : 'border-transparent text-[#6B6B6B] hover:text-[#B0B0B0]'
+                  ? 'border-blue-500 text-blue-500 font-bold'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
@@ -226,8 +226,8 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               onClick={() => setActiveTab('request')}
               className={`flex items-center gap-2 py-3 px-3 text-xs font-mono tracking-wider transition-colors border-b-2 ${
                 activeTab === 'request'
-                  ? 'border-[#FF6A00] text-[#FF6A00] font-semibold'
-                  : 'border-transparent text-[#6B6B6B] hover:text-[#B0B0B0]'
+                  ? 'border-blue-500 text-blue-500 font-bold'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
               <ArrowRight className="w-3.5 h-3.5" />
@@ -238,8 +238,8 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               onClick={() => setActiveTab('analysis')}
               className={`flex items-center gap-2 py-3 px-3 text-xs font-mono tracking-wider transition-colors border-b-2 ${
                 activeTab === 'analysis'
-                  ? 'border-[#FF6A00] text-[#FF6A00] font-semibold'
-                  : 'border-transparent text-[#6B6B6B] hover:text-[#B0B0B0]'
+                  ? 'border-blue-500 text-blue-500 font-bold'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
               <Radio className="w-3.5 h-3.5" />
@@ -250,8 +250,8 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               onClick={() => setActiveTab('journey')}
               className={`flex items-center gap-2 py-3 px-3 text-xs font-mono tracking-wider transition-colors border-b-2 ${
                 activeTab === 'journey'
-                  ? 'border-[#FF6A00] text-[#FF6A00] font-semibold'
-                  : 'border-transparent text-[#6B6B6B] hover:text-[#B0B0B0]'
+                  ? 'border-blue-500 text-blue-500 font-bold'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
               <Compass className="w-3.5 h-3.5" />
@@ -270,12 +270,12 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
           )}
 
           {isError && (
-            <div className="p-6 border border-[#EF444433] bg-[#EF444408] text-center space-y-3">
-              <AlertTriangle className="w-6 h-6 text-[#EF4444] mx-auto" />
-              <p className="text-xs font-mono text-[#EF4444] tracking-wider uppercase">
+            <div className="p-6 border border-rose-500/20 bg-rose-500/10 text-center space-y-3 rounded-lg">
+              <AlertTriangle className="w-6 h-6 text-rose-500 mx-auto" />
+              <p className="text-xs font-mono text-rose-500 tracking-wider uppercase font-semibold">
                 Failed to load historical record
               </p>
-              <p className="text-xs text-[#6B6B6B]">
+              <p className="text-xs text-[var(--text-muted)]">
                 The record could not be retrieved from the database.
               </p>
             </div>
@@ -298,14 +298,14 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
                       />
 
                       {detail.response_body_truncated && (
-                        <div className="p-3 border border-[#F59E0B33] bg-[#F59E0B0a] text-xs text-[#F59E0B] font-mono flex items-center gap-2">
+                        <div className="p-3 border border-amber-500/30 bg-amber-500/10 text-xs text-amber-500 font-mono flex items-center gap-2 rounded-md">
                           <AlertTriangle className="w-4 h-4 shrink-0" />
                           <span>Response body was truncated for storage (exceeded 512 KB limit).</span>
                         </div>
                       )}
 
                       <div className="space-y-4">
-                        <div className="text-xs font-mono text-[#6B6B6B] uppercase tracking-wider">
+                        <div className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider font-semibold">
                           Response Body
                         </div>
                         <ResponseBody
@@ -318,7 +318,7 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
                       {detail.response_headers && Object.keys(detail.response_headers).length > 0 && (
                         <div className="space-y-4">
-                          <div className="text-xs font-mono text-[#6B6B6B] uppercase tracking-wider">
+                          <div className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider font-semibold">
                             Response Headers ({Object.keys(detail.response_headers).length})
                           </div>
                           <ResponseHeaders headers={detail.response_headers} />
@@ -326,14 +326,14 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
                       )}
                     </>
                   ) : (
-                    <div className="p-5 border border-[#EF444433] bg-[#EF444408] space-y-3">
-                      <div className="flex items-center gap-2 text-[#EF4444]">
+                    <div className="p-5 border border-rose-500/30 bg-rose-500/10 space-y-3 rounded-lg">
+                      <div className="flex items-center gap-2 text-rose-500">
                         <AlertTriangle className="w-5 h-5 shrink-0" />
                         <span className="font-mono text-xs font-bold tracking-wider uppercase">
                           {detail.error?.code || 'EXECUTION_FAILED'}
                         </span>
                       </div>
-                      <p className="text-xs text-[#B0B0B0] font-mono leading-relaxed">
+                      <p className="text-xs text-[var(--text-secondary)] font-mono leading-relaxed">
                         {detail.error?.message || 'No response was received from the target server.'}
                       </p>
                     </div>
@@ -345,11 +345,11 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               {activeTab === 'request' && (
                 <div className="space-y-6">
                   {/* Method & Target */}
-                  <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 space-y-2">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
+                  <div className="border border-[var(--border-muted)] bg-[var(--bg-panel)] rounded-lg p-4 space-y-2">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                       Request Endpoint
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-mono text-[#E8E8E8] break-all">
+                    <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-primary)] break-all">
                       <span className={`font-bold ${methodStyle.text}`}>{detail.method}</span>
                       <span>{detail.url}</span>
                     </div>
@@ -357,15 +357,15 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
                   {/* Query Parameters */}
                   {detail.query_params && Object.keys(detail.query_params).length > 0 && (
-                    <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 space-y-3">
-                      <div className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
+                    <div className="border border-[var(--border-muted)] bg-[var(--bg-panel)] rounded-lg p-4 space-y-3">
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                         Query Parameters ({Object.keys(detail.query_params).length})
                       </div>
                       <div className="space-y-1">
                         {Object.entries(detail.query_params).map(([key, value]) => (
-                          <div key={key} className="flex items-center justify-between py-1 border-b border-[#161616] text-xs font-mono">
-                            <span className="text-[#FF6A00]">{key}</span>
-                            <span className="text-[#B0B0B0]">{value}</span>
+                          <div key={key} className="flex items-center justify-between py-1 border-b border-[var(--border-muted)] text-xs font-mono">
+                            <span className="text-blue-500 font-semibold">{key}</span>
+                            <span className="text-[var(--text-secondary)]">{value}</span>
                           </div>
                         ))}
                       </div>
@@ -374,15 +374,15 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
                   {/* Request Headers */}
                   {detail.request_headers && Object.keys(detail.request_headers).length > 0 && (
-                    <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 space-y-3">
-                      <div className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
+                    <div className="border border-[var(--border-muted)] bg-[var(--bg-panel)] rounded-lg p-4 space-y-3">
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                         Request Headers ({Object.keys(detail.request_headers).length})
                       </div>
                       <div className="space-y-1">
                         {Object.entries(detail.request_headers).map(([key, value]) => (
-                          <div key={key} className="flex items-center justify-between py-1 border-b border-[#161616] text-xs font-mono">
-                            <span className="text-[#888888]">{key}</span>
-                            <span className="text-[#E8E8E8] select-all">{value}</span>
+                          <div key={key} className="flex items-center justify-between py-1 border-b border-[var(--border-muted)] text-xs font-mono">
+                            <span className="text-[var(--text-muted)]">{key}</span>
+                            <span className="text-[var(--text-primary)] select-all font-mono">{value}</span>
                           </div>
                         ))}
                       </div>
@@ -391,12 +391,12 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
                   {/* Request Body */}
                   {detail.request_body && (
-                    <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 space-y-3">
-                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
+                    <div className="border border-[var(--border-muted)] bg-[var(--bg-panel)] rounded-lg p-4 space-y-3">
+                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] font-semibold">
                         <span>Request Body</span>
                         <span>{detail.request_body_type || 'text'}</span>
                       </div>
-                      <pre className="p-3 bg-[#111111] border border-[#1E1E1E] text-xs font-mono text-[#E8E8E8] overflow-x-auto whitespace-pre">
+                      <pre className="p-3 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-md text-xs font-mono text-[var(--text-primary)] overflow-x-auto whitespace-pre">
                         {detail.request_body}
                       </pre>
                     </div>
@@ -421,13 +421,13 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               {activeTab === 'journey' && (
                 <div className="space-y-4">
                   {/* Historical Replay Banner */}
-                  <div className="p-3 border border-amber-500/30 bg-amber-500/10 flex items-start gap-2.5">
+                  <div className="p-3 border border-amber-500/30 bg-amber-500/10 rounded-lg flex items-start gap-2.5">
                     <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                     <div className="text-xs font-mono">
                       <p className="font-semibold text-amber-500">
                         Recorded Execution (Historical) — Not a Live Network Request
                       </p>
-                      <p className="text-slate-400 mt-0.5">
+                      <p className="text-[var(--text-secondary)] mt-0.5">
                         This network lifecycle and timing telemetry was captured at {new Date(detail.created_at).toLocaleString()}.
                       </p>
                     </div>
@@ -441,7 +441,7 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
                     />
                   ) : (
                     <div className="flex items-center justify-center py-12">
-                      <p className="text-xs font-mono text-[#444444]">
+                      <p className="text-xs font-mono text-[var(--text-muted)]">
                         No journey telemetry recorded for this request.
                       </p>
                     </div>

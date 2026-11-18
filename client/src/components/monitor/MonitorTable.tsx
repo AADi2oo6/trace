@@ -82,21 +82,21 @@ export const MonitorTable: React.FC<MonitorTableProps> = ({
   runningId,
 }) => {
   return (
-    <div className="border border-[#1E1E1E] bg-[#0A0A0A] overflow-hidden">
+    <div className="rounded-lg border border-[var(--border-default)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#1E1E1E] bg-[#0D0D0D] text-[10px] font-mono tracking-wider text-[#6B6B6B] uppercase select-none">
-              <th className="py-2.5 px-4 font-medium w-36">Status</th>
-              <th className="py-2.5 px-4 font-medium">Monitor Target</th>
-              <th className="py-2.5 px-3 font-medium w-20 text-center">Interval</th>
-              <th className="py-2.5 px-3 font-medium w-24 text-right">Latency</th>
-              <th className="py-2.5 px-4 font-medium w-28">Last Check</th>
-              <th className="py-2.5 px-4 font-medium w-28">Next Check</th>
-              <th className="py-2.5 px-4 font-medium w-36 text-right">Actions</th>
+            <tr className="border-b border-[var(--border-muted)] bg-[var(--bg-panel)] text-[10px] font-mono tracking-wider text-[var(--text-muted)] uppercase select-none font-semibold">
+              <th className="py-2.5 px-4 font-semibold w-36">Status</th>
+              <th className="py-2.5 px-4 font-semibold">Monitor Target</th>
+              <th className="py-2.5 px-3 font-semibold w-20 text-center">Interval</th>
+              <th className="py-2.5 px-3 font-semibold w-24 text-right">Latency</th>
+              <th className="py-2.5 px-4 font-semibold w-28">Last Check</th>
+              <th className="py-2.5 px-4 font-semibold w-28">Next Check</th>
+              <th className="py-2.5 px-4 font-semibold w-36 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#161616] font-mono text-xs">
+          <tbody className="divide-y divide-[var(--border-muted)] font-mono text-xs">
             {monitors.map((m) => {
               const isSelected = selectedId === m.id
               const isRunning = runningId === m.id
@@ -108,14 +108,14 @@ export const MonitorTable: React.FC<MonitorTableProps> = ({
                   onClick={() => onSelect(m)}
                   className={`group transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-[#1A1A1A] text-[#E8E8E8]'
-                      : 'hover:bg-[#121212] text-[#B0B0B0]'
+                      ? 'bg-[var(--bg-active)] text-[var(--text-primary)] font-medium'
+                      : 'hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]'
                   }`}
                 >
                   {/* Status Badge */}
                   <td className="py-3 px-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono border ${statusCfg.text} ${statusCfg.bg} ${statusCfg.border}`}
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono border rounded-md font-semibold ${statusCfg.text} ${statusCfg.bg} ${statusCfg.border}`}
                     >
                       {statusCfg.icon}
                       <span>{statusCfg.label}</span>
@@ -126,27 +126,27 @@ export const MonitorTable: React.FC<MonitorTableProps> = ({
                   <td className="py-3 px-4 min-w-[200px] max-w-xs md:max-w-md">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`text-[10px] font-bold px-1.5 py-0.2 border ${
+                        className={`text-[10px] font-bold px-1.5 py-0.2 border rounded-xs ${
                           m.method === 'GET'
-                            ? 'text-[#22C55E] border-[#22C55E30] bg-[#22C55E10]'
-                            : 'text-[#6B6B6B] border-[#6B6B6B30] bg-[#6B6B6B10]'
+                            ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10'
+                            : 'text-[var(--text-muted)] border-[var(--border-default)] bg-[var(--bg-input)]'
                         }`}
                       >
                         {m.method}
                       </span>
-                      <span className="font-semibold text-[#E8E8E8] group-hover:text-white truncate">
+                      <span className="font-semibold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors truncate">
                         {m.name}
                       </span>
                     </div>
-                    <div className="text-[11px] text-[#555555] truncate font-mono mt-0.5" title={m.url}>
+                    <div className="text-[11px] text-[var(--text-muted)] truncate font-mono mt-0.5" title={m.url}>
                       {m.url}
                     </div>
                   </td>
 
                   {/* Interval */}
-                  <td className="py-3 px-3 text-center text-[#888888] whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#121212] border border-[#222222] text-[10px]">
-                      <Clock className="w-2.5 h-2.5 text-[#6B6B6B]" />
+                  <td className="py-3 px-3 text-center text-[var(--text-secondary)] whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-xs text-[10px]">
+                      <Clock className="w-2.5 h-2.5 text-[var(--text-muted)]" />
                       {formatInterval(m.interval_seconds)}
                     </span>
                   </td>
@@ -154,22 +154,22 @@ export const MonitorTable: React.FC<MonitorTableProps> = ({
                   {/* Latency */}
                   <td className="py-3 px-3 text-right whitespace-nowrap">
                     {m.last_duration_ms !== null ? (
-                      <span className="text-[#FF6A00] font-bold">
+                      <span className="text-blue-500 font-bold">
                         {Math.round(m.last_duration_ms)} ms
                       </span>
                     ) : (
-                      <span className="text-[#444444]">—</span>
+                      <span className="text-[var(--text-muted)]">—</span>
                     )}
                   </td>
 
                   {/* Last Check */}
-                  <td className="py-3 px-4 text-[#888888] text-[11px] whitespace-nowrap">
+                  <td className="py-3 px-4 text-[var(--text-muted)] text-[11px] whitespace-nowrap">
                     {formatTime(m.last_checked_at)}
                   </td>
 
                   {/* Next Check */}
-                  <td className="py-3 px-4 text-[#888888] text-[11px] whitespace-nowrap">
-                    {m.enabled ? formatTime(m.next_run_at) : <span className="text-[#555555]">Paused</span>}
+                  <td className="py-3 px-4 text-[var(--text-muted)] text-[11px] whitespace-nowrap">
+                    {m.enabled ? formatTime(m.next_run_at) : <span className="text-[var(--text-muted)]">Paused</span>}
                   </td>
 
                   {/* Actions */}
@@ -180,21 +180,21 @@ export const MonitorTable: React.FC<MonitorTableProps> = ({
                         type="button"
                         onClick={(e) => onRunNow(m.id, e)}
                         disabled={isRunning}
-                        className="p-1.5 text-[#A0A0A0] hover:text-[#FF6A00] hover:bg-[#FF6A0010] border border-transparent hover:border-[#FF6A0030] transition-colors disabled:opacity-50"
+                        className="p-1.5 text-[var(--text-muted)] hover:text-blue-500 hover:bg-blue-500/10 border border-transparent hover:border-blue-500/30 rounded-md transition-colors disabled:opacity-50"
                         title="Run check immediately"
                         aria-label={`Run check now for ${m.name}`}
                       >
-                        <RotateCw className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin text-[#FF6A00]' : ''}`} />
+                        <RotateCw className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin text-blue-500' : ''}`} />
                       </button>
 
                       {/* Pause / Resume */}
                       <button
                         type="button"
                         onClick={(e) => onTogglePause(m, e)}
-                        className={`p-1.5 border border-transparent transition-colors ${
+                        className={`p-1.5 border border-transparent rounded-md transition-colors ${
                           m.enabled
-                            ? 'text-[#A0A0A0] hover:text-[#F59E0B] hover:bg-[#F59E0B10] hover:border-[#F59E0B30]'
-                            : 'text-[#22C55E] hover:bg-[#22C55E10] hover:border-[#22C55E30]'
+                            ? 'text-[var(--text-muted)] hover:text-amber-500 hover:bg-amber-500/10 hover:border-amber-500/30'
+                            : 'text-emerald-500 hover:bg-emerald-500/10 hover:border-emerald-500/30'
                         }`}
                         title={m.enabled ? 'Pause checks' : 'Resume checks'}
                         aria-label={`${m.enabled ? 'Pause' : 'Resume'} ${m.name}`}

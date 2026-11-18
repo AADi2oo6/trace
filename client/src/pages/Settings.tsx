@@ -131,15 +131,15 @@ export const Settings: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs font-mono tracking-widest text-[#E8E8E8] uppercase font-semibold">
+              <p className="text-xs font-mono tracking-widest text-[var(--text-primary)] uppercase font-semibold">
                 Appearance &amp; Theme
               </p>
-              <p className="text-xs text-[#888888] mt-0.5">
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 Choose your preferred visual theme. Persists across sessions.
               </p>
             </div>
-            <div className="text-[11px] font-mono px-2 py-0.5 bg-[#161616] border border-[#262626] text-[#A0A0A0]">
-              ACTIVE: <span className="text-[#FF6A00] font-bold">{resolvedTheme.toUpperCase()}</span>
+            <div className="text-[11px] font-mono px-2 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] rounded-md text-[var(--text-secondary)]">
+              ACTIVE: <span className="text-blue-500 font-bold">{resolvedTheme.toUpperCase()}</span>
             </div>
           </div>
 
@@ -150,10 +150,10 @@ export const Settings: React.FC = () => {
                 <button
                   key={opt.id}
                   onClick={() => handleSelectTheme(opt.id)}
-                  className={`flex flex-col text-left p-3.5 border transition-all relative ${
+                  className={`flex flex-col text-left p-3.5 rounded-xl border transition-all relative ${
                     isSelected
-                      ? 'border-[#FF6A00] bg-[#161616]/70 shadow-sm'
-                      : 'border-[#1E1E1E] bg-[#0E0E0E] hover:border-[#333333] hover:bg-[#121212]'
+                      ? 'border-blue-500 bg-[var(--bg-active)] shadow-xs'
+                      : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-hover)]'
                   }`}
                   aria-pressed={isSelected}
                 >
@@ -161,28 +161,28 @@ export const Settings: React.FC = () => {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       {opt.icon}
-                      <span className="text-xs font-mono font-bold text-[#E8E8E8]">
+                      <span className="text-xs font-mono font-bold text-[var(--text-primary)]">
                         {opt.label}
                       </span>
                     </div>
                     <div
                       className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
                         isSelected
-                          ? 'border-[#FF6A00] bg-[#FF6A00]'
-                          : 'border-[#444444] bg-transparent'
+                          ? 'border-blue-500 bg-blue-500'
+                          : 'border-[var(--border-default)] bg-transparent'
                       }`}
                     >
-                      {isSelected && <Check className="w-2.5 h-2.5 text-black stroke-[3]" />}
+                      {isSelected && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
                     </div>
                   </div>
 
                   {/* Visual Preview */}
-                  <div className="mb-3 overflow-hidden pointer-events-none">
+                  <div className="mb-3 rounded-lg overflow-hidden pointer-events-none">
                     {opt.preview}
                   </div>
 
                   {/* Description */}
-                  <p className="text-[11px] text-[#888888] leading-snug">
+                  <p className="text-[11px] text-[var(--text-secondary)] leading-snug">
                     {opt.description}
                   </p>
                 </button>
@@ -194,19 +194,19 @@ export const Settings: React.FC = () => {
         {/* ── Settings Groups ──────────────────────────────────────── */}
         {settingsGroups.map((group) => (
           <div key={group.heading}>
-            <p className="text-xs font-mono tracking-widest text-[#E8E8E8] uppercase font-semibold mb-3">
+            <p className="text-xs font-mono tracking-widest text-[var(--text-primary)] uppercase font-semibold mb-3">
               {group.heading}
             </p>
-            <Panel padding="none" className="overflow-hidden">
+            <Panel padding="none" className="overflow-hidden rounded-xl">
               {group.items.map((item, i) => (
                 <React.Fragment key={item.label}>
                   {i > 0 && <Divider />}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 gap-1">
                     <div>
-                      <p className="text-xs font-mono text-[#E8E8E8]">{item.label}</p>
-                      <p className="text-[11px] text-[#888888] mt-0.5">{item.description}</p>
+                      <p className="text-xs font-mono text-[var(--text-primary)] font-medium">{item.label}</p>
+                      <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{item.description}</p>
                     </div>
-                    <span className="text-xs font-mono text-[#FF6A00] sm:ml-4 shrink-0 font-medium">
+                    <span className="text-xs font-mono text-blue-500 sm:ml-4 shrink-0 font-semibold">
                       {item.value}
                     </span>
                   </div>
@@ -218,41 +218,41 @@ export const Settings: React.FC = () => {
 
         {/* ── Keyboard Shortcuts Info ──────────────────────────────── */}
         <div>
-          <p className="text-xs font-mono tracking-widest text-[#E8E8E8] uppercase font-semibold mb-3">
+          <p className="text-xs font-mono tracking-widest text-[var(--text-primary)] uppercase font-semibold mb-3">
             Keyboard Shortcuts &amp; Accessibility
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
-            <div className="p-3 bg-[#0E0E0E] border border-[#1E1E1E] flex items-center justify-between">
-              <span className="text-[#888888]">Execute Request</span>
-              <kbd className="px-2 py-0.5 bg-[#161616] border border-[#2A2A2A] text-[#E8E8E8] text-[11px]">
+            <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg flex items-center justify-between shadow-xs">
+              <span className="text-[var(--text-secondary)]">Execute Request</span>
+              <kbd className="px-2 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] text-[var(--text-primary)] text-[11px] rounded-md font-semibold">
                 Ctrl + Enter
               </kbd>
             </div>
-            <div className="p-3 bg-[#0E0E0E] border border-[#1E1E1E] flex items-center justify-between">
-              <span className="text-[#888888]">Close Drawer / Modal</span>
-              <kbd className="px-2 py-0.5 bg-[#161616] border border-[#2A2A2A] text-[#E8E8E8] text-[11px]">
+            <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg flex items-center justify-between shadow-xs">
+              <span className="text-[var(--text-secondary)]">Close Drawer / Modal</span>
+              <kbd className="px-2 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] text-[var(--text-primary)] text-[11px] rounded-md font-semibold">
                 Escape
               </kbd>
             </div>
-            <div className="p-3 bg-[#0E0E0E] border border-[#1E1E1E] flex items-center justify-between">
-              <span className="text-[#888888]">Focus Navigation</span>
-              <kbd className="px-2 py-0.5 bg-[#161616] border border-[#2A2A2A] text-[#E8E8E8] text-[11px]">
+            <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg flex items-center justify-between shadow-xs">
+              <span className="text-[var(--text-secondary)]">Focus Navigation</span>
+              <kbd className="px-2 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] text-[var(--text-primary)] text-[11px] rounded-md font-semibold">
                 Tab / Shift+Tab
               </kbd>
             </div>
-            <div className="p-3 bg-[#0E0E0E] border border-[#1E1E1E] flex items-center justify-between">
-              <span className="text-[#888888]">Toggle Theme</span>
-              <kbd className="px-2 py-0.5 bg-[#161616] border border-[#2A2A2A] text-[#E8E8E8] text-[11px]">
+            <div className="p-3 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-lg flex items-center justify-between shadow-xs">
+              <span className="text-[var(--text-secondary)]">Toggle Theme</span>
+              <kbd className="px-2 py-0.5 bg-[var(--bg-input)] border border-[var(--border-default)] text-[var(--text-primary)] text-[11px] rounded-md font-semibold">
                 Topbar Icon
               </kbd>
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-[#111111] border border-[#222222] flex items-start gap-3 text-xs text-[#888888]">
+        <div className="p-4 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-xl flex items-start gap-3 text-xs text-[var(--text-secondary)] shadow-xs">
           <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
           <div className="leading-snug">
-            <strong className="text-[#E8E8E8]">Technical Honesty Guarantee:</strong> Network
+            <strong className="text-[var(--text-primary)]">Technical Honesty Guarantee:</strong> Network
             measurements and timings are captured honestly from actual socket and HTTP executions.
             TRACE does not fabricate packet captures, connection timings, or synthetic measurements.
           </div>

@@ -44,7 +44,7 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({
     <div className="flex flex-col">
       {/* Tab bar */}
       <div
-        className="flex items-end border-b border-[#1E1E1E]"
+        className="flex items-end border-b border-[var(--border-default)]"
         role="tablist"
         aria-label="Request configuration"
       >
@@ -60,22 +60,21 @@ export const RequestTabs: React.FC<RequestTabsProps> = ({
               aria-controls={`req-panel-${tab.id}`}
               onClick={() => setActiveTab(tab.id)}
               className={[
-                'flex items-center gap-1.5 px-4 py-2.5 text-xs font-mono tracking-wider',
-                'transition-colors duration-100 border-b-2 -mb-px',
-                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00] focus-visible:ring-inset',
+                'flex items-center gap-2 px-4 py-2.5 text-xs font-mono tracking-wider transition-all duration-150 border-b-2 -mb-px',
+                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:ring-inset',
                 isActive
-                  ? 'text-[#E8E8E8] border-[#FF6A00]'
-                  : 'text-[#3A3A3A] border-transparent hover:text-[#6B6B6B]',
+                  ? 'text-[var(--text-primary)] border-blue-600 dark:border-blue-500 font-bold'
+                  : 'text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]',
               ].join(' ')}
             >
               {tab.label}
               {tab.count !== undefined && (
                 <span
                   className={[
-                    'inline-flex items-center justify-center w-4 h-4 text-[9px] rounded-none',
+                    'inline-flex items-center justify-center min-w-4 px-1 h-4 text-[10px] font-mono rounded font-semibold',
                     isActive
-                      ? 'bg-[#FF6A0020] text-[#FF6A00]'
-                      : 'bg-[#1A1A1A] text-[#3A3A3A]',
+                      ? 'bg-blue-600/15 text-blue-600 dark:text-blue-400'
+                      : 'bg-[var(--bg-panel-secondary)] text-[var(--text-dim)] border border-[var(--border-default)]',
                   ].join(' ')}
                   aria-label={`${tab.count} active`}
                 >

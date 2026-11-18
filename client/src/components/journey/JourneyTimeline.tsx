@@ -41,14 +41,14 @@ export const JourneyTimeline: React.FC<JourneyTimelineProps> = ({ journey }) => 
   const allExpanded = journey.phases.every((p) => expandedKeys[p.name])
 
   return (
-    <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-5 sm:p-6 space-y-6">
+    <div className="border border-[var(--border-default)] bg-[var(--bg-panel)] rounded-lg p-5 sm:p-6 space-y-6 shadow-xs">
       {/* Controls Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#1A1A1A]">
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-default)]">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#FF6A00]">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-blue-500 font-bold">
             Lifecycle Sequence
           </span>
-          <span className="text-[10px] font-mono text-[#444444]">
+          <span className="text-[10px] font-mono text-[var(--text-dim)]">
             ({journey.phases.length} Ordered Stages)
           </span>
         </div>
@@ -56,7 +56,7 @@ export const JourneyTimeline: React.FC<JourneyTimelineProps> = ({ journey }) => 
         <button
           type="button"
           onClick={allExpanded ? collapseAll : expandAll}
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-[#666666] hover:text-[#E8E8E8] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
         >
           {allExpanded ? (
             <>
