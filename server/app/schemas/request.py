@@ -378,6 +378,18 @@ class JourneyPhase(BaseModel):
         default_factory=list,
         description="Truthful, technical observations regarding this lifecycle phase",
     )
+    start_offset_ms: float | None = Field(
+        default=None,
+        description="Measured relative start offset in ms from the start of the exchange, if genuinely measurable",
+    )
+    end_offset_ms: float | None = Field(
+        default=None,
+        description="Measured relative end offset in ms from the start of the exchange, if genuinely measurable",
+    )
+    details: dict[str, Any] | None = Field(
+        default=None,
+        description="Structured technical diagnostics and telemetry for this phase",
+    )
 
 
 class RequestJourney(BaseModel):

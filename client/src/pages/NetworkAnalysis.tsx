@@ -1,9 +1,10 @@
 import React from 'react'
-import { Network, Terminal } from 'lucide-react'
+import { Network, Terminal, Route, GitCompare } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { PageContainer } from '../components/layout/PageContainer'
 import { useRequestStore } from '../store/requestStore'
 import { AnalysisHeader } from '../components/analysis/AnalysisHeader'
+import { RequestWaterfall } from '../components/network-analysis/RequestWaterfall'
 import { DnsAnalysisPanel } from '../components/analysis/DnsAnalysisPanel'
 import { HeaderAnalysisPanel } from '../components/analysis/HeaderAnalysisPanel'
 import { CorsAnalysisPanel } from '../components/analysis/CorsAnalysisPanel'
@@ -92,14 +93,32 @@ export const NetworkAnalysis: React.FC = () => {
           <p className="text-[10px] font-mono tracking-widest text-[#444444] uppercase">
             Active Request Analysis
           </p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/tester')}
-            leftIcon={<Terminal className="w-3.5 h-3.5" />}
-          >
-            Switch to API Tester
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/journey')}
+              leftIcon={<Route className="w-3.5 h-3.5" />}
+            >
+              Request Waterfall
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/compare')}
+              leftIcon={<GitCompare className="w-3.5 h-3.5" />}
+            >
+              Compare
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/tester')}
+              leftIcon={<Terminal className="w-3.5 h-3.5" />}
+            >
+              Switch to API Tester
+            </Button>
+          </div>
         </div>
 
         <AnalysisHeader
@@ -114,6 +133,13 @@ export const NetworkAnalysis: React.FC = () => {
           corsAnalysis={lastResponse.cors_analysis}
           optionsAnalysis={lastResponse.options_analysis}
         />
+
+        {/* Request Timing Waterfall */}
+        {lastResponse.request_journey && (
+          <section aria-label="Request timing waterfall">
+            <RequestWaterfall journey={lastResponse.request_journey} />
+          </section>
+        )}
 
         {/* 1. DNS Resolution */}
         <section aria-labelledby="dns-heading">

@@ -21,7 +21,8 @@ import { ResponseSummary } from '../api-tester/ResponseSummary'
 import { ResponseBody } from '../api-tester/ResponseBody'
 import { ResponseHeaders } from '../api-tester/ResponseHeaders'
 import { ResponseAnalysis } from '../api-tester/ResponseAnalysis'
-import { JourneyTimeline } from '../journey/JourneyTimeline'
+import { RequestJourneyVisualization } from '../network-analysis/RequestJourneyVisualization'
+import { GitCompare, Info } from 'lucide-react'
 import type { HTTPMethod, BodyType } from '../../types/api'
 
 interface HistoryDetailDrawerProps {
@@ -168,6 +169,16 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => navigate(`/compare?leftId=${detail.id}`)}
+                  leftIcon={<GitCompare className="w-3.5 h-3.5 text-orange-500" />}
+                  className="text-xs"
+                >
+                  Compare
+                </Button>
                 <Button
                   type="button"
                   variant="primary"
@@ -408,9 +419,26 @@ export const HistoryDetailDrawer: React.FC<HistoryDetailDrawerProps> = ({
 
               {/* Tab 4: JOURNEY */}
               {activeTab === 'journey' && (
-                <div>
+                <div className="space-y-4">
+                  {/* Historical Replay Banner */}
+                  <div className="p-3 border border-amber-500/30 bg-amber-500/10 flex items-start gap-2.5">
+                    <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <div className="text-xs font-mono">
+                      <p className="font-semibold text-amber-500">
+                        Recorded Execution (Historical) — Not a Live Network Request
+                      </p>
+                      <p className="text-slate-400 mt-0.5">
+                        This network lifecycle and timing telemetry was captured at {new Date(detail.created_at).toLocaleString()}.
+                      </p>
+                    </div>
+                  </div>
+
                   {detail.request_journey ? (
-                    <JourneyTimeline journey={detail.request_journey} />
+                    <RequestJourneyVisualization
+                      journey={detail.request_journey}
+                      title="Recorded Lifecycle & Waterfall"
+                      defaultView="both"
+                    />
                   ) : (
                     <div className="flex items-center justify-center py-12">
                       <p className="text-xs font-mono text-[#444444]">

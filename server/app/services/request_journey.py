@@ -82,6 +82,7 @@ class RequestJourneyService:
             success=success,
             status_code=status_code,
             error_message=error_message,
+            duration_ms=total_duration_ms,
         )
         phases.append(resp_phase)
 
@@ -123,8 +124,11 @@ class RequestJourneyService:
                     name="dns",
                     status=JourneyPhaseStatus.UNAVAILABLE,
                     duration_ms=None,
+                    start_offset_ms=None,
+                    end_offset_ms=None,
                     source=JourneyPhaseSource.DNS_INSPECTOR,
                     observations=["DNS analysis was not performed or not available for this request."],
+                    details={"reason": "DNS analysis was not performed or not available."},
                 ),
                 True,  # Default to allowing downstream evaluation if DNS inspector was bypassed
             )
@@ -146,26 +150,45 @@ class RequestJourneyService:
             if addr_parts:
                 observations.append(f"Addresses: {'; '.join(addr_parts)}.")
 
+            dns_duration = dns_analysis.resolution_time_ms
             return (
                 JourneyPhase(
                     name="dns",
                     status=JourneyPhaseStatus.COMPLETED,
-                    duration_ms=dns_analysis.resolution_time_ms,
+                    duration_ms=dns_duration,
+                    start_offset_ms=0.0 if dns_duration is not None else None,
+                    end_offset_ms=dns_duration,
                     source=JourneyPhaseSource.DNS_INSPECTOR,
                     observations=observations,
+                    details={
+                        "hostname": dns_analysis.hostname,
+                        "ipv4_addresses": dns_analysis.ipv4_addresses,
+                        "ipv6_addresses": dns_analysis.ipv6_addresses,
+                        "resolved": True,
+                        "resolution_time_ms": dns_duration,
+                    },
                 ),
                 True,
             )
 
         # DNS failed
         err_msg = dns_analysis.error or "DNS resolution failed"
+        dns_duration = dns_analysis.resolution_time_ms
         return (
             JourneyPhase(
                 name="dns",
                 status=JourneyPhaseStatus.FAILED,
-                duration_ms=dns_analysis.resolution_time_ms,
+                duration_ms=dns_duration,
+                start_offset_ms=0.0 if dns_duration is not None else None,
+                end_offset_ms=dns_duration,
                 source=JourneyPhaseSource.DNS_INSPECTOR,
                 observations=[f"DNS resolution failed for hostname '{dns_analysis.hostname}': {err_msg}."],
+                details={
+                    "hostname": dns_analysis.hostname,
+                    "error": err_msg,
+                    "resolved": False,
+                    "resolution_time_ms": dns_duration,
+                },
             ),
             False,
         )
@@ -177,19 +200,25 @@ class RequestJourneyService:
                 name="connection",
                 status=JourneyPhaseStatus.UNAVAILABLE,
                 duration_ms=None,
+                start_offset_ms=None,
+                end_offset_ms=None,
                 source=JourneyPhaseSource.DERIVED,
                 observations=["TCP connection was not initiated because DNS resolution failed."],
+                details={"reason": "TCP connection was not initiated because DNS resolution failed."},
             )
 
         return JourneyPhase(
             name="connection",
             status=JourneyPhaseStatus.UNAVAILABLE,
             duration_ms=None,
+            start_offset_ms=None,
+            end_offset_ms=None,
             source=JourneyPhaseSource.DERIVED,
             observations=[
                 "TCP connection timing is not independently measured by the current HTTP transport.",
                 "Phase duration marked unavailable to prevent inaccurate estimation.",
             ],
+            details={"reason": "TCP connection handshake timing is unmeasured by httpx transport."},
         )
 
     def _build_tls_phase(self, is_https: bool, dns_ok: bool) -> JourneyPhase:
@@ -199,8 +228,11 @@ class RequestJourneyService:
                 name="tls",
                 status=JourneyPhaseStatus.NOT_APPLICABLE,
                 duration_ms=None,
+                start_offset_ms=None,
+                end_offset_ms=None,
                 source=JourneyPhaseSource.DERIVED,
                 observations=["TLS handshake is not applicable for plain HTTP requests."],
+                details={"reason": "TLS is not applicable for plain HTTP requests.", "scheme": "http"},
             )
 
         if not dns_ok:
@@ -208,19 +240,25 @@ class RequestJourneyService:
                 name="tls",
                 status=JourneyPhaseStatus.UNAVAILABLE,
                 duration_ms=None,
+                start_offset_ms=None,
+                end_offset_ms=None,
                 source=JourneyPhaseSource.DERIVED,
                 observations=["TLS handshake was not initiated because DNS resolution failed."],
+                details={"reason": "TLS handshake was not initiated because DNS resolution failed.", "scheme": "https"},
             )
 
         return JourneyPhase(
             name="tls",
             status=JourneyPhaseStatus.UNAVAILABLE,
             duration_ms=None,
+            start_offset_ms=None,
+            end_offset_ms=None,
             source=JourneyPhaseSource.DERIVED,
             observations=[
                 "TLS handshake timing is not independently measured by the current HTTP transport.",
                 "Phase duration marked unavailable to prevent inaccurate estimation.",
             ],
+            details={"reason": "TLS handshake timing is unmeasured by httpx transport.", "scheme": "https"},
         )
 
     def _build_http_phase(
@@ -237,9 +275,15 @@ class RequestJourneyService:
                 name="http",
                 status=JourneyPhaseStatus.UNAVAILABLE,
                 duration_ms=None,
+                start_offset_ms=None,
+                end_offset_ms=None,
                 source=JourneyPhaseSource.HTTP_EXECUTION,
                 observations=["HTTP request was not dispatched because DNS resolution failed."],
+                details={"reason": "HTTP request was not dispatched because DNS resolution failed."},
             )
+
+        start_offset = 0.0 if duration_ms is not None else None
+        end_offset = duration_ms
 
         if success:
             obs = (
@@ -251,8 +295,15 @@ class RequestJourneyService:
                 name="http",
                 status=JourneyPhaseStatus.COMPLETED,
                 duration_ms=duration_ms,
+                start_offset_ms=start_offset,
+                end_offset_ms=end_offset,
                 source=JourneyPhaseSource.HTTP_EXECUTION,
                 observations=obs,
+                details={
+                    "method": method,
+                    "duration_ms": duration_ms,
+                    "success": True,
+                },
             )
 
         err = error_message or "HTTP exchange failed"
@@ -260,8 +311,16 @@ class RequestJourneyService:
             name="http",
             status=JourneyPhaseStatus.FAILED,
             duration_ms=duration_ms,
+            start_offset_ms=start_offset,
+            end_offset_ms=end_offset,
             source=JourneyPhaseSource.HTTP_EXECUTION,
             observations=[f"HTTP {method} request failed: {err}."],
+            details={
+                "method": method,
+                "error": err,
+                "duration_ms": duration_ms,
+                "success": False,
+            },
         )
 
     def _build_response_phase(
@@ -270,6 +329,7 @@ class RequestJourneyService:
         success: bool,
         status_code: int | None,
         error_message: str | None,
+        duration_ms: float | None = None,
     ) -> JourneyPhase:
         """Construct the Response phase."""
         if not dns_ok:
@@ -277,9 +337,15 @@ class RequestJourneyService:
                 name="response",
                 status=JourneyPhaseStatus.NOT_APPLICABLE,
                 duration_ms=None,
+                start_offset_ms=None,
+                end_offset_ms=None,
                 source=JourneyPhaseSource.RESPONSE_INSPECTOR,
                 observations=["No HTTP response received due to earlier DNS resolution failure."],
+                details={"reason": "No HTTP response received due to earlier DNS resolution failure."},
             )
+
+        start_offset = duration_ms
+        end_offset = duration_ms
 
         if success:
             obs = (
@@ -291,8 +357,14 @@ class RequestJourneyService:
                 name="response",
                 status=JourneyPhaseStatus.COMPLETED,
                 duration_ms=None,
+                start_offset_ms=start_offset,
+                end_offset_ms=end_offset,
                 source=JourneyPhaseSource.RESPONSE_INSPECTOR,
                 observations=obs,
+                details={
+                    "status_code": status_code,
+                    "success": True,
+                },
             )
 
         err = error_message or "Request failed"
@@ -300,8 +372,15 @@ class RequestJourneyService:
             name="response",
             status=JourneyPhaseStatus.FAILED,
             duration_ms=None,
+            start_offset_ms=start_offset,
+            end_offset_ms=end_offset,
             source=JourneyPhaseSource.RESPONSE_INSPECTOR,
             observations=[f"No valid HTTP response received: {err}."],
+            details={
+                "status_code": status_code,
+                "error": err,
+                "success": False,
+            },
         )
 
 

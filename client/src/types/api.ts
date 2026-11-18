@@ -156,8 +156,11 @@ export interface JourneyPhase {
   name: string
   status: JourneyPhaseStatus
   duration_ms: number | null
+  start_offset_ms?: number | null
+  end_offset_ms?: number | null
   source: JourneyPhaseSource | null
   observations: string[]
+  details?: Record<string, unknown> | null
 }
 
 export interface RequestJourney {
@@ -384,5 +387,48 @@ export interface DemoCatalogueResponse {
   categories: string[]
   total: number
 }
+
+// ── Comparison Types (Step 21) ─────────────────────────────────────────────
+
+export type DiffType = 'identical' | 'added' | 'removed' | 'modified'
+
+export interface HeaderDiffItem {
+  name: string
+  status: DiffType
+  leftValue: string | null
+  rightValue: string | null
+  isMasked?: boolean
+}
+
+export interface JsonDiffItem {
+  path: string
+  status: DiffType
+  leftValue: unknown
+  rightValue: unknown
+}
+
+export interface ComparisonSummaryStats {
+  statusMatch: boolean
+  leftStatus: number | null
+  rightStatus: number | null
+  durationDiffMs: number | null
+  leftDurationMs: number | null
+  rightDurationMs: number | null
+  sizeDiffBytes: number | null
+  leftSizeBytes: number | null
+  rightSizeBytes: number | null
+  contentTypeMatch: boolean
+  leftContentType: string | null
+  rightContentType: string | null
+  headersAdded: number
+  headersRemoved: number
+  headersModified: number
+  headersIdentical: number
+  jsonKeysAdded: number
+  jsonKeysRemoved: number
+  jsonKeysModified: number
+  jsonKeysIdentical: number
+}
+
 
 

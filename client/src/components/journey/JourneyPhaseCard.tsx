@@ -254,7 +254,7 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
         {isExpanded && (
           <div className="border-t border-[#1A1A1A] bg-[#080808] p-4 space-y-4 animate-fade-in text-xs font-mono">
             {/* Metadata Table */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
                 <span className="text-[9px] uppercase tracking-widest text-[#444444]">
                   Phase Status
@@ -275,6 +275,17 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
 
               <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
                 <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+                  Offset (Start → End)
+                </span>
+                <p className="text-[#E8E8E8] font-semibold">
+                  {phase.start_offset_ms !== null && phase.start_offset_ms !== undefined
+                    ? `${phase.start_offset_ms.toFixed(1)}ms → ${phase.end_offset_ms?.toFixed(1) ?? '?'}ms`
+                    : 'N/A'}
+                </p>
+              </div>
+
+              <div className="border border-[#141414] bg-[#0A0A0A] p-2.5 space-y-1">
+                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
                   Telemetry Source
                 </span>
                 <div className="flex items-center gap-1.5 text-[#B0B0B0]">
@@ -283,6 +294,25 @@ export const JourneyPhaseCard: React.FC<JourneyPhaseCardProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Diagnostic Details Dictionary */}
+            {phase.details && Object.keys(phase.details).length > 0 && (
+              <div className="border border-[#141414] bg-[#0A0A0A] p-3 space-y-2">
+                <span className="text-[9px] uppercase tracking-widest text-[#444444]">
+                  Phase Telemetry & Parameters
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                  {Object.entries(phase.details).map(([key, val]) => (
+                    <div key={key} className="flex items-start justify-between gap-2 p-1.5 bg-[#050505] border border-[#1A1A1A]">
+                      <span className="text-[#888888] font-mono">{key}:</span>
+                      <span className="text-[#E8E8E8] font-mono text-right truncate max-w-[200px]" title={String(val)}>
+                        {Array.isArray(val) ? val.join(', ') : typeof val === 'object' ? JSON.stringify(val) : String(val)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Phase Explanation / Context */}
             <div className="border border-[#141414] bg-[#0A0A0A] p-3 space-y-1">

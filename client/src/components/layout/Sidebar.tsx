@@ -5,6 +5,7 @@ import {
   Terminal,
   Network,
   Route,
+  GitCompare,
   Clock,
   Activity,
   FlaskConical,
@@ -51,6 +52,12 @@ const primaryNavItems = [
     icon: <Route className="w-4 h-4" />,
     label: 'Journey',
     description: 'Request network lifecycle',
+  },
+  {
+    to: '/compare',
+    icon: <GitCompare className="w-4 h-4" />,
+    label: 'Compare',
+    description: 'Response diff & comparison',
   },
   {
     to: '/history',

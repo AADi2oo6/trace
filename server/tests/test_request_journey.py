@@ -430,3 +430,63 @@ def test_api_integration_ssrf_blocked_halts_journey(client: TestClient) -> None:
     journey = data.get("request_journey")
     assert journey is not None
     assert journey["completed"] is False
+
+
+def test_journey_timing_offsets_and_details() -> None:
+    """Verify start_offset_ms, end_offset_ms, and details are truthfully populated for all phases."""
+    dns_data = DnsAnalysis(
+        hostname="example.com",
+        resolved=True,
+        resolution_time_ms=14.5,
+        ipv4_addresses=["93.184.216.34"],
+        ipv6_addresses=["2606:2800:220:1:248:1893:25c8:1946"],
+    )
+    journey = request_journey_service.build(
+        url="https://example.com/api",
+        method="POST",
+        total_duration_ms=120.0,
+        dns_analysis=dns_data,
+        success=True,
+        status_code=201,
+    )
+
+    phases = {p.name: p for p in journey.phases}
+
+    # DNS
+    assert phases["dns"].start_offset_ms == 0.0
+    assert phases["dns"].end_offset_ms == 14.5
+    assert phases["dns"].duration_ms == 14.5
+    assert phases["dns"].details is not None
+    assert phases["dns"].details["hostname"] == "example.com"
+    assert phases["dns"].details["resolved"] is True
+    assert "93.184.216.34" in phases["dns"].details["ipv4_addresses"]
+
+    # Connection (TCP) - unmeasured
+    assert phases["connection"].duration_ms is None
+    assert phases["connection"].start_offset_ms is None
+    assert phases["connection"].end_offset_ms is None
+    assert phases["connection"].details is not None
+    assert "unmeasured" in phases["connection"].details["reason"]
+
+    # TLS - unmeasured for HTTPS
+    assert phases["tls"].duration_ms is None
+    assert phases["tls"].start_offset_ms is None
+    assert phases["tls"].end_offset_ms is None
+    assert phases["tls"].details is not None
+    assert phases["tls"].details["scheme"] == "https"
+
+    # HTTP Exchange
+    assert phases["http"].start_offset_ms == 0.0
+    assert phases["http"].end_offset_ms == 120.0
+    assert phases["http"].duration_ms == 120.0
+    assert phases["http"].details is not None
+    assert phases["http"].details["method"] == "POST"
+    assert phases["http"].details["duration_ms"] == 120.0
+
+    # Response
+    assert phases["response"].start_offset_ms == 120.0
+    assert phases["response"].end_offset_ms == 120.0
+    assert phases["response"].duration_ms is None
+    assert phases["response"].details is not None
+    assert phases["response"].details["status_code"] == 201
+    assert phases["response"].details["success"] is True

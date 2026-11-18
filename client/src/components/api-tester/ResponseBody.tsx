@@ -5,6 +5,8 @@ import { getArtifactDownloadUrl, getArtifactZipUrl } from '../../lib/api'
 import { ImageExplorerView } from '../explorer/ImageExplorerView'
 import { MediaPlayerView } from '../explorer/MediaPlayerView'
 import { PdfExplorerView } from '../explorer/PdfExplorerView'
+import { AdvancedJsonViewer } from '../json-explorer/AdvancedJsonViewer'
+import { FolderTree, FileCode } from 'lucide-react'
 
 interface ResponseBodyProps {
   body: string | null
@@ -141,6 +143,7 @@ export const ResponseBody: React.FC<ResponseBodyProps> = ({
   contentMetadata,
 }) => {
   const [copied, setCopied] = useState(false)
+  const [jsonViewMode, setJsonViewMode] = useState<'tree' | 'text'>('tree')
   const [searchQuery, setSearchQuery] = useState('')
   const [activeMatch, setActiveMatch] = useState(0)
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -324,31 +327,62 @@ export const ResponseBody: React.FC<ResponseBodyProps> = ({
           )}
         </div>
 
-        {/* Copy button */}
-        <button
-          type="button"
-          onClick={() => void handleCopy()}
-          disabled={!body}
-          aria-label="Copy response body"
-          className={[
-            'flex items-center gap-1.5 px-2 py-1 text-[10px] font-mono',
-            'text-[#3A3A3A] hover:text-[#E8E8E8] transition-colors duration-100',
-            'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
-            'disabled:opacity-40 disabled:cursor-not-allowed',
-          ].join(' ')}
-        >
-          {copied ? (
-            <>
-              <Check className="w-3 h-3 text-[#22C55E]" />
-              <span className="text-[#22C55E]">Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3 h-3" />
-              Copy
-            </>
+        <div className="flex items-center gap-2">
+          {bodyType === 'json' && (
+            <div className="inline-flex rounded p-0.5 bg-[#141414] border border-[#222222] text-[10px] font-mono mr-2">
+              <button
+                type="button"
+                onClick={() => setJsonViewMode('tree')}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${
+                  jsonViewMode === 'tree'
+                    ? 'bg-orange-500 text-white font-semibold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <FolderTree className="w-3 h-3" />
+                <span>Tree</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setJsonViewMode('text')}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${
+                  jsonViewMode === 'text'
+                    ? 'bg-orange-500 text-white font-semibold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <FileCode className="w-3 h-3" />
+                <span>Text</span>
+              </button>
+            </div>
           )}
-        </button>
+
+          {/* Copy button */}
+          <button
+            type="button"
+            onClick={() => void handleCopy()}
+            disabled={!body}
+            aria-label="Copy response body"
+            className={[
+              'flex items-center gap-1.5 px-2 py-1 text-[10px] font-mono',
+              'text-[#3A3A3A] hover:text-[#E8E8E8] transition-colors duration-100',
+              'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
+              'disabled:opacity-40 disabled:cursor-not-allowed',
+            ].join(' ')}
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-[#22C55E]" />
+                <span className="text-[#22C55E]">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3" />
+                Copy
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}
@@ -407,23 +441,29 @@ export const ResponseBody: React.FC<ResponseBodyProps> = ({
         </div>
       )}
 
-      {/* Body text */}
-      <pre
-        className={[
-          'overflow-auto px-4 py-4 text-xs font-mono leading-relaxed',
-          'text-[#E8E8E8] bg-[#080808]',
-          'whitespace-pre overflow-x-auto',
-          'max-h-[480px]',
-        ].join(' ')}
-        aria-label="Response body"
-      >
-        <HighlightedBody
-          text={displayText}
-          query={searchQuery}
-          activeMatchIndex={clampedActiveMatch}
-          onActiveRef={handleActiveRef}
-        />
-      </pre>
+      {/* Main View: JSON Tree Viewer OR Formatted/Highlighted Text */}
+      {bodyType === 'json' && jsonViewMode === 'tree' ? (
+        <div className="p-2 bg-[#080808]">
+          <AdvancedJsonViewer data={body} />
+        </div>
+      ) : (
+        <pre
+          className={[
+            'overflow-auto px-4 py-4 text-xs font-mono leading-relaxed',
+            'text-[#E8E8E8] bg-[#080808]',
+            'whitespace-pre overflow-x-auto',
+            'max-h-[480px]',
+          ].join(' ')}
+          aria-label="Response body"
+        >
+          <HighlightedBody
+            text={displayText}
+            query={searchQuery}
+            activeMatchIndex={clampedActiveMatch}
+            onActiveRef={handleActiveRef}
+          />
+        </pre>
+      )}
     </div>
   )
 }

@@ -31,6 +31,8 @@ The MVP must be a real working full-stack application, not a visual mockup.
 | **Step 17** | API Monitoring + Performance Analytics | ✅ Complete | Background scheduler, periodic checks, Recharts analytics & /monitor dashboard |
 | **Step 18** | Controlled Demo API + Interactive Testing | ✅ Complete | In-tree predictable endpoints (/demo), SSRF allowance for demo, interactive /demo explorer |
 | **Step 19** | Security Audit + Complete UI/UX Polish + Light Theme | ✅ Complete | Complete Light Theme, Settings Appearance switch, anti-flash, animations, toast system, hardened SSRF |
+| **Step 20** | Universal Content Explorer & Artifacts | ✅ Complete | Binary artifact management, multi-media inspection, ZIP export, /explorer page |
+| **Step 21** | Technical Integration & Interactive Network Visualization | ✅ Complete | Request Waterfall, Advanced JSON Explorer, Response Comparison engine (/compare), Historical Journey replay |
 
 #### STEP 13 — Full Response Inspector UI: COMPLETE
 - **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)

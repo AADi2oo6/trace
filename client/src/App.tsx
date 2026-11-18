@@ -8,6 +8,7 @@ import { ApiTester } from './pages/ApiTester'
 import { NetworkAnalysis } from './pages/NetworkAnalysis'
 import { RequestJourneyPage } from './pages/RequestJourney'
 import { History } from './pages/History'
+import { ResponseComparisonPage } from './pages/ResponseComparison'
 import { Monitor } from './pages/Monitor'
 import { DemoApi } from './pages/DemoApi'
 import { Docs } from './pages/Docs'
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/tester" element={<ApiTester />} />
         <Route path="/analysis" element={<NetworkAnalysis />} />
         <Route path="/journey" element={<RequestJourneyPage />} />
+        <Route path="/compare" element={<ResponseComparisonPage />} />
         <Route path="/history" element={<History />} />
         <Route path="/monitor" element={<Monitor />} />
         <Route path="/demo" element={<DemoApi />} />

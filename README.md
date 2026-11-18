@@ -90,16 +90,19 @@ Key differentiators include:
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | Step 12 Complete |
-| **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | Backend Ready |
-| **Header Analyzer** | Categorize and explain headers with masking for credentials | Backend Ready |
-| **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | Backend Ready |
-| **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | Backend Ready |
-| **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | Backend Ready |
-| **Request Journey** | Visual representation of client-to-server network stages | Backend Ready |
-| **Request History** | Local persistent history of executed requests for replay | Planned |
-| **Basic Monitoring** | Automated periodic endpoint health checks and response time tracking | Planned |
-| **Demo API** | Controlled local API endpoints for demonstrating edge cases and errors | Planned |
+| **API Tester** | Build and execute HTTP requests (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, etc.) | ✅ Complete |
+| **Response Inspector** | Inspect response status codes, headers, body, content types, and payload sizes | ✅ Complete |
+| **Header Analyzer** | Categorize and explain headers with masking for credentials | ✅ Complete |
+| **OPTIONS Inspector** | Inspect server capabilities, allowed methods, and preflight rules | ✅ Complete |
+| **CORS Analyzer** | Diagnose CORS headers and explain browser access policies | ✅ Complete |
+| **DNS Inspector** | Resolve hostnames and display DNS records and lookup times | ✅ Complete |
+| **Request Journey & Waterfall** | Truthful end-to-end network lifecycle and timing waterfall visualization | ✅ Step 21 Complete |
+| **Advanced JSON Explorer** | Interactive collapsible tree with search, JSONPath, and copy actions | ✅ Step 21 Complete |
+| **Response Comparison** | Side-by-side metric, header, and recursive JSON body diffing engine (`/compare`) | ✅ Step 21 Complete |
+| **Request History** | Persistent SQLite history with inspection drawer, replay, and search | ✅ Complete |
+| **API Monitoring** | Automated recurring health checks, uptime tracking, and performance analytics | ✅ Complete |
+| **Demo API** | Controlled local API endpoints for edge cases, CORS, latency, and auth testing | ✅ Complete |
+| **Content Explorer** | Universal content inspection, artifact download, and media rendering | ✅ Complete |
 
 ---
 

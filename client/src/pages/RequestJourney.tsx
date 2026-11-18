@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { PageContainer } from '../components/layout/PageContainer'
 import { useRequestStore } from '../store/requestStore'
 import { JourneyHeader } from '../components/journey/JourneyHeader'
-import { JourneyTimeline } from '../components/journey/JourneyTimeline'
+import { RequestJourneyVisualization } from '../components/network-analysis/RequestJourneyVisualization'
 import { JourneySummary } from '../components/journey/JourneySummary'
 import { JourneyEmptyState } from '../components/journey/JourneyEmptyState'
 import { JourneyErrorState } from '../components/journey/JourneyErrorState'
@@ -137,9 +137,9 @@ export const RequestJourneyPage: React.FC = () => {
           journey={journey}
         />
 
-        {/* Vertical Journey Timeline */}
-        <section aria-label="Request lifecycle timeline">
-          <JourneyTimeline journey={journey} />
+        {/* Journey Lifecycle & Waterfall Visualization */}
+        <section aria-label="Request lifecycle visualization">
+          <RequestJourneyVisualization journey={journey} defaultView="both" />
         </section>
 
         {/* Journey Summary */}
