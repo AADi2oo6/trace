@@ -98,3 +98,21 @@ def test_public_nat64_ip_allowed_by_ssrf_validator() -> None:
     public_nat64_url = "https://[64:ff9b::5db8:d822]/resource"
     validated = validate_url_for_ssrf(public_nat64_url)
     assert validated == public_nat64_url
+
+
+@pytest.mark.parametrize(
+    "evasion_url",
+    [
+        "http://localhost:8000/demo/../api/requests",
+        "http://localhost:8000/demo/%2e%2e/api/requests",
+        "http://localhost:8000/demo/%2E%2E/health",
+        "http://localhost:8000/demo/%252e%252e/admin",
+        "http://127.0.0.1:8000/demo/..;/api",
+        "http://localhost:8080/demo/hello",
+        "http://127.0.0.2:8000/demo/hello",
+    ],
+)
+def test_demo_ssrf_evasion_attempts_blocked(evasion_url: str) -> None:
+    """Verify that path traversal, encoding tricks, wrong ports and alternate IPs cannot bypass SSRF protections."""
+    with pytest.raises(SSRFBlockedError):
+        validate_url_for_ssrf(evasion_url)

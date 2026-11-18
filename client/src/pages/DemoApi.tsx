@@ -18,6 +18,7 @@ import { EmptyState } from '../components/feedback/EmptyState'
 import { ErrorState } from '../components/feedback/ErrorState'
 import { fetchDemoCatalogue, DEMO_BASE_URL } from '../lib/api'
 import { useRequestStore } from '../store/requestStore'
+import { toast } from '../store/toastStore'
 import type { DemoEndpointCatalogueItem } from '../types/api'
 
 export const DemoApi: React.FC = () => {
@@ -74,6 +75,7 @@ export const DemoApi: React.FC = () => {
     const fullUrl = `${DEMO_BASE_URL}${path}`
     void navigator.clipboard.writeText(fullUrl)
     setCopiedUrl(true)
+    toast.success('Endpoint URL copied to clipboard')
     setTimeout(() => setCopiedUrl(false), 2000)
   }
 
@@ -82,9 +84,11 @@ export const DemoApi: React.FC = () => {
     void navigator.clipboard.writeText(text)
     if (type === 'body') {
       setCopiedBody(true)
+      toast.success('Request payload copied to clipboard')
       setTimeout(() => setCopiedBody(false), 2000)
     } else {
       setCopiedResponse(true)
+      toast.success('Sample response copied to clipboard')
       setTimeout(() => setCopiedResponse(false), 2000)
     }
   }
@@ -92,6 +96,7 @@ export const DemoApi: React.FC = () => {
   // Handler: send to API Tester
   const handleOpenInTester = (ep: DemoEndpointCatalogueItem) => {
     loadDemoEndpoint(ep, DEMO_BASE_URL)
+    toast.info(`Loaded ${ep.method} ${ep.path} into API Tester`)
     navigate('/tester')
   }
 

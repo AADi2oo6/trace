@@ -3,7 +3,7 @@
 import ipaddress
 import posixpath
 import socket
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import ParseResult, unquote, urlparse
 
 from app.core.config import settings
 from app.core.errors import ErrorCode
@@ -87,14 +87,28 @@ def is_demo_api_url(parsed: ParseResult) -> bool:
     Only loopback hostnames targeting the /demo namespace on backend ports are permitted.
     All other localhost/loopback paths (/api, /health, /admin) and other ports remain strictly blocked.
     """
-    hostname = (parsed.hostname or "").lower().strip("[]")
+    hostname = (parsed.hostname or "").lower().strip("[]").rstrip(".")
     if hostname not in ("localhost", "127.0.0.1", "::1", "testserver"):
         return False
 
-    # Path must be exactly /demo or begin with /demo/ (normalized to prevent path traversal)
     raw_path = parsed.path or "/"
-    norm_path = posixpath.normpath(raw_path)
+    # Iteratively unquote up to 3 times to prevent single, double, or nested URL-encoded traversal bypasses (e.g. %2e%2e, %252e%252e)
+    decoded_path = raw_path
+    for _ in range(3):
+        new_decoded = unquote(decoded_path)
+        if new_decoded == decoded_path:
+            break
+        decoded_path = new_decoded
+
+    # Strip matrix parameters (e.g. /..;/ or ;param=val) and normalize path
+    cleaned_for_norm = decoded_path.split(";")[0]
+    norm_path = posixpath.normpath(cleaned_for_norm)
     if norm_path != "/demo" and not norm_path.startswith("/demo/"):
+        return False
+
+    # Extra defense: check if normalized path contains '..' as path segments
+    path_segments = norm_path.split("/")
+    if ".." in path_segments:
         return False
 
     # Port restriction: must target standard backend port 8000, 80 (standard HTTP), or None

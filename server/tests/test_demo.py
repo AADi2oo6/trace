@@ -4,7 +4,7 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from app.core.security import SSRFBlockedError, validate_url_for_ssrf
+from app.core.security import SSRFBlockedError, SecurityValidationError, validate_url_for_ssrf
 from app.main import app
 from app.services.request_service import request_service
 
@@ -298,9 +298,21 @@ def test_ssrf_strictly_blocks_non_demo_localhost() -> None:
     with pytest.raises(SSRFBlockedError):
         validate_url_for_ssrf("http://127.0.0.1:3000/demo/hello")
 
-    # Path traversal attempts
+    # Path traversal attempts (plain, single URL-encoded, double-encoded)
     with pytest.raises(SSRFBlockedError):
         validate_url_for_ssrf("http://localhost:8000/demo/../api/requests")
+    with pytest.raises(SSRFBlockedError):
+        validate_url_for_ssrf("http://localhost:8000/demo/%2e%2e/api/requests")
+    with pytest.raises(SSRFBlockedError):
+        validate_url_for_ssrf("http://localhost:8000/demo/%2E%2E/health")
+    with pytest.raises(SSRFBlockedError):
+        validate_url_for_ssrf("http://localhost:8000/demo/%252e%252e/admin")
+
+    # Alternate loopback IP addresses (must not be allowed via demo exception)
+    with pytest.raises(SSRFBlockedError):
+        validate_url_for_ssrf("http://127.0.0.2:8000/demo/hello")
+    with pytest.raises((SSRFBlockedError, SecurityValidationError)):
+        validate_url_for_ssrf("http://127.1:8000/demo/hello")
 
 
 # ============================================================================

@@ -20,6 +20,7 @@ import {
   runMonitorNow,
 } from '../lib/api'
 import type { MonitorListItem, MonitorCreatePayload } from '../types/api'
+import { toast } from '../store/toastStore'
 
 export const Monitor: React.FC = () => {
   const queryClient = useQueryClient()
@@ -45,12 +46,13 @@ export const Monitor: React.FC = () => {
       void queryClient.invalidateQueries({ queryKey: ['monitors'] })
       setIsCreateModalOpen(false)
       setCreateError(null)
-      // Open detail drawer for newly created monitor
+      toast.success(`Monitor '${newMonitor.name}' registered successfully`, 'Monitor Created')
       setSelectedId(newMonitor.id)
     },
     onError: (err: unknown) => {
       const msg = err instanceof Error ? err.message : 'Failed to register monitor.'
       setCreateError(msg)
+      toast.error(msg, 'Registration Failed')
     },
   })
 
@@ -62,6 +64,10 @@ export const Monitor: React.FC = () => {
       if (selectedId === deleteTarget?.id) {
         setSelectedId(null)
       }
+      toast.success('Monitor removed successfully', 'Deleted')
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete monitor')
     },
   })
 
@@ -70,6 +76,7 @@ export const Monitor: React.FC = () => {
     onSuccess: (_, id) => {
       void queryClient.invalidateQueries({ queryKey: ['monitors'] })
       void queryClient.invalidateQueries({ queryKey: ['monitor', id] })
+      toast.info('Monitor checks paused')
     },
   })
 
@@ -78,6 +85,7 @@ export const Monitor: React.FC = () => {
     onSuccess: (_, id) => {
       void queryClient.invalidateQueries({ queryKey: ['monitors'] })
       void queryClient.invalidateQueries({ queryKey: ['monitor', id] })
+      toast.success('Monitor scheduled for execution', 'Resumed')
     },
   })
 
@@ -85,6 +93,12 @@ export const Monitor: React.FC = () => {
     mutationFn: (id: string) => runMonitorNow(id),
     onMutate: (id) => {
       setRunningId(id)
+    },
+    onSuccess: () => {
+      toast.success('Health check completed and recorded', 'Run Now')
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : 'Health check failed', 'Check Failed')
     },
     onSettled: (_, __, id) => {
       setRunningId(null)

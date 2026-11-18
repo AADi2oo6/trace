@@ -13,13 +13,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#FF6A00] text-black font-semibold border border-[#FF6A00] hover:bg-[#D94F00] hover:border-[#D94F00] active:bg-[#C04400] focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
+    'bg-[var(--accent-orange)] text-black font-semibold border border-[var(--accent-orange)] hover:bg-[var(--accent-orange-hover)] active:opacity-90 focus-visible:ring-1 focus-visible:ring-[var(--accent-orange)] shadow-xs',
   secondary:
-    'bg-transparent text-[#E8E8E8] border border-[#333333] hover:border-[#555555] hover:bg-[#1A1A1A] active:bg-[#222222]',
+    'bg-[var(--bg-panel)] text-[var(--text-primary)] border border-[var(--border-default)] hover:border-[var(--border-strong)] hover:bg-[var(--bg-panel-hover)] active:opacity-80',
   ghost:
-    'bg-transparent text-[#6B6B6B] border border-transparent hover:text-[#E8E8E8] hover:bg-[#1A1A1A]',
+    'bg-transparent text-[var(--text-muted)] border border-transparent hover:text-[var(--text-primary)] hover:bg-[var(--bg-panel-secondary)] active:opacity-80',
   danger:
-    'bg-transparent text-[#EF4444] border border-[#EF4444] hover:bg-[#EF4444] hover:text-white active:bg-[#DC2626]',
+    'bg-transparent text-rose-500 border border-rose-500/50 hover:bg-rose-500 hover:text-white active:bg-rose-600',
 }
 
 const sizeStyles: Record<ButtonSize, string> = {

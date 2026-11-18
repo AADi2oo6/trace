@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from 'recharts'
 import type { AnalyticsDataPoint } from '../../types/api'
+import { useThemeStore } from '../../store/themeStore'
 
 interface ResponseTimeChartProps {
   data: AnalyticsDataPoint[]
@@ -56,6 +57,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
 }
 
 export const ResponseTimeChart: React.FC<ResponseTimeChartProps> = ({ data }) => {
+  const resolvedTheme = useThemeStore((state) => state.resolvedTheme)
+  const isLight = resolvedTheme === 'light'
+
   if (data.length === 0) {
     return (
       <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-8 text-center flex flex-col items-center justify-center min-h-[220px]">
@@ -73,6 +77,10 @@ export const ResponseTimeChart: React.FC<ResponseTimeChartProps> = ({ data }) =>
     chartValue: pt.duration_ms ?? 0,
   }))
 
+  const gridColor = isLight ? '#E2E8F0' : '#1A1A1A'
+  const axisColor = isLight ? '#94A3B8' : '#444444'
+  const textColor = isLight ? '#64748B' : '#71717A'
+
   return (
     <div className="border border-[#1E1E1E] bg-[#0A0A0A] p-4 space-y-3">
       <div className="flex items-center justify-between text-xs font-mono text-[#888888]">
@@ -85,21 +93,21 @@ export const ResponseTimeChart: React.FC<ResponseTimeChartProps> = ({ data }) =>
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF6A00" stopOpacity={0.3} />
+                <stop offset="5%" stopColor="#FF6A00" stopOpacity={isLight ? 0.35 : 0.3} />
                 <stop offset="95%" stopColor="#FF6A00" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1A1A1A" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis
               dataKey="timeLabel"
-              stroke="#444444"
-              tick={{ fill: '#666666', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: '#222222' }}
+              stroke={axisColor}
+              tick={{ fill: textColor, fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: gridColor }}
             />
             <YAxis
-              stroke="#444444"
-              tick={{ fill: '#666666', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: '#222222' }}
+              stroke={axisColor}
+              tick={{ fill: textColor, fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: gridColor }}
               unit="ms"
             />
             <Tooltip content={<CustomTooltip />} />
@@ -110,7 +118,8 @@ export const ResponseTimeChart: React.FC<ResponseTimeChartProps> = ({ data }) =>
               strokeWidth={1.5}
               fillOpacity={1}
               fill="url(#latencyGradient)"
-              isAnimationActive={false}
+              isAnimationActive={true}
+              animationDuration={250}
             />
           </AreaChart>
         </ResponsiveContainer>

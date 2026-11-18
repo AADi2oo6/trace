@@ -30,6 +30,7 @@ The MVP must be a real working full-stack application, not a visual mockup.
 | **Step 16** | History + SQLite Persistence | ✅ Complete | Full SQLite persistence, secret redaction, history API & interactive /history UI |
 | **Step 17** | API Monitoring + Performance Analytics | ✅ Complete | Background scheduler, periodic checks, Recharts analytics & /monitor dashboard |
 | **Step 18** | Controlled Demo API + Interactive Testing | ✅ Complete | In-tree predictable endpoints (/demo), SSRF allowance for demo, interactive /demo explorer |
+| **Step 19** | Security Audit + Complete UI/UX Polish + Light Theme | ✅ Complete | Complete Light Theme, Settings Appearance switch, anti-flash, animations, toast system, hardened SSRF |
 
 #### STEP 13 — Full Response Inspector UI: COMPLETE
 - **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 168 passed)
@@ -130,6 +131,25 @@ The MVP must be a real working full-stack application, not a visual mockup.
 - **Known Limitations:**
   - Demo tokens (`demo-token-read`, `demo-token-admin`) are static test fixtures intended exclusively for testing TRACE UI and analysis features; not for production access control.
   - Delay endpoint enforces a strict 5000ms ceiling to prevent worker starvation during automated or interactive test runs.
+
+#### STEP 19 — Security Audit + Complete UI/UX Polish + Light Theme: COMPLETE
+- **Status:** Complete (Verified: Frontend build PASS, Lint PASS, Backend regression 214 passed)
+- **Delivered Capabilities:**
+  - Centralized Theme System: CSS variable tokens for Dark (default) and Light themes (`--bg-page`, `--bg-panel`, `--text-primary`, `--border-default`, `--accent-orange`, `--chart-grid`, etc.).
+  - Appearance Preferences in Settings: Interactive Dark, Light, and System cards with visual miniature mockups. Persists in `localStorage` across page changes, reloads, and restarts.
+  - Zero Flash on Startup: Synchronous pre-hydration script in `client/index.html` setting `data-theme` and `light` class before initial paint.
+  - Topbar Theme Quick Toggle: Integrated theme switcher button in top navigation bar displaying active mode with Sun, Moon, and Laptop icons.
+  - Theme-Aware Recharts: Dynamic chart gridlines (`CartesianGrid`), axis lines, ticks, and tooltips adapting instantly to light and dark modes.
+  - Restrained Animation System: Smooth 150–250ms transitions on interactive buttons, panels, tables, and tabs; complete `@media (prefers-reduced-motion: reduce)` override disabling nonessential animations.
+  - Global Accessible Toast System: Compact notifications for request execution, clipboard copy, monitor actions (create, pause, resume, delete), history clears, and theme changes, announced via `role="status"` and `aria-live="polite"`.
+  - Backend Security Hardening:
+    - Patched URL-encoded traversal (`%2e%2e`, `%252e%252e`) and matrix parameter evasions (`..;`) in `is_demo_api_url`.
+    - Canonicalized trailing dots (`localhost.`).
+    - Broadened sensitive credential header redaction in `sanitizer.py` to catch all tokens, passwords, and custom API keys.
+    - Verified strict SSRF blocking across loopback aliases, non-demo localhost paths, wrong ports, and redirect escapes.
+  - Frontend Security & Accessibility: Zero `dangerouslySetInnerHTML` usage, safe text rendering, escape-to-close on all modals and drawers, visible focus rings (`outline: 1.5px solid var(--accent-orange)`), and responsive layouts.
+- **Known Limitations:**
+  - System theme preference tracking relies on browser window `matchMedia` events, which may be disabled or mocked in certain headless browser test environments.
 
 ---
 

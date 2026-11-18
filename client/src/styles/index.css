@@ -1,54 +1,132 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Core Palette ─────────────────────────────────────────────── */
-  --color-trace-black: #000000;
-  --color-trace-near-black: #0A0A0A;
-  --color-trace-panel: #111111;
-  --color-trace-panel-hover: #161616;
-  --color-trace-white: #FFFFFF;
-  --color-trace-off-white: #F5F5F5;
-  --color-trace-gray: #6B6B6B;
-  --color-trace-light-gray: #E8E8E8;
-  --color-trace-muted: #3A3A3A;
-  --color-trace-border: #222222;
-  --color-trace-border-strong: #333333;
+  /* ── Core Palette (mapped to CSS variables) ─────────────────────── */
+  --color-trace-black: var(--bg-page);
+  --color-trace-near-black: var(--bg-surface-secondary);
+  --color-trace-panel: var(--bg-panel);
+  --color-trace-panel-hover: var(--bg-panel-hover);
+  --color-trace-white: var(--text-primary);
+  --color-trace-off-white: var(--text-primary);
+  --color-trace-gray: var(--text-muted);
+  --color-trace-light-gray: var(--text-secondary);
+  --color-trace-muted: var(--text-dim);
+  --color-trace-border: var(--border-default);
+  --color-trace-border-strong: var(--border-strong);
 
   /* ── Orange Accent ────────────────────────────────────────────── */
-  --color-trace-orange: #FF6A00;
-  --color-trace-dark-orange: #D94F00;
-  --color-trace-orange-dim: #FF6A0020;
-  --color-trace-orange-subtle: #FF6A000D;
+  --color-trace-orange: var(--accent-orange);
+  --color-trace-dark-orange: var(--accent-orange-dark);
+  --color-trace-orange-dim: var(--accent-orange-dim);
+  --color-trace-orange-subtle: var(--accent-orange-subtle);
 
   /* ── Semantic Status ──────────────────────────────────────────── */
-  --color-trace-success: #22C55E;
-  --color-trace-warning: #F59E0B;
-  --color-trace-error: #EF4444;
-  --color-trace-info: #3B82F6;
+  --color-trace-success: var(--status-success);
+  --color-trace-warning: var(--status-warning);
+  --color-trace-error: var(--status-error);
+  --color-trace-info: var(--status-info);
 
   /* ── Typography ───────────────────────────────────────────────── */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* ── Base ─────────────────────────────────────────────────────────── */
+/* ── Design Tokens: Dark Theme (Default) ─────────────────────────── */
 :root {
   color-scheme: dark;
+  --bg-page: #000000;
+  --bg-surface: #080808;
+  --bg-surface-secondary: #0A0A0A;
+  --bg-panel: #111111;
+  --bg-panel-secondary: #0D0D0D;
+  --bg-panel-hover: #161616;
+  --bg-card: #0E0E0E;
+  --bg-input: #0D0D0D;
+
+  --text-primary: #F5F5F5;
+  --text-secondary: #D4D4D8;
+  --text-muted: #888888;
+  --text-dim: #4B5563;
+
+  --border-default: #1E1E1E;
+  --border-subtle: #161616;
+  --border-strong: #333333;
+  --divider: #1E1E1E;
+
+  --accent-orange: #FF6A00;
+  --accent-orange-dark: #D94F00;
+  --accent-orange-hover: #FF7A1A;
+  --accent-orange-dim: rgba(255, 106, 0, 0.12);
+  --accent-orange-subtle: rgba(255, 106, 0, 0.05);
+
+  --status-success: #22C55E;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
+  --status-info: #3B82F6;
+
+  --chart-grid: #1E1E1E;
+  --chart-text: #71717A;
+  --tooltip-bg: #111111;
+  --tooltip-border: #2A2A2A;
+  --tooltip-text: #E8E8E8;
 }
 
+/* ── Design Tokens: Light Theme ──────────────────────────────────── */
+[data-theme="light"],
+.light {
+  color-scheme: light;
+  --bg-page: #F6F8FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-secondary: #F0F2F5;
+  --bg-panel: #FFFFFF;
+  --bg-panel-secondary: #F3F4F6;
+  --bg-panel-hover: #E5E7EB;
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-dim: #94A3B8;
+
+  --border-default: #E2E8F0;
+  --border-subtle: #EEF2F6;
+  --border-strong: #CBD5E1;
+  --divider: #E2E8F0;
+
+  --accent-orange: #EA580C;
+  --accent-orange-dark: #C2410C;
+  --accent-orange-hover: #D94F00;
+  --accent-orange-dim: rgba(234, 88, 12, 0.12);
+  --accent-orange-subtle: rgba(234, 88, 12, 0.05);
+
+  --status-success: #16A34A;
+  --status-warning: #D97706;
+  --status-error: #DC2626;
+  --status-info: #2563EB;
+
+  --chart-grid: #E2E8F0;
+  --chart-text: #64748B;
+  --tooltip-bg: #FFFFFF;
+  --tooltip-border: #E2E8F0;
+  --tooltip-text: #0F172A;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────── */
 body {
-  background-color: #000000;
-  color: #F5F5F5;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Selection ────────────────────────────────────────────────────── */
 ::selection {
-  background-color: #FF6A00;
+  background-color: var(--accent-orange);
   color: #000000;
 }
 
@@ -58,20 +136,96 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: var(--bg-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2A2A2A;
+  background: var(--border-strong);
   border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A3A3A;
+  background: var(--text-dim);
 }
 
 /* ── Focus Ring ───────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 1px solid #FF6A00;
+  outline: 1.5px solid var(--accent-orange);
   outline-offset: 2px;
+}
+
+/* ── Interactive Transitions ──────────────────────────────────────── */
+button,
+a,
+input,
+select,
+textarea {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+/* ── Light Theme Global Class Overrides ────────────────────────────── */
+[data-theme="light"] .bg-\[\#000000\],
+[data-theme="light"] .bg-\[\#080808\],
+[data-theme="light"] .bg-\[\#0A0A0A\] {
+  background-color: var(--bg-page) !important;
+}
+
+[data-theme="light"] .bg-\[\#0D0D0D\],
+[data-theme="light"] .bg-\[\#0E0E0E\],
+[data-theme="light"] .bg-\[\#111111\],
+[data-theme="light"] .bg-\[\#121212\] {
+  background-color: var(--bg-panel) !important;
+}
+
+[data-theme="light"] .bg-\[\#161616\],
+[data-theme="light"] .bg-\[\#1A1A1A\],
+[data-theme="light"] .bg-\[\#222222\],
+[data-theme="light"] .bg-\[\#2A2A2A\] {
+  background-color: var(--bg-panel-secondary) !important;
+}
+
+[data-theme="light"] .border-\[\#1A1A1A\],
+[data-theme="light"] .border-\[\#1E1E1E\],
+[data-theme="light"] .border-\[\#222222\],
+[data-theme="light"] .border-\[\#262626\],
+[data-theme="light"] .border-\[\#2A2A2A\],
+[data-theme="light"] .border-\[\#333333\] {
+  border-color: var(--border-default) !important;
+}
+
+[data-theme="light"] .text-\[\#FFFFFF\],
+[data-theme="light"] .text-\[\#F5F5F5\],
+[data-theme="light"] .text-\[\#E8E8E8\] {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .text-\[\#CCCCCC\],
+[data-theme="light"] .text-\[\#B0B0B0\],
+[data-theme="light"] .text-\[\#A0A0A0\] {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="light"] .text-\[\#888888\],
+[data-theme="light"] .text-\[\#777777\],
+[data-theme="light"] .text-\[\#6B6B6B\],
+[data-theme="light"] .text-\[\#666666\],
+[data-theme="light"] .text-\[\#555555\] {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="light"] .text-\[\#444444\],
+[data-theme="light"] .text-\[\#3A3A3A\],
+[data-theme="light"] .text-\[\#2A2A2A\] {
+  color: var(--text-dim) !important;
+}
+
+/* Light Theme Code/Preview Blocks */
+[data-theme="light"] pre,
+[data-theme="light"] code {
+  color: #0F172A;
+}
+
+[data-theme="light"] .bg-\[\#080808\] {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
 }
 
 /* ── Animations ───────────────────────────────────────────────────── */
@@ -85,20 +239,6 @@ body {
   50% { opacity: 0.5; transform: scale(0.85); }
 }
 
-@keyframes trace-travel {
-  0% { stroke-dashoffset: 100; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { stroke-dashoffset: -100; opacity: 0; }
-}
-
-@keyframes trace-dot-travel {
-  0% { offset-distance: 0%; opacity: 0; }
-  5% { opacity: 1; }
-  95% { opacity: 1; }
-  100% { offset-distance: 100%; opacity: 0; }
-}
-
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -109,26 +249,47 @@ body {
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 /* ── Utility Classes ──────────────────────────────────────────────── */
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    #1A1A1A 0px,
-    #242424 40px,
-    #1A1A1A 80px
+    var(--border-subtle) 0px,
+    var(--border-default) 40px,
+    var(--border-subtle) 80px
   );
   background-size: 400px 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.2s ease-out both;
+  animation: fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 0.2s ease-out both;
+  animation: slide-in-left 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .trace-font-mono {
   font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ── Accessibility: Reduced Motion ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

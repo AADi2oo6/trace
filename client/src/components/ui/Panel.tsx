@@ -23,8 +23,8 @@ export const Panel: React.FC<PanelProps> = ({
   return (
     <div
       className={[
-        'border border-[#222222] bg-[#111111]',
-        hover ? 'transition-colors duration-150 hover:border-[#333333] hover:bg-[#141414]' : '',
+        'border border-[var(--border-default)] bg-[var(--bg-panel)] transition-colors duration-150',
+        hover ? 'hover:border-[var(--border-strong)] hover:bg-[var(--bg-panel-hover)]' : '',
         paddingStyles[padding],
         className,
       ]

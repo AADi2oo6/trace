@@ -24,6 +24,14 @@ SENSITIVE_HEADERS = {
 REDACTED_VALUE = "[REDACTED]"
 
 
+def is_sensitive_header(name: str) -> bool:
+    """Determine if a header name represents sensitive credentials or keys."""
+    n = name.lower().strip()
+    if n in SENSITIVE_HEADERS:
+        return True
+    return any(term in n for term in ("token", "secret", "password", "auth", "api-key", "apikey"))
+
+
 def sanitize_headers(headers: dict[str, str] | None) -> dict[str, str] | None:
     """Return a new headers dict with sensitive headers replaced by REDACTED_VALUE."""
     if not headers:
@@ -31,7 +39,7 @@ def sanitize_headers(headers: dict[str, str] | None) -> dict[str, str] | None:
 
     sanitized: dict[str, str] = {}
     for key, value in headers.items():
-        if key.lower().strip() in SENSITIVE_HEADERS:
+        if is_sensitive_header(key):
             sanitized[key] = REDACTED_VALUE
         else:
             sanitized[key] = value
@@ -48,7 +56,7 @@ def sanitize_header_analysis(header_items: list[dict[str, Any]] | None) -> list[
     for item in header_items:
         item_copy = dict(item)
         name = item_copy.get("name", "")
-        if name.lower().strip() in SENSITIVE_HEADERS:
+        if is_sensitive_header(name):
             item_copy["value"] = REDACTED_VALUE
         sanitized_items.append(item_copy)
 

@@ -16,8 +16,11 @@ interface BreadcrumbsProps {
 const routeLabels: Record<string, string> = {
   '/': 'Dashboard',
   '/tester': 'API Tester',
+  '/analysis': 'Network Analysis',
+  '/journey': 'Request Journey',
   '/history': 'History',
   '/monitor': 'Monitor',
+  '/demo': 'Demo API',
   '/docs': 'Documentation',
   '/settings': 'Settings',
 }

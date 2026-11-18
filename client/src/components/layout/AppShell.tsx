@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { ToastContainer } from '../feedback/Toast'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -46,11 +47,14 @@ export const AppShell: React.FC<AppShellProps> = ({
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] font-mono text-[#2A2A2A]">
-              STEP 11 // FRONTEND SHELL
+              STEP 19 // POLISHED &amp; ACCESSIBLE
             </span>
           </div>
         </footer>
       </div>
+
+      {/* Global Toast Notifications */}
+      <ToastContainer />
     </div>
   )
 }

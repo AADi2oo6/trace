@@ -13,6 +13,7 @@ import { HistoryDetailDrawer } from '../components/history/HistoryDetailDrawer'
 import { ClearHistoryModal } from '../components/history/ClearHistoryModal'
 import { fetchHistory, deleteHistoryItem, clearAllHistory } from '../lib/api'
 import type { HistoryListItem } from '../types/api'
+import { toast } from '../store/toastStore'
 
 const PAGE_SIZE = 50
 
@@ -48,6 +49,10 @@ export const History: React.FC = () => {
       if (selectedId === deletedId) {
         setSelectedId(null)
       }
+      toast.success('History record removed')
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete record')
     },
   })
 
@@ -59,6 +64,10 @@ export const History: React.FC = () => {
       setIsClearModalOpen(false)
       setSelectedId(null)
       setPage(1)
+      toast.success('All history records cleared', 'History Cleared')
+    },
+    onError: (err: unknown) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to clear history')
     },
   })
 

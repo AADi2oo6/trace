@@ -5,6 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TRACE — API Testing and Network Analysis</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('trace-theme-mode') || 'dark';
+          var isLight = saved === 'light' || (saved === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
+          var root = document.documentElement;
+          if (isLight) {
+            root.setAttribute('data-theme', 'light');
+            root.classList.add('light');
+          } else {
+            root.setAttribute('data-theme', 'dark');
+            root.classList.remove('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { executeRequest, ApiNetworkError, ApiResponseError } from '../lib/api'
 import type { RequestCreate, RequestResponse } from '../types/api'
 import { useRequestStore } from '../store/requestStore'
+import { toast } from '../store/toastStore'
 
 export interface ExecuteRequestError {
   /** User-facing title */
@@ -73,10 +74,20 @@ export function useExecuteRequest() {
     onSuccess: (data) => {
       setLastResponse(data)
       setLastNetworkError(null)
+      if (data.success && data.status_code) {
+        toast.success(
+          `${data.method} ${data.status_code} (${data.status_text || 'OK'}) in ${Math.round(data.duration_ms || 0)}ms`,
+          'Request Completed',
+        )
+      } else if (data.error) {
+        toast.warning(data.error.message, data.error.code)
+      }
     },
     onError: (err) => {
-      setLastNetworkError(toExecuteError(err))
+      const execError = toExecuteError(err)
+      setLastNetworkError(execError)
       setLastResponse(null)
+      toast.error(execError.message, execError.title)
     },
   })
 
