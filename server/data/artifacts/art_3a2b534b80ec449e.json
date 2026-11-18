@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_3a2b534b80ec449e",
+  "request_id": "req_94f3eb9b6737",
+  "created_at": 1795023230.2529762,
+  "url": "https://example.com",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "response.json",
+  "content_type": "application/json",
+  "file_size": 15,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "15"
+  },
+  "category": "json"
+}

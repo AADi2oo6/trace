@@ -1,12 +1,18 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react'
-import { Copy, Check, Search, X, ChevronUp, ChevronDown } from 'lucide-react'
-import type { BodyType } from '../../types/api'
+import { Copy, Check, Search, X, ChevronUp, ChevronDown, Download, Archive, Binary } from 'lucide-react'
+import type { BodyType, ContentMetadata } from '../../types/api'
+import { getArtifactDownloadUrl, getArtifactZipUrl } from '../../lib/api'
+import { ImageExplorerView } from '../explorer/ImageExplorerView'
+import { MediaPlayerView } from '../explorer/MediaPlayerView'
+import { PdfExplorerView } from '../explorer/PdfExplorerView'
 
 interface ResponseBodyProps {
   body: string | null
   bodyType: BodyType | null
   bodySize: number | null
   contentType: string | null
+  artifactId?: string | null
+  contentMetadata?: ContentMetadata | null
 }
 
 function prettyJson(raw: string): string {
@@ -131,6 +137,8 @@ export const ResponseBody: React.FC<ResponseBodyProps> = ({
   bodyType,
   bodySize,
   contentType,
+  artifactId,
+  contentMetadata,
 }) => {
   const [copied, setCopied] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -212,19 +220,89 @@ export const ResponseBody: React.FC<ResponseBodyProps> = ({
     )
   }
 
+  // ── Media / Binary Previews ──────────────────────────────────────────
+  if (contentMetadata?.category === 'image' && artifactId) {
+    return (
+      <div className="p-4">
+        <ImageExplorerView
+          artifactId={artifactId}
+          filename={contentMetadata.filename}
+          fileSize={bodySize || 0}
+          mimeType={contentType || 'image/png'}
+        />
+      </div>
+    )
+  }
+
+  if ((contentMetadata?.category === 'audio' || contentMetadata?.category === 'video') && artifactId) {
+    return (
+      <div className="p-4">
+        <MediaPlayerView
+          category={contentMetadata.category}
+          artifactId={artifactId}
+          filename={contentMetadata.filename}
+          fileSize={bodySize || 0}
+          mimeType={contentType || 'audio/mpeg'}
+        />
+      </div>
+    )
+  }
+
+  if (contentMetadata?.category === 'pdf' && artifactId) {
+    return (
+      <div className="p-4">
+        <PdfExplorerView
+          artifactId={artifactId}
+          filename={contentMetadata.filename}
+          fileSize={bodySize || 0}
+        />
+      </div>
+    )
+  }
+
   // ── Binary ─────────────────────────────────────────────────────────────
   if (bodyType === 'binary') {
+    const downloadUrl = artifactId ? getArtifactDownloadUrl(artifactId) : null
+    const zipUrl = artifactId ? getArtifactZipUrl(artifactId) : null
+
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-2">
-        <div className="w-8 h-8 border border-[#2A2A2A] flex items-center justify-center">
-          <span className="text-[10px] font-mono text-[#3A3A3A]">BIN</span>
+      <div className="flex flex-col items-center justify-center py-12 gap-3">
+        <div className="w-10 h-10 border border-[#2A2A2A] flex items-center justify-center bg-[#111111] rounded">
+          <Binary className="w-5 h-5 text-sky-400" />
         </div>
-        <p className="text-xs font-mono text-[#6B6B6B]">Binary response</p>
-        {bodySize !== null && (
-          <p className="text-[11px] font-mono text-[#3A3A3A]">{formatBytes(bodySize)}</p>
-        )}
-        {contentType && (
-          <p className="text-[11px] font-mono text-[#3A3A3A]">{contentType}</p>
+        <p className="text-xs font-mono font-medium text-[#E8E8E8]">Binary Payload</p>
+        <div className="flex items-center gap-2 text-[11px] font-mono text-[#6B6B6B]">
+          {bodySize !== null && <span>{formatBytes(bodySize)}</span>}
+          {contentType && (
+            <>
+              <span>•</span>
+              <span>{contentType}</span>
+            </>
+          )}
+        </div>
+        {(downloadUrl || zipUrl) && (
+          <div className="flex items-center gap-2 mt-2">
+            {downloadUrl && (
+              <a
+                href={downloadUrl}
+                download={contentMetadata?.filename || 'payload.bin'}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-xs font-mono text-[#E8E8E8] border border-[#333333] rounded transition-colors"
+              >
+                <Download className="w-3.5 h-3.5 text-sky-400" />
+                <span>Download File</span>
+              </a>
+            )}
+            {zipUrl && (
+              <a
+                href={zipUrl}
+                download="trace-export.zip"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1E1E1E] hover:bg-[#2A2A2A] text-xs font-mono text-[#E8E8E8] border border-[#333333] rounded transition-colors"
+              >
+                <Archive className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Export ZIP</span>
+              </a>
+            )}
+          </div>
         )}
       </div>
     )

@@ -26,9 +26,22 @@ const BASE_URL = 'http://localhost:8000'
 const API_ENDPOINT = `${BASE_URL}/api/requests`
 const HISTORY_ENDPOINT = `${BASE_URL}/api/history`
 const MONITORS_ENDPOINT = `${BASE_URL}/api/monitors`
+const ARTIFACTS_ENDPOINT = `${BASE_URL}/api/artifacts`
 const DEMO_ENDPOINT = `${BASE_URL}/demo`
 
 export const DEMO_BASE_URL = BASE_URL
+
+export function getArtifactDownloadUrl(artifactId: string): string {
+  return `${ARTIFACTS_ENDPOINT}/${encodeURIComponent(artifactId)}/download`
+}
+
+export function getArtifactRawUrl(artifactId: string): string {
+  return `${ARTIFACTS_ENDPOINT}/${encodeURIComponent(artifactId)}/raw`
+}
+
+export function getArtifactZipUrl(artifactId: string): string {
+  return `${ARTIFACTS_ENDPOINT}/${encodeURIComponent(artifactId)}/zip`
+}
 
 // ── Error types ────────────────────────────────────────────────────────────
 

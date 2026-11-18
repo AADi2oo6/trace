@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_94c24c5e0b0d44d5",
+  "request_id": "req_84edf020fc95",
+  "created_at": 1795023230.3111773,
+  "url": "https://example.com/tick",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "tick.json",
+  "content_type": "application/json",
+  "file_size": 15,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "15"
+  },
+  "category": "json"
+}

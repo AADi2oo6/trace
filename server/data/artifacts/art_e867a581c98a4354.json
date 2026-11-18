@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_e867a581c98a4354",
+  "request_id": "req_0c65ff0e6021",
+  "created_at": 1795021838.7781694,
+  "url": "https://api.mock-api.org/items?query=trace&page=2",
+  "method": "POST",
+  "status_code": 200,
+  "filename": "items.json",
+  "content_type": "application/json",
+  "file_size": 19,
+  "headers": {
+    "content-length": "19",
+    "content-type": "application/json"
+  },
+  "category": "json"
+}

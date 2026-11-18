@@ -302,14 +302,13 @@ def test_response_size_limit_via_content_length() -> None:
 
 
 def test_response_size_limit_via_streaming() -> None:
-    """Verify that streaming responses exceeding 2MB are stopped with RESPONSE_TOO_LARGE."""
-    chunk = b"X" * (1024 * 1024)  # 1MB chunk
+    """Verify that streaming responses exceeding the maximum response bytes limit are stopped with RESPONSE_TOO_LARGE."""
+    oversized = b"X" * (settings.max_response_bytes + 1024)
 
     def handler(request: httpx.Request) -> httpx.Response:
-        # Stream 3MB without Content-Length
         return httpx.Response(
             200,
-            content=chunk * 3,
+            content=oversized,
             request=request,
         )
 

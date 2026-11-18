@@ -1,0 +1,18 @@
+{
+  "artifact_id": "art_64a0cda1345442c6",
+  "request_id": "req_90ff5c049a10",
+  "created_at": 1795022839.5637803,
+  "url": "http://localhost:8000/demo/hello",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "hello.json",
+  "content_type": "application/json",
+  "file_size": 101,
+  "headers": {
+    "date": "Wed, 18 Nov 2026 17:27:18 GMT",
+    "server": "uvicorn",
+    "content-length": "101",
+    "content-type": "application/json"
+  },
+  "category": "json"
+}

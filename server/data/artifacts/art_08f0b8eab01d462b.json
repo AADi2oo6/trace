@@ -1,0 +1,19 @@
+{
+  "artifact_id": "art_08f0b8eab01d462b",
+  "request_id": "req_3794742d04b9",
+  "created_at": 1795023228.3854485,
+  "url": "https://api.mock-api.org/items",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "items.json",
+  "content_type": "application/json",
+  "file_size": 19,
+  "headers": {
+    "access-control-allow-origin": "https://client.example.com",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-methods": "GET, POST",
+    "content-type": "application/json",
+    "content-length": "19"
+  },
+  "category": "json"
+}

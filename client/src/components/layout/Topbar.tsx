@@ -24,7 +24,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
   return (
     <header
-      className="h-11 shrink-0 border-b border-[#1E1E1E] bg-[#0A0A0A] flex items-center justify-between px-4 select-none"
+      className="h-11 shrink-0 border-b border-[var(--border-default)] bg-[var(--bg-surface)] flex items-center justify-between px-4 select-none"
       role="banner"
     >
       {/* Left: mobile menu + breadcrumb */}

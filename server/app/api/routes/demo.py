@@ -396,3 +396,175 @@ def get_error(
             "message": messages.get(code, "Simulated server failure."),
         },
     )
+
+
+# --- Media & Explorer Demo Endpoints ---
+
+SAMPLE_PNG = (
+    b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\x08\x06\x00\x00\x00"
+    b"\x1f\xf3\xffa\x00\x00\x00\x19IDATx\x9cc\xfc\xff\xff?\x03\x18\x18\x18\x12\x12\x12\x00"
+    b"\x06\x12\x02\x02\x00\x00\x00\xff\xff\x03\x00V\xbc\x020\xca\xe5\xd4f\x00\x00\x00\x00IEND\xaeB`\x82"
+)
+
+SAMPLE_SVG = (
+    b'<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">'
+    b'<rect width="300" height="200" rx="16" fill="#0f172a"/>'
+    b'<circle cx="80" cy="100" r="45" fill="#3b82f6" opacity="0.8"/>'
+    b'<circle cx="150" cy="100" r="45" fill="#8b5cf6" opacity="0.8"/>'
+    b'<circle cx="220" cy="100" r="45" fill="#ec4899" opacity="0.8"/>'
+    b'<text x="150" y="165" font-family="sans-serif" font-size="14" fill="#f8fafc" text-anchor="middle" font-weight="bold">TRACE Vector Graphic</text>'
+    b'</svg>'
+)
+
+SAMPLE_PDF = (
+    b"%PDF-1.4\n"
+    b"1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
+    b"2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n"
+    b"3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\n"
+    b"xref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000101 00000 n \n"
+    b"trailer<</Size 4/Root 1 0 R>>\nstartxref\n180\n%%EOF"
+)
+
+
+def _generate_wav() -> bytes:
+    import math
+    import struct
+
+    rate = 8000
+    duration = 0.4
+    samples_count = int(rate * duration)
+    samples = bytearray()
+    for i in range(samples_count):
+        # 440Hz test sine tone
+        v = int(128 + 90 * math.sin(2 * math.pi * 440 * (i / rate)))
+        samples.append(v)
+    header = struct.pack(
+        "<4sI4s4sIHHIIHH4sI",
+        b"RIFF",
+        36 + len(samples),
+        b"WAVE",
+        b"fmt ",
+        16,
+        1,
+        1,
+        rate,
+        rate,
+        1,
+        8,
+        b"data",
+        len(samples),
+    )
+    return header + samples
+
+
+@router.get("/html", summary="Demo HTML Page")
+def get_demo_html() -> Response:
+    """Return a styled HTML document for evaluating sandboxed HTML preview."""
+    html_content = (
+        "<!DOCTYPE html>\n"
+        "<html lang='en'>\n"
+        "<head>\n"
+        "  <meta charset='UTF-8'>\n"
+        "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n"
+        "  <title>TRACE Demo Web Page</title>\n"
+        "  <style>\n"
+        "    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 2rem; background: #0f172a; color: #f8fafc; line-height: 1.6; }\n"
+        "    .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }\n"
+        "    h1 { color: #38bdf8; margin-top: 0; }\n"
+        "    .badge { display: inline-block; padding: 0.25rem 0.5rem; background: #0284c7; color: white; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }\n"
+        "  </style>\n"
+        "</head>\n"
+        "<body>\n"
+        "  <span class='badge'>TRACE Demo</span>\n"
+        "  <h1>Universal Content Explorer — HTML Sandbox</h1>\n"
+        "  <p>This web page was fetched via the secure TRACE request execution engine and rendered inside an isolated iframe sandbox.</p>\n"
+        "  <div class='card'>\n"
+        "    <h3>Security Notice</h3>\n"
+        "    <p>Script execution, top-level navigation, and same-origin access are disabled by the browser sandbox policy.</p>\n"
+        "  </div>\n"
+        "</body>\n"
+        "</html>"
+    )
+    return Response(
+        content=html_content,
+        media_type="text/html; charset=utf-8",
+        headers={"Content-Disposition": 'inline; filename="demo_page.html"'},
+    )
+
+
+@router.get("/image", summary="Demo PNG Image")
+def get_demo_image() -> Response:
+    """Return a valid PNG image for evaluating image inspection and preview."""
+    return Response(
+        content=SAMPLE_PNG,
+        media_type="image/png",
+        headers={"Content-Disposition": 'inline; filename="trace_demo_icon.png"'},
+    )
+
+
+@router.get("/svg", summary="Demo SVG Image")
+def get_demo_svg() -> Response:
+    """Return a valid SVG image for vector preview evaluation."""
+    return Response(
+        content=SAMPLE_SVG,
+        media_type="image/svg+xml",
+        headers={"Content-Disposition": 'inline; filename="trace_graphic.svg"'},
+    )
+
+
+@router.get("/audio", summary="Demo Audio File (WAV)")
+def get_demo_audio() -> Response:
+    """Return a valid PCM WAV audio tone for evaluating audio player integration."""
+    wav_bytes = _generate_wav()
+    return Response(
+        content=wav_bytes,
+        media_type="audio/wav",
+        headers={"Content-Disposition": 'inline; filename="trace_tone.wav"'},
+    )
+
+
+@router.get("/pdf", summary="Demo PDF Document")
+def get_demo_pdf() -> Response:
+    """Return a valid PDF document for evaluating PDF preview and downloads."""
+    return Response(
+        content=SAMPLE_PDF,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'inline; filename="trace_document.pdf"'},
+    )
+
+
+@router.get("/xml", summary="Demo XML Feed")
+def get_demo_xml() -> Response:
+    """Return an XML feed document for evaluating XML viewer."""
+    xml_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0">\n'
+        '  <channel>\n'
+        '    <title>TRACE Demo RSS Feed</title>\n'
+        '    <link>http://localhost:8000/demo/xml</link>\n'
+        '    <description>Sample syndicated XML feed for TRACE Content Explorer</description>\n'
+        '    <item>\n'
+        '      <title>Step 20: Universal Content Explorer</title>\n'
+        '      <link>http://localhost:8000/demo/html</link>\n'
+        '      <description>Rich content inspection with sandboxed preview and downloads.</description>\n'
+        '      <pubDate>Wed, 18 Nov 2026 12:00:00 GMT</pubDate>\n'
+        '    </item>\n'
+        '  </channel>\n'
+        '</rss>'
+    )
+    return Response(
+        content=xml_content,
+        media_type="application/xml; charset=utf-8",
+        headers={"Content-Disposition": 'inline; filename="feed.xml"'},
+    )
+
+
+@router.get("/binary", summary="Demo Binary File")
+def get_demo_binary() -> Response:
+    """Return an arbitrary binary octet-stream for evaluating binary handling."""
+    binary_data = b"\x00\x01\x02\x03\x04\x05\x06\x07TRACE_BINARY_PAYLOAD_TEST\xff\xfe\xfd\xfc"
+    return Response(
+        content=binary_data,
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": 'attachment; filename="test_binary.bin"'},
+    )

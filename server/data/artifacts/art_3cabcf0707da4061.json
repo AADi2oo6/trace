@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_3cabcf0707da4061",
+  "request_id": "req_8a8674754e71",
+  "created_at": 1795021837.8265636,
+  "url": "https://api.mock-api.org/ping",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "ping.json",
+  "content_type": "application/json",
+  "file_size": 12,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "12"
+  },
+  "category": "json"
+}

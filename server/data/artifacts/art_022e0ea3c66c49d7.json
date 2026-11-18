@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_022e0ea3c66c49d7",
+  "request_id": "req_5c41ba90d1b1",
+  "created_at": 1795021837.858456,
+  "url": "https://api.mock-api.org/resource",
+  "method": "OPTIONS",
+  "status_code": 200,
+  "filename": "resource.txt",
+  "content_type": "text/plain",
+  "file_size": 0,
+  "headers": {
+    "allow": "GET, POST, OPTIONS",
+    "access-control-allow-origin": "*"
+  },
+  "category": "text"
+}

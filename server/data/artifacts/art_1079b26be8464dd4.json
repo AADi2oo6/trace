@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_1079b26be8464dd4",
+  "request_id": "req_e4c55d8a5beb",
+  "created_at": 1795021840.1249316,
+  "url": "https://api.mock-api.org/logo.png",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "logo.png",
+  "content_type": "image/png",
+  "file_size": 16,
+  "headers": {
+    "content-type": "image/png",
+    "content-length": "16"
+  },
+  "category": "image"
+}

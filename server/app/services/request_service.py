@@ -13,6 +13,8 @@ from app.core.config import settings
 from app.core.errors import ErrorCode, ErrorDetail
 from app.core.security import SecurityValidationError, validate_url_for_ssrf
 from app.schemas.request import DnsAnalysis, RequestCreate, RequestResponse
+from app.services.artifact_service import artifact_service
+from app.services.content_detector import content_detector
 from app.services.cors_analyzer import cors_analyzer
 from app.services.dns_inspector import dns_inspector
 from app.services.header_analyzer import header_analyzer
@@ -212,19 +214,36 @@ class RequestService:
                 raw_bytes=raw_bytes,
             )
 
-            # 8. Analyze headers via HeaderAnalyzer (request and response)
+            # 8. Detect content metadata and save response artifact
+            content_meta = content_detector.detect(
+                raw_bytes=raw_bytes,
+                headers=inspected.headers,
+                url=str(response.url),
+            )
+            artifact_id = artifact_service.save_artifact(
+                request_id=request_id,
+                raw_bytes=raw_bytes,
+                url=str(response.url),
+                method=method,
+                status_code=response.status_code,
+                headers=inspected.headers,
+                content_metadata=content_meta,
+            )
+            content_meta.artifact_id = artifact_id
+
+            # 9. Analyze headers via HeaderAnalyzer (request and response)
             analyzed_headers = header_analyzer.analyze_all(
                 request_headers=headers,
                 response_headers=inspected.headers,
             )
 
-            # 9. Inspect OPTIONS capabilities and advertised policies if applicable
+            # 10. Inspect OPTIONS capabilities and advertised policies if applicable
             options_result = options_inspector.inspect(
                 method=method,
                 response_headers=inspected.headers,
             )
 
-            # 10. Analyze CORS configuration across request and response
+            # 11. Analyze CORS configuration across request and response
             cors_result = cors_analyzer.analyze(
                 request_method=method,
                 request_headers=headers,
@@ -265,6 +284,8 @@ class RequestService:
                 cors_analysis=cors_analysis_data,
                 dns_analysis=dns_analysis_result,
                 request_journey=journey,
+                content_metadata=content_meta,
+                artifact_id=artifact_id,
                 error=None,
             )
 

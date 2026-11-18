@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_6980bcb9e42542c9",
+  "request_id": "req_5f0faa860016",
+  "created_at": 1795021837.8504245,
+  "url": "https://api.mock-api.org/todos",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "todos.json",
+  "content_type": "application/json",
+  "file_size": 13,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "13"
+  },
+  "category": "json"
+}

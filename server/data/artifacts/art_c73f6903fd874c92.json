@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_c73f6903fd874c92",
+  "request_id": "req_84850918502e",
+  "created_at": 1795021839.7749748,
+  "url": "http://example.com/test",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "test.txt",
+  "content_type": "text/plain",
+  "file_size": 5,
+  "headers": {
+    "content-length": "5",
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "category": "text"
+}

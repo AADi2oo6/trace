@@ -15,7 +15,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-[#000000] text-[#F5F5F5] overflow-hidden">
+    <div className="flex h-screen bg-[var(--bg-page)] text-[var(--text-primary)] overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         mobileOpen={mobileMenuOpen}
@@ -31,13 +31,13 @@ export const AppShell: React.FC<AppShellProps> = ({
         />
 
         {/* Page content */}
-        <main className="flex-1 overflow-hidden bg-[#000000]" role="main">
+        <main className="flex-1 overflow-hidden bg-[var(--bg-page)]" role="main">
           {children}
         </main>
 
         {/* Status footer bar */}
         <footer
-          className="h-7 shrink-0 border-t border-[#1A1A1A] bg-[#080808] flex items-center justify-between px-4 select-none"
+          className="h-7 shrink-0 border-t border-[var(--border-default)] bg-[var(--bg-surface)] flex items-center justify-between px-4 select-none"
           role="contentinfo"
         >
           <div className="flex items-center gap-4">

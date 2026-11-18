@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_5be76160c45341e0",
+  "request_id": "req_3f83f279cb88",
+  "created_at": 1795023229.5916486,
+  "url": "https://api.mock-api.org/alias",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "alias.json",
+  "content_type": "application/json",
+  "file_size": 14,
+  "headers": {
+    "content-length": "14",
+    "content-type": "application/json"
+  },
+  "category": "json"
+}

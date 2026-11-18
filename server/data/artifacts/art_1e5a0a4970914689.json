@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_1e5a0a4970914689",
+  "request_id": "req_f01cb3697212",
+  "created_at": 1795021838.8050432,
+  "url": "https://api.mock-api.org/binary",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "binary.bin",
+  "content_type": "application/octet-stream",
+  "file_size": 7,
+  "headers": {
+    "content-type": "application/octet-stream",
+    "content-length": "7"
+  },
+  "category": "binary"
+}

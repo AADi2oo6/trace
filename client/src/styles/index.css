@@ -31,27 +31,27 @@
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* ── Design Tokens: Dark Theme (Default) ─────────────────────────── */
+/* ── Design Tokens: Dark Theme (Grayish Modern Dark) ──────────────── */
 :root {
   color-scheme: dark;
-  --bg-page: #000000;
-  --bg-surface: #080808;
-  --bg-surface-secondary: #0A0A0A;
-  --bg-panel: #111111;
-  --bg-panel-secondary: #0D0D0D;
-  --bg-panel-hover: #161616;
-  --bg-card: #0E0E0E;
-  --bg-input: #0D0D0D;
+  --bg-page: #0F1117;              /* Deep dark slate-gray canvas */
+  --bg-surface: #161922;           /* Sidebar, topbar, status bar */
+  --bg-surface-secondary: #1C202C; /* Elevated elements */
+  --bg-panel: #1C202C;             /* Cards, panels */
+  --bg-panel-secondary: #131620;   /* Inset surfaces, code blocks */
+  --bg-panel-hover: #252B3B;       /* Interactive hover state */
+  --bg-card: #1C202C;
+  --bg-input: #131620;
 
-  --text-primary: #F5F5F5;
-  --text-secondary: #D4D4D8;
-  --text-muted: #888888;
-  --text-dim: #4B5563;
+  --text-primary: #F8FAFC;         /* Slate-50: Crisp bright white */
+  --text-secondary: #E2E8F0;       /* Slate-200: High-contrast light text */
+  --text-muted: #94A3B8;           /* Slate-400: Clear, highly readable subtext */
+  --text-dim: #64748B;             /* Slate-500: Visible muted labels & icons */
 
-  --border-default: #1E1E1E;
-  --border-subtle: #161616;
-  --border-strong: #333333;
-  --divider: #1E1E1E;
+  --border-default: #282F3E;       /* Clean component separation */
+  --border-subtle: #1E2330;
+  --border-strong: #3D465A;
+  --divider: #282F3E;
 
   --accent-orange: #FF6A00;
   --accent-orange-dark: #D94F00;
@@ -64,33 +64,33 @@
   --status-error: #EF4444;
   --status-info: #3B82F6;
 
-  --chart-grid: #1E1E1E;
-  --chart-text: #71717A;
-  --tooltip-bg: #111111;
-  --tooltip-border: #2A2A2A;
-  --tooltip-text: #E8E8E8;
+  --chart-grid: #282F3E;
+  --chart-text: #94A3B8;
+  --tooltip-bg: #1C202C;
+  --tooltip-border: #3D465A;
+  --tooltip-text: #F8FAFC;
 }
 
 /* ── Design Tokens: Light Theme ──────────────────────────────────── */
 [data-theme="light"],
 .light {
   color-scheme: light;
-  --bg-page: #F6F8FA;
-  --bg-surface: #FFFFFF;
-  --bg-surface-secondary: #F0F2F5;
+  --bg-page: #F8FAFC;              /* Soft off-white page background */
+  --bg-surface: #FFFFFF;           /* Pure white surface */
+  --bg-surface-secondary: #F1F5F9; /* Elevated secondary surface */
   --bg-panel: #FFFFFF;
-  --bg-panel-secondary: #F3F4F6;
-  --bg-panel-hover: #E5E7EB;
+  --bg-panel-secondary: #F1F5F9;
+  --bg-panel-hover: #E2E8F0;
   --bg-card: #FFFFFF;
   --bg-input: #FFFFFF;
 
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
-  --text-dim: #94A3B8;
+  --text-primary: #0F172A;         /* Slate-900: Dark bold primary text */
+  --text-secondary: #1E293B;       /* Slate-800: Strong secondary text */
+  --text-muted: #475569;           /* Slate-600: High-contrast (6.8:1) crisp subtext */
+  --text-dim: #64748B;             /* Slate-500: Clear (4.6:1) accessible muted labels */
 
   --border-default: #E2E8F0;
-  --border-subtle: #EEF2F6;
+  --border-subtle: #F1F5F9;
   --border-strong: #CBD5E1;
   --divider: #E2E8F0;
 
@@ -106,9 +106,9 @@
   --status-info: #2563EB;
 
   --chart-grid: #E2E8F0;
-  --chart-text: #64748B;
+  --chart-text: #475569;
   --tooltip-bg: #FFFFFF;
-  --tooltip-border: #E2E8F0;
+  --tooltip-border: #CBD5E1;
   --tooltip-text: #0F172A;
 }
 
@@ -161,11 +161,103 @@ textarea {
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
+/* ── Dark Theme Modern Grayish Palette Overrides ─────────────────── */
+:root:not([data-theme="light"]) .bg-\[\#000000\],
+:root:not([data-theme="light"]) .bg-\[\#080808\] {
+  background-color: var(--bg-page) !important;
+}
+
+:root:not([data-theme="light"]) .bg-\[\#0A0A0A\] {
+  background-color: var(--bg-surface) !important;
+}
+
+:root:not([data-theme="light"]) .bg-\[\#0D0D0D\],
+:root:not([data-theme="light"]) .bg-\[\#0E0E0E\] {
+  background-color: var(--bg-panel-secondary) !important;
+}
+
+:root:not([data-theme="light"]) .bg-\[\#111111\],
+:root:not([data-theme="light"]) .bg-\[\#121212\] {
+  background-color: var(--bg-panel) !important;
+}
+
+:root:not([data-theme="light"]) .bg-\[\#161616\],
+:root:not([data-theme="light"]) .bg-\[\#1A1A1A\],
+:root:not([data-theme="light"]) .bg-\[\#222222\] {
+  background-color: var(--bg-panel-hover) !important;
+}
+
+:root:not([data-theme="light"]) .border-\[\#1A1A1A\],
+:root:not([data-theme="light"]) .border-\[\#1E1E1E\],
+:root:not([data-theme="light"]) .border-\[\#222222\],
+:root:not([data-theme="light"]) .border-\[\#262626\] {
+  border-color: var(--border-default) !important;
+}
+
+:root:not([data-theme="light"]) .border-\[\#333333\] {
+  border-color: var(--border-strong) !important;
+}
+
+/* Grayish overrides for slate components used in Explorer */
+:root:not([data-theme="light"]) .bg-slate-950 {
+  background-color: var(--bg-page) !important;
+}
+
+:root:not([data-theme="light"]) .bg-slate-900 {
+  background-color: var(--bg-panel) !important;
+}
+
+:root:not([data-theme="light"]) .border-slate-800 {
+  border-color: var(--border-default) !important;
+}
+
+/* ── Dark Theme Text & Subtext Contrast Fixes ─────────────────────── */
+:root:not([data-theme="light"]) .text-\[\#222222\],
+:root:not([data-theme="light"]) .text-\[\#2A2A2A\],
+:root:not([data-theme="light"]) .text-\[\#3A3A3A\] {
+  color: #64748B !important; /* Visible Slate-500: clearly readable muted labels & inactive icons */
+}
+
+:root:not([data-theme="light"]) .text-\[\#444444\],
+:root:not([data-theme="light"]) .text-\[\#555555\],
+:root:not([data-theme="light"]) .text-\[\#666666\],
+:root:not([data-theme="light"]) .text-\[\#6B6B6B\],
+:root:not([data-theme="light"]) .text-\[\#777777\],
+:root:not([data-theme="light"]) .text-\[\#888888\] {
+  color: #94A3B8 !important; /* Crisp Slate-400: high-contrast subtexts and descriptions */
+}
+
+:root:not([data-theme="light"]) .text-\[\#A0A0A0\],
+:root:not([data-theme="light"]) .text-\[\#B0B0B0\],
+:root:not([data-theme="light"]) .text-\[\#CCCCCC\] {
+  color: #E2E8F0 !important; /* Slate-200: strong readable secondary text */
+}
+
+:root:not([data-theme="light"]) .text-\[\#E8E8E8\],
+:root:not([data-theme="light"]) .text-\[\#F5F5F5\],
+:root:not([data-theme="light"]) .text-\[\#FFFFFF\] {
+  color: #F8FAFC !important; /* Slate-50: bright primary headings */
+}
+
 /* ── Light Theme Global Class Overrides ────────────────────────────── */
 [data-theme="light"] .bg-\[\#000000\],
 [data-theme="light"] .bg-\[\#080808\],
 [data-theme="light"] .bg-\[\#0A0A0A\] {
   background-color: var(--bg-page) !important;
+}
+
+[data-theme="light"] .bg-slate-950 {
+  background-color: var(--bg-page) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .bg-slate-900 {
+  background-color: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .border-slate-800 {
+  border-color: var(--border-default) !important;
 }
 
 [data-theme="light"] .bg-\[\#0D0D0D\],
@@ -194,13 +286,13 @@ textarea {
 [data-theme="light"] .text-\[\#FFFFFF\],
 [data-theme="light"] .text-\[\#F5F5F5\],
 [data-theme="light"] .text-\[\#E8E8E8\] {
-  color: var(--text-primary) !important;
+  color: var(--text-primary) !important; /* Bold Slate-900 */
 }
 
 [data-theme="light"] .text-\[\#CCCCCC\],
 [data-theme="light"] .text-\[\#B0B0B0\],
 [data-theme="light"] .text-\[\#A0A0A0\] {
-  color: var(--text-secondary) !important;
+  color: var(--text-secondary) !important; /* Slate-800 */
 }
 
 [data-theme="light"] .text-\[\#888888\],
@@ -208,13 +300,31 @@ textarea {
 [data-theme="light"] .text-\[\#6B6B6B\],
 [data-theme="light"] .text-\[\#666666\],
 [data-theme="light"] .text-\[\#555555\] {
-  color: var(--text-muted) !important;
+  color: #475569 !important; /* Slate-600: High-contrast (6.8:1) crisp subtext */
 }
 
 [data-theme="light"] .text-\[\#444444\],
 [data-theme="light"] .text-\[\#3A3A3A\],
 [data-theme="light"] .text-\[\#2A2A2A\] {
-  color: var(--text-dim) !important;
+  color: #64748B !important; /* Slate-500: Clear (4.6:1) accessible muted labels */
+}
+
+/* Light Theme Slate Utility Overrides for Universal Explorer */
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important; /* Slate-600 */
+}
+
+[data-theme="light"] .text-slate-500 {
+  color: #64748B !important; /* Slate-500 */
+}
+
+[data-theme="light"] .text-slate-300 {
+  color: #1E293B !important; /* Slate-800 */
+}
+
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-100 {
+  color: #0F172A !important; /* Slate-900 */
 }
 
 /* Light Theme Code/Preview Blocks */

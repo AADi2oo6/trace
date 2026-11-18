@@ -1,0 +1,17 @@
+{
+  "artifact_id": "art_cd30b611fb904865",
+  "request_id": "req_5565d4d7a7a4",
+  "created_at": 1795021839.7328775,
+  "url": "https://example.com/api/test",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "test.json",
+  "content_type": "application/json",
+  "file_size": 12,
+  "headers": {
+    "allow": "GET, POST",
+    "content-type": "application/json",
+    "content-length": "12"
+  },
+  "category": "json"
+}

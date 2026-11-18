@@ -1,0 +1,19 @@
+{
+  "artifact_id": "art_f87dcb61c9f3459b",
+  "request_id": "req_13ffb255140e",
+  "created_at": 1795021839.7208996,
+  "url": "https://example.com/api/test",
+  "method": "OPTIONS",
+  "status_code": 204,
+  "filename": "test.txt",
+  "content_type": "text/plain",
+  "file_size": 0,
+  "headers": {
+    "allow": "GET, POST, OPTIONS",
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST",
+    "access-control-allow-headers": "Content-Type",
+    "access-control-max-age": "300"
+  },
+  "category": "text"
+}

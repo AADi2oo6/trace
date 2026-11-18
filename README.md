@@ -341,6 +341,24 @@ trace/
 
 ## Getting Started
 
+### Quick Start (Run Frontend & Backend Together)
+
+You can launch both the FastAPI backend and Vite frontend with a single command from the root directory:
+
+```bash
+python run_all.py
+```
+
+This starts:
+- **Frontend UI** at `http://localhost:5173`
+- **Backend API** at `http://localhost:8000`
+- **Swagger Docs** at `http://localhost:8000/docs`
+- **Demo API** at `http://localhost:8000/demo`
+
+Press `Ctrl+C` in the terminal to stop both servers simultaneously.
+
+---
+
 ### Prerequisites
 
 Ensure the following tools are installed on your workstation:

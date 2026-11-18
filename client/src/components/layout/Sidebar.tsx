@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   LayoutDashboard,
+  Compass,
   Terminal,
   Network,
   Route,
@@ -26,6 +27,12 @@ const primaryNavItems = [
     label: 'Dashboard',
     description: 'Overview & quick access',
     end: true,
+  },
+  {
+    to: '/explorer',
+    icon: <Compass className="w-4 h-4" />,
+    label: 'Explorer',
+    description: 'Universal content & URL exploration',
   },
   {
     to: '/tester',
@@ -83,19 +90,19 @@ const secondaryNavItems = [
 const SidebarContent: React.FC<{ onMobileClose?: () => void }> = ({ onMobileClose }) => (
   <div className="flex flex-col h-full">
     {/* Brand */}
-    <div className="flex items-center justify-between h-14 px-4 border-b border-[#1E1E1E] shrink-0">
+    <div className="flex items-center justify-between h-14 px-4 border-b border-[var(--border-default)] shrink-0">
       <div className="flex items-center gap-2.5">
         <div className="bg-[#FF6A00] text-black font-black text-xs px-1.5 py-0.5 tracking-widest font-mono select-none">
           TRACE
         </div>
-        <span className="text-[10px] text-[#3A3A3A] font-mono tracking-wider uppercase select-none hidden sm:block">
+        <span className="text-[10px] text-[var(--text-dim)] font-mono tracking-wider uppercase select-none hidden sm:block">
           v0.11
         </span>
       </div>
       {onMobileClose && (
         <button
           onClick={onMobileClose}
-          className="text-[#6B6B6B] hover:text-[#E8E8E8] p-1 transition-colors lg:hidden"
+          className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 transition-colors lg:hidden"
           aria-label="Close navigation"
         >
           <X className="w-4 h-4" />
@@ -106,7 +113,7 @@ const SidebarContent: React.FC<{ onMobileClose?: () => void }> = ({ onMobileClos
     {/* Primary Navigation */}
     <nav className="flex-1 py-3 overflow-y-auto" aria-label="Primary navigation">
       <div className="px-3 mb-1">
-        <span className="text-[9px] font-mono tracking-widest text-[#3A3A3A] uppercase select-none px-1">
+        <span className="text-[9px] font-mono tracking-widest text-[var(--text-dim)] uppercase select-none px-1">
           Navigation
         </span>
       </div>
@@ -130,7 +137,7 @@ const SidebarContent: React.FC<{ onMobileClose?: () => void }> = ({ onMobileClos
 
       {/* Secondary Navigation */}
       <div className="px-3 mb-1">
-        <span className="text-[9px] font-mono tracking-widest text-[#3A3A3A] uppercase select-none px-1">
+        <span className="text-[9px] font-mono tracking-widest text-[var(--text-dim)] uppercase select-none px-1">
           System
         </span>
       </div>
@@ -149,8 +156,8 @@ const SidebarContent: React.FC<{ onMobileClose?: () => void }> = ({ onMobileClos
     </nav>
 
     {/* Footer */}
-    <div className="px-4 py-3 border-t border-[#1E1E1E] shrink-0">
-      <p className="text-[9px] font-mono text-[#2A2A2A] tracking-wider">
+    <div className="px-4 py-3 border-t border-[var(--border-default)] shrink-0">
+      <p className="text-[9px] font-mono text-[var(--text-dim)] tracking-wider">
         API Testing &amp; Network Analysis
       </p>
     </div>
@@ -162,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onMobileClose }) =
     <>
       {/* Desktop Sidebar */}
       <aside
-        className="hidden lg:flex w-56 shrink-0 flex-col border-r border-[#1E1E1E] bg-[#0A0A0A] h-full"
+        className="hidden lg:flex w-56 shrink-0 flex-col border-r border-[var(--border-default)] bg-[var(--bg-surface)] h-full"
         aria-label="Sidebar navigation"
       >
         <SidebarContent />
@@ -184,7 +191,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onMobileClose }) =
           />
 
           {/* Drawer */}
-          <aside className="absolute left-0 top-0 bottom-0 w-56 flex flex-col border-r border-[#1E1E1E] bg-[#0A0A0A] animate-slide-in-left">
+          <aside className="absolute left-0 top-0 bottom-0 w-56 flex flex-col border-r border-[var(--border-default)] bg-[var(--bg-surface)] animate-slide-in-left">
             <SidebarContent onMobileClose={onMobileClose} />
           </aside>
         </div>

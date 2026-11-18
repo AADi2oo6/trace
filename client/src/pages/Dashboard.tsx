@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Compass,
   Terminal,
   FileJson,
   ListFilter,
@@ -32,9 +33,9 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({
   <button
     onClick={onClick}
     className={[
-      'group relative flex flex-col gap-3 p-4 text-left w-full',
-      'border border-[#1E1E1E] bg-[#0D0D0D]',
-      'hover:border-[#333333] hover:bg-[#111111]',
+      'group relative flex flex-col gap-3 p-4 text-left w-full rounded',
+      'border border-[var(--border-default)] bg-[var(--bg-panel)]',
+      'hover:border-[var(--border-strong)] hover:bg-[var(--bg-panel-hover)]',
       'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FF6A00]',
       'transition-colors duration-150',
     ].join(' ')}
@@ -43,23 +44,23 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({
     {/* Top row */}
     <div className="flex items-center justify-between">
       <span
-        className="text-[#3A3A3A] group-hover:text-[#FF6A00] transition-colors duration-150"
+        className="text-[var(--text-dim)] group-hover:text-[#FF6A00] transition-colors duration-150"
         aria-hidden="true"
       >
         {icon}
       </span>
       <ArrowRight
-        className="w-3 h-3 text-[#222222] group-hover:text-[#555555] transition-colors duration-150"
+        className="w-3 h-3 text-[var(--text-dim)] group-hover:text-[var(--text-secondary)] transition-colors duration-150"
         aria-hidden="true"
       />
     </div>
 
     {/* Label */}
     <div>
-      <p className="text-xs font-mono tracking-widest text-[#E8E8E8] uppercase leading-none">
+      <p className="text-xs font-mono tracking-widest text-[var(--text-primary)] uppercase leading-none">
         {label}
       </p>
-      <p className="text-[11px] text-[#555555] group-hover:text-[#6B6B6B] mt-1 transition-colors duration-150 leading-snug">
+      <p className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)] mt-1 transition-colors duration-150 leading-snug">
         {description}
       </p>
     </div>
@@ -70,6 +71,12 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate()
 
   const capabilities = [
+    {
+      icon: <Compass className="w-4 h-4" />,
+      label: 'Explorer',
+      description: 'Universal content exploration, preview & downloads',
+      to: '/explorer',
+    },
     {
       icon: <Terminal className="w-4 h-4" />,
       label: 'HTTP',

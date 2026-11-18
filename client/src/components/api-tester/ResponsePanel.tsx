@@ -346,6 +346,8 @@ export const ResponsePanel: React.FC<ResponsePanelProps> = ({
                   bodyType={response.body_type}
                   bodySize={response.body_size}
                   contentType={response.content_type}
+                  artifactId={response.artifact_id}
+                  contentMetadata={response.content_metadata}
                 />
               </div>
             )}

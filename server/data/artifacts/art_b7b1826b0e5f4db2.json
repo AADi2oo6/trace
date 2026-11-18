@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_b7b1826b0e5f4db2",
+  "request_id": "req_test123",
+  "created_at": 1795021838.8833115,
+  "url": "https://api.example.com/test.txt",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "test.txt",
+  "content_type": "text/plain",
+  "file_size": 38,
+  "headers": {
+    "content-type": "text/plain",
+    "x-custom-test": "demo"
+  },
+  "category": "text"
+}

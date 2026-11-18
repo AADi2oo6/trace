@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_a627557599b24318",
+  "request_id": "req_47ad1a4df329",
+  "created_at": 1795023229.4564476,
+  "url": "https://api.mock-api.org/endpoint",
+  "method": "DELETE",
+  "status_code": 204,
+  "filename": "endpoint.json",
+  "content_type": "application/json",
+  "file_size": 0,
+  "headers": {
+    "content-type": "application/json",
+    "x-server": "TraceMock"
+  },
+  "category": "json"
+}

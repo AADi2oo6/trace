@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_c3b28b0bc2b64c19",
+  "request_id": "req_61e91afcd419",
+  "created_at": 1795021840.10066,
+  "url": "https://api.mock-api.org/crash",
+  "method": "GET",
+  "status_code": 500,
+  "filename": "crash.txt",
+  "content_type": "text/plain",
+  "file_size": 36,
+  "headers": {
+    "content-type": "text/plain",
+    "content-length": "36"
+  },
+  "category": "text"
+}

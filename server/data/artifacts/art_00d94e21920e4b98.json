@@ -1,0 +1,26 @@
+{
+  "artifact_id": "art_00d94e21920e4b98",
+  "request_id": "req_0c3af1efcd21",
+  "created_at": 1795021901.440705,
+  "url": "https://example.com",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "response.html",
+  "content_type": "text/html",
+  "file_size": 577,
+  "headers": {
+    "date": "Wed, 18 Nov 2026 17:11:42 GMT",
+    "content-type": "text/html; charset=utf-8",
+    "transfer-encoding": "chunked",
+    "connection": "keep-alive",
+    "server": "cloudflare",
+    "last-modified": "Mon, 16 Nov 2026 00:30:20 GMT",
+    "allow": "GET, HEAD",
+    "age": "1",
+    "cf-cache-status": "HIT",
+    "content-encoding": "gzip",
+    "cf-ray": "a5c898892e3e1332-FRA",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "category": "html"
+}

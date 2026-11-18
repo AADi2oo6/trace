@@ -1,0 +1,17 @@
+{
+  "artifact_id": "art_f4314bbb6e244887",
+  "request_id": "req_5142e889e94d",
+  "created_at": 1795021838.7688563,
+  "url": "https://api.mock-api.org/endpoint",
+  "method": "OPTIONS",
+  "status_code": 200,
+  "filename": "endpoint.json",
+  "content_type": "application/json",
+  "file_size": 16,
+  "headers": {
+    "content-type": "application/json",
+    "x-server": "TraceMock",
+    "content-length": "16"
+  },
+  "category": "json"
+}

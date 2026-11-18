@@ -22,7 +22,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({
       className={['flex flex-col h-full min-h-0', className].filter(Boolean).join(' ')}
     >
       {/* Page Header */}
-      <div className="flex items-start justify-between px-6 py-5 border-b border-[#1E1E1E] shrink-0">
+      <div className="flex items-start justify-between px-6 py-5 border-b border-[var(--border-default)] shrink-0">
         <div className="flex items-start gap-3">
           {icon && (
             <div className="mt-0.5 text-[#FF6A00] shrink-0" aria-hidden="true">

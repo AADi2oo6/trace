@@ -92,32 +92,32 @@ export const ResponseSummary: React.FC<ResponseSummaryProps> = ({
       </div>
 
       {/* Duration */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1E1E1E] bg-[#0D0D0D]">
-        <span className="text-[10px] font-mono text-[#3A3A3A] uppercase tracking-wider">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--border-default)] bg-[var(--bg-panel)] rounded">
+        <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider font-medium">
           Time
         </span>
-        <span className="text-sm font-mono font-semibold text-[#E8E8E8]">
+        <span className="text-sm font-mono font-semibold text-[var(--text-primary)]">
           {formatMs(durationMs)}
         </span>
       </div>
 
       {/* Size */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1E1E1E] bg-[#0D0D0D]">
-        <span className="text-[10px] font-mono text-[#3A3A3A] uppercase tracking-wider">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--border-default)] bg-[var(--bg-panel)] rounded">
+        <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider font-medium">
           Size
         </span>
-        <span className="text-sm font-mono font-semibold text-[#E8E8E8]">
+        <span className="text-sm font-mono font-semibold text-[var(--text-primary)]">
           {formatBytes(bodySizeBytes)}
         </span>
       </div>
 
       {/* Content-Type */}
       {mimeType && (
-        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1E1E1E] bg-[#0D0D0D]">
-          <span className="text-[10px] font-mono text-[#3A3A3A] uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--border-default)] bg-[var(--bg-panel)] rounded">
+          <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider font-medium">
             Type
           </span>
-          <span className="text-sm font-mono font-semibold text-[#E8E8E8]">
+          <span className="text-sm font-mono font-semibold text-[var(--text-primary)]">
             {mimeType}
           </span>
         </div>

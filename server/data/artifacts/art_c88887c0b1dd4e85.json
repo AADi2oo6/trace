@@ -1,0 +1,13 @@
+{
+  "artifact_id": "art_c88887c0b1dd4e85",
+  "request_id": "req_513745a4d18a",
+  "created_at": 1795023231.0765927,
+  "url": "https://api.mock-api.org/item/1",
+  "method": "DELETE",
+  "status_code": 204,
+  "filename": "1.txt",
+  "content_type": "text/plain",
+  "file_size": 0,
+  "headers": {},
+  "category": "text"
+}

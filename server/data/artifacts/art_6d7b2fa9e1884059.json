@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_6d7b2fa9e1884059",
+  "request_id": "req_f5b1d81c859b",
+  "created_at": 1795021838.0500607,
+  "url": "http://localhost:8000/demo/hello",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "hello.json",
+  "content_type": "application/json",
+  "file_size": 101,
+  "headers": {
+    "content-length": "101",
+    "content-type": "application/json"
+  },
+  "category": "json"
+}

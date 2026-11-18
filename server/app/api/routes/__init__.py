@@ -2,11 +2,13 @@
 
 from fastapi import APIRouter
 
+from app.api.routes.artifacts import router as artifacts_router
 from app.api.routes.history import router as history_router
 from app.api.routes.monitors import router as monitors_router
 from app.api.routes.requests import router as requests_router
 
 api_router = APIRouter()
 api_router.include_router(requests_router)
+api_router.include_router(artifacts_router)
 api_router.include_router(history_router)
 api_router.include_router(monitors_router)

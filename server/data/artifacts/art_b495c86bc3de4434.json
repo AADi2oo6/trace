@@ -1,0 +1,19 @@
+{
+  "artifact_id": "art_b495c86bc3de4434",
+  "request_id": "req_eeb583d7c5e3",
+  "created_at": 1795021838.9307635,
+  "url": "https://api.mock-api.org/data",
+  "method": "POST",
+  "status_code": 200,
+  "filename": "data.json",
+  "content_type": "application/json",
+  "file_size": 15,
+  "headers": {
+    "content-type": "application/json",
+    "cache-control": "max-age=600",
+    "server": "Kestrel",
+    "x-custom-header": "trace-test",
+    "content-length": "15"
+  },
+  "category": "json"
+}

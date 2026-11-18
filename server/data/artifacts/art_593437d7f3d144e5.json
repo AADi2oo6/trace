@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_593437d7f3d144e5",
+  "request_id": "req_b37c604ca278",
+  "created_at": 1795021838.8268657,
+  "url": "https://api.mock-api.org/step-2",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "step-2.json",
+  "content_type": "application/json",
+  "file_size": 23,
+  "headers": {
+    "content-length": "23",
+    "content-type": "application/json"
+  },
+  "category": "json"
+}

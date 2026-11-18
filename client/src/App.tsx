@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppShell } from './components/layout/AppShell'
 import { Dashboard } from './pages/Dashboard'
+import { UniversalExplorer } from './pages/UniversalExplorer'
 import { ApiTester } from './pages/ApiTester'
 import { NetworkAnalysis } from './pages/NetworkAnalysis'
 import { RequestJourneyPage } from './pages/RequestJourney'
@@ -29,6 +30,7 @@ const AppRoutes: React.FC = () => {
     <AppShell backendStatus={backendStatus}>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/explorer" element={<UniversalExplorer />} />
         <Route path="/tester" element={<ApiTester />} />
         <Route path="/analysis" element={<NetworkAnalysis />} />
         <Route path="/journey" element={<RequestJourneyPage />} />

@@ -1,0 +1,16 @@
+{
+  "artifact_id": "art_bc301d0d7dd44529",
+  "request_id": "req_11fa799bfc7d",
+  "created_at": 1795023230.6614537,
+  "url": "http://example.com/test",
+  "method": "GET",
+  "status_code": 200,
+  "filename": "test.txt",
+  "content_type": "text/plain",
+  "file_size": 5,
+  "headers": {
+    "content-length": "5",
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "category": "text"
+}

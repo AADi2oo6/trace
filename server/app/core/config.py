@@ -19,8 +19,13 @@ class Settings:
     # Request Execution Engine Limits
     request_timeout_seconds: float = 10.0
     max_redirects: int = 5
-    max_response_bytes: int = 2 * 1024 * 1024  # 2 MB limit
+    max_response_bytes: int = 10 * 1024 * 1024  # 10 MB limit for full media/explorer payloads
     allowed_schemes: tuple[str, ...] = ("http", "https")
+
+    # Artifact Storage Settings
+    artifact_storage_dir: str = "./data/artifacts"
+    artifact_max_age_seconds: int = 3600  # 1 hour retention
+    artifact_max_count: int = 200
 
     # Database Configuration
     database_url: str = "sqlite:///./data/trace.db"

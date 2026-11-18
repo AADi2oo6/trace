@@ -40,6 +40,52 @@ class BodyType(str, Enum):
     BINARY = "binary"
 
 
+class ContentCategory(str, Enum):
+    """Normalized high-level category of inspected content."""
+
+    HTML = "html"
+    JSON = "json"
+    XML = "xml"
+    IMAGE = "image"
+    VIDEO = "video"
+    AUDIO = "audio"
+    PDF = "pdf"
+    TEXT = "text"
+    BINARY = "binary"
+    YOUTUBE = "youtube"
+
+
+class YouTubeMetadata(BaseModel):
+    """Metadata extracted from a YouTube video URL."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    video_id: str = Field(description="11-character YouTube video identifier")
+    embed_url: str = Field(description="Privacy-enhanced official YouTube embed URL")
+    thumbnail_url: str = Field(description="HQ video thumbnail URL")
+    watch_url: str = Field(description="Canonical YouTube watch URL")
+    title: str | None = Field(default=None, description="Public title if retrieved from oEmbed")
+    author_name: str | None = Field(default=None, description="Channel/Author name if available")
+
+
+class ContentMetadata(BaseModel):
+    """Detailed classification and exploration metadata for an HTTP response payload."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    category: ContentCategory = Field(description="Detected content category")
+    mime_type: str = Field(description="Authoritative or detected MIME media type")
+    extension: str = Field(description="Standard file extension with leading dot (e.g. .html, .png)")
+    filename: str = Field(description="Sanitized safe filename for saving or downloading")
+    file_size: int = Field(description="Payload size in bytes")
+    is_binary: bool = Field(description="True if content represents non-text binary data")
+    is_preview_supported: bool = Field(description="True if TRACE provides an interactive in-browser preview")
+    preview_limitation: str | None = Field(default=None, description="Diagnostic notice explaining preview or download limitations")
+    encoding: str | None = Field(default=None, description="Detected text encoding (e.g. utf-8)")
+    artifact_id: str | None = Field(default=None, description="Unique artifact ID for streaming raw bytes or download")
+    youtube_metadata: YouTubeMetadata | None = Field(default=None, description="YouTube metadata if target is a YouTube URL")
+
+
 class HeaderCategory(str, Enum):
     """Controlled categorization of HTTP headers."""
 
@@ -437,6 +483,14 @@ class RequestResponse(BaseModel):
     request_journey: RequestJourney | None = Field(
         default=None,
         description="Structured representation of the sequential request journey across lifecycle phases",
+    )
+    content_metadata: ContentMetadata | None = Field(
+        default=None,
+        description="Detailed classification and exploration metadata for content inspection and previews",
+    )
+    artifact_id: str | None = Field(
+        default=None,
+        description="Artifact identifier for streaming or downloading binary response bytes",
     )
     error: ErrorDetail | None = Field(
         default=None,

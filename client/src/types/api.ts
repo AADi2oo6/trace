@@ -27,6 +27,41 @@ export type StatusCategory =
 
 export type BodyType = 'json' | 'text' | 'html' | 'empty' | 'binary'
 
+export type ContentCategory =
+  | 'html'
+  | 'json'
+  | 'xml'
+  | 'image'
+  | 'video'
+  | 'audio'
+  | 'pdf'
+  | 'text'
+  | 'binary'
+  | 'youtube'
+
+export interface YouTubeMetadata {
+  video_id: string
+  embed_url: string
+  thumbnail_url: string
+  watch_url: string
+  title: string | null
+  author_name: string | null
+}
+
+export interface ContentMetadata {
+  category: ContentCategory
+  mime_type: string
+  extension: string
+  filename: string
+  file_size: number
+  is_binary: boolean
+  is_preview_supported: boolean
+  preview_limitation?: string | null
+  encoding?: string | null
+  artifact_id?: string | null
+  youtube_metadata?: YouTubeMetadata | null
+}
+
 export type HeaderCategory =
   | 'General'
   | 'Content'
@@ -169,6 +204,8 @@ export interface RequestResponse {
   cors_analysis: CorsAnalysis | null
   dns_analysis: DnsAnalysis | null
   request_journey: RequestJourney | null
+  content_metadata?: ContentMetadata | null
+  artifact_id?: string | null
   error: ErrorDetail | null
 }
 
