@@ -29,3 +29,5 @@ Thumbs.db
 .idea/
 .artifacts/
 /server/data/artifacts
+server/data/trace.db
+/server/data
